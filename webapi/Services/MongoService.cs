@@ -1,0 +1,92 @@
+using AppleApi.Models;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Linq.Expressions;
+
+namespace Apple.Services
+{
+    public class MongoService<T>
+    {
+        protected readonly IMongoCollection<T> _collection;
+        private readonly string _idPropertyName = "Id";
+
+        public MongoService(IOptions<AppleDatabaseSettings> settings, string collectionName)
+        {
+            var client = new MongoClient(settings.Value.ConnectionString);
+            var database = client.GetDatabase(settings.Value.DatabaseName);
+            _collection = database.GetCollection<T>(collectionName);
+        }
+
+        public async Task<List<T>> GetAsync() =>
+            await _collection.Find(_ => true).ToListAsync();
+
+        public async Task<T?> GetAsync(string id)
+        {
+            ObjectId.TryParse(id, out var objectId);
+            var filter = Builders<T>.Filter.Eq("_id", objectId);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<T?> GetByEmailAsync(string email)
+        {
+            var filter = Builders<T>.Filter.Eq("Email", email);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<T?> GetByPhoneAsync(string username)
+        {
+            var filter = Builders<T>.Filter.Eq("PhoneNumber", username);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<T?> GetByTokenAsync(string token)
+        {
+            var filter = Builders<T>.Filter.Eq("PasswordResetToken", token);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<T?> GetByVerifyTokenAsync(string token)
+        {
+            var filter = Builders<T>.Filter.Eq("VerificationToken", token);
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> TokenExistsAsync(string token)
+        {
+            var filter = Builders<T>.Filter.Eq("PasswordResetToken", token);
+            var result = await _collection.Find(filter).AnyAsync();
+            return result;
+        }
+
+        public async Task<bool> TokenExists2Async(string token)
+        {
+            var filter = Builders<T>.Filter.Eq("VerificationToken", token);
+            var result = await _collection.Find(filter).AnyAsync();
+            return result;
+        }
+
+        public async Task CreateAsync(T document) =>
+            await _collection.InsertOneAsync(document);
+
+        public async Task UpdateAsync(string id, T updatedDocument)
+        {
+            ObjectId.TryParse(id, out var objectId);
+            var filter = Builders<T>.Filter.Eq("_id", objectId);
+            await _collection.ReplaceOneAsync(filter, updatedDocument);
+        }
+
+        public async Task RemoveAsync(string id)
+        {
+            ObjectId.TryParse(id, out var objectId);
+            var filter = Builders<T>.Filter.Eq("_id", objectId);
+            await _collection.DeleteOneAsync(filter);
+        }
+
+        private string GetIdValue(T document)
+        {
+            var property = typeof(T).GetProperty(_idPropertyName);
+            return property?.GetValue(document)?.ToString() ?? string.Empty;
+        }
+    }
+}
