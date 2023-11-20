@@ -11,7 +11,14 @@ const Select = ({ width, type, borderRadius, onInputChange }) => {
                 <option>Vietnam</option>
               </>
             );
-    
+          case 'roles':
+            return (
+              <>
+                <option>Customer</option>
+                <option>Employee</option>
+                <option>Admin</option>
+              </>
+            )
           default:
             return null;
         }

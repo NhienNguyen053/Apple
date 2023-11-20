@@ -21,7 +21,7 @@ namespace AppleApi.Controllers
             await _service.GetAsync();
 
         [HttpGet("{value}")]
-        public async Task<ActionResult<T>> Get(string value, EnumTypeGet type)
+        public async Task<ActionResult<object>> Get(string value, EnumTypeGet type)
         {
             if (type == EnumTypeGet.Id)
             {
@@ -34,20 +34,20 @@ namespace AppleApi.Controllers
             }
             else if (type == EnumTypeGet.Email)
             {
-                var item = await _service.GetByEmailAsync(value);
+                var item = await _service.GetUserByAsync("Email", value);
                 if (item == null)
                 {
                     return NotFound();
                 }
-                return item;
+                return new UserReturn{ VerifiedAt = item.VerifiedAt};
             }
             else if (type == EnumTypeGet.PhoneNumber)
             {
-                var item = await _service.GetByPhoneAsync(value);
+                var item = await _service.GetUserByAsync("PhoneNumber", value);
                 if(item == null){
                     return NotFound();
                 }
-                return item;
+                return new UserReturn{ VerifiedAt = item.VerifiedAt};
             }
             else
             {

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Qs3Xfas+SGke1vy8hf1jaY2hCi6lu5MGEwAmV6xx3HvIJfMkIilaAHHldApivXbab29QBA4zI3c/hlCsACZJJQ==",
+  "dgSpecHash": "26ThYzThVI224eXaevZG+/REWJaN0wrQtA8ZBauL92rcYsG778CcntuvObvsbGyGF/DGsfDInwNdv3npzGazqQ==",
   "success": true,
-  "projectFilePath": "D:\\Study\\Semester 3\\Apple\\webapi\\webapi.csproj",
+  "projectFilePath": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\webapi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nhien\\.nuget\\packages\\awssdk.core\\3.7.100.14\\awssdk.core.3.7.100.14.nupkg.sha512",
     "C:\\Users\\nhien\\.nuget\\packages\\awssdk.securitytoken\\3.7.100.14\\awssdk.securitytoken.3.7.100.14.nupkg.sha512",

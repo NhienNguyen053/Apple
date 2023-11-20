@@ -3,7 +3,7 @@ import Navbar from '../Components/Navbar';
 import '../style.css';
 import Input from '../Components/Input';
 import Footer from '../Components/Footer';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [inputValue, setInputValue] = useState('');
@@ -13,6 +13,7 @@ const SignIn = () => {
   const [verify, setVerify] = useState(false);
   const [password, setPassword] = useState('');
   const [isChecked, setChecked] = useState(false);
+  const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
     setChecked(!isChecked);
@@ -112,11 +113,11 @@ const SignIn = () => {
           expirationDate.setDate(expirationDate.getDate() + 1);      
           var expirationDateString = expirationDate.toUTCString();      
           document.cookie = `jwtToken=${data.token}; expires=${expirationDateString}; path=/`;      
-          window.location.href = '/';
+          navigate('/')
           setError2('');
         }else{
           document.cookie = `jwtToken=${data.token}; expires=${expirationDateString}; path=/`;      
-          window.location.href = '/';
+          navigate('/');
           setError2('');
         }
       }

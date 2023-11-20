@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-control-regex */
+import React, { useState } from 'react';
 import Navbar from '../Components/Navbar';
 import '../style.css';
 import Input from '../Components/Input';
 import Footer from '../Components/Footer';
 import Captcha from '../Components/Captcha';
-import DigitInput from '../Components/DigitInput';
-import { Link } from "react-router-dom";
+import Button from '../Components/Button';
+import { Link, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
-  const [captcha, setCaptcha] = useState('false');
+  const [captcha, setCaptcha] = useState(false);
   const [email, setEmail] = useState('');
-  const [emailError, setemailError] =useState('');
+  const [emailError, setemailError] = useState('');
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleEmailChange = (e) => {
     setemailError('');
@@ -18,9 +21,12 @@ const ResetPassword = () => {
   }
   
   const handleReset = async () => {
-    var count = 0;
+    setLoading(true);
+    var count = -1;
     const regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
-    const regex2 = /\d+/;
+    const regex2 = /^\d+$/;
+    const regex3 = /^\+\d+$/;
+
     if(regex.test(email)){
       const response = await fetch(`https://localhost:7061/api/users/${email}?type=${1}`);
       const data = await response.json();
@@ -32,11 +38,13 @@ const ResetPassword = () => {
         setemailError("This Apple ID doesn't exist");
       }
     }else if(regex2.test(email)){
+      setemailError('Please enter phone number with your international dialing code');
+    }else if(regex3.test(email)){
       const response = await fetch(`https://localhost:7061/api/users/${email}?type=${2}`);
       const data = await response.json();
       if (data.status !== 404) {
         setemailError('');
-        count++;
+        count = count + 2;
       }
       else{
         setemailError("This phone number isn't linked to any Apple ID");
@@ -44,22 +52,39 @@ const ResetPassword = () => {
     }else{
       setemailError('Enter a valid email address or phone number');
     }
-    if(captcha === 'false'){
-      setCaptcha('false2');
-    }else if(captcha === 'false2'){
-      setCaptcha('false');
-    }else if(captcha === 'true'){
+    if(captcha === true){
       count++;
     }
-    if(count === 2){
-    }else{}
+    if(count === 1){
+      await fetch(`https://localhost:7061/api/users/sendemailotp?receiveEmail=${email}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setLoading(false);
+    }
+    else if(count === 2){
+      const encodedPhoneNumber = encodeURIComponent(email);
+      await fetch(`https://localhost:7061/api/Users/send-SMS?phone=${encodedPhoneNumber}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setLoading(false);
+    }
+    else{
+      setLoading(false);
+    }
+    navigate('/otp', {state: {email: email, type: count}});
   };
   return (
     <>
       <Navbar darkmode={false} />
       <div style={{width: '100%', borderBottom: '0.5px solid rgb(201, 201, 201)', marginTop: '50px'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', width: '67%', margin: 'auto'}}>
-                <p style={{color: 'black', fontSize: '25px', fontFamily: 'SF-Pro-Display-Medium', margin: '10px 0'}}>Apple ID</p>
+          <div className='container6'>
+                <p className='p6'>Apple ID</p>
                 <Link to='/signin' className='a2'>Sign In</Link>
           </div>
       </div>
@@ -69,7 +94,15 @@ const ResetPassword = () => {
             <p style={{color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Light', marginTop: '0'}}>Enter your email address or phone number that you use with your account to<br />continue.</p>
             <Input placeholder={'Email or phone number'} isVisible={true} margin={'0'} borderRadius={'5px'} width={'379px'} onInputChange={handleEmailChange} error={emailError}/>
             <Captcha data={setCaptcha} data2={captcha} margin={'15px 0 0 0'}/>
-            <button className='btn2' style={{margin: '20px 0'}} onClick={handleReset}>Continue</button>
+            {loading ? (
+              <div class="lds-spinner" style={{margin: '0'}}>
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
+              </div>
+            ) : (
+              <Button text={'Continue'} onclick={handleReset} margin={'20px 0'}/>
+            )}
         </div>
         <div style={{width: '40%'}}>
             <div style={{display: 'flex', margin: '50px auto', justifyContent: 'center'}}>
@@ -78,7 +111,6 @@ const ResetPassword = () => {
             </div>
         </div>
       </div>
-      <DigitInput />
       <Footer />
     </>
   );

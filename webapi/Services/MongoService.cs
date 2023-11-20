@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;
+using Twilio.Jwt.AccessToken;
 
 namespace Apple.Services
 {
@@ -28,46 +29,33 @@ namespace Apple.Services
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<T?> GetByEmailAsync(string email)
+        public async Task<User?> GetUserByAsync(string field, string search)
         {
-            var filter = Builders<T>.Filter.Eq("Email", email);
-            return await _collection.Find(filter).FirstOrDefaultAsync();
+            var filter = Builders<T>.Filter.Eq(field, search);
+            var result = await _collection.Find(filter).FirstOrDefaultAsync();
+            return result as User;
         }
-
-        public async Task<T?> GetByPhoneAsync(string username)
+        public async Task<Category?> GetCategoryByIdAsync(string field, string id)
         {
-            var filter = Builders<T>.Filter.Eq("PhoneNumber", username);
-            return await _collection.Find(filter).FirstOrDefaultAsync();
-        }
-
-        public async Task<T?> GetByTokenAsync(string token)
-        {
-            var filter = Builders<T>.Filter.Eq("PasswordResetToken", token);
-            return await _collection.Find(filter).FirstOrDefaultAsync();
-        }
-
-        public async Task<T?> GetByVerifyTokenAsync(string token)
-        {
-            var filter = Builders<T>.Filter.Eq("VerificationToken", token);
-            return await _collection.Find(filter).FirstOrDefaultAsync();
+            ObjectId.TryParse(id, out var objectId);
+            var filter = Builders<T>.Filter.Eq(field, objectId);
+            var result = await _collection.Find(filter).FirstOrDefaultAsync(); 
+            return result as Category;
         }
 
         public async Task<bool> TokenExistsAsync(string token)
         {
-            var filter = Builders<T>.Filter.Eq("PasswordResetToken", token);
-            var result = await _collection.Find(filter).AnyAsync();
-            return result;
-        }
-
-        public async Task<bool> TokenExists2Async(string token)
-        {
             var filter = Builders<T>.Filter.Eq("VerificationToken", token);
             var result = await _collection.Find(filter).AnyAsync();
             return result;
         }
 
-        public async Task CreateAsync(T document) =>
+        public async Task<T> CreateAsync(T document)
+        {
             await _collection.InsertOneAsync(document);
+            return document;
+        }
+
 
         public async Task UpdateAsync(string id, T updatedDocument)
         {
@@ -81,12 +69,6 @@ namespace Apple.Services
             ObjectId.TryParse(id, out var objectId);
             var filter = Builders<T>.Filter.Eq("_id", objectId);
             await _collection.DeleteOneAsync(filter);
-        }
-
-        private string GetIdValue(T document)
-        {
-            var property = typeof(T).GetProperty(_idPropertyName);
-            return property?.GetValue(document)?.ToString() ?? string.Empty;
         }
     }
 }

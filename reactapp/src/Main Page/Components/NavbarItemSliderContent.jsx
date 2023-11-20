@@ -7,13 +7,17 @@ import jwt_decode from 'jwt-decode';
 
 function NavbarItemSliderContent({ data }) {
     let navigate = useNavigate(); 
-    const routeChange = () =>{ 
+    const routeChange = () => {
         let path = `/signin`; 
         navigate(path);
     }
-    const routeChange2 = () =>{
+    const routeChange2 = () => {
         Cookies.remove('jwtToken');
         let path = `/`; 
+        navigate(path);
+    }
+    const routeChange3 = () => {
+        let path = '/dashboard';
         navigate(path);
     }
     const jwtToken = Cookies.get('jwtToken');
@@ -41,6 +45,16 @@ function NavbarItemSliderContent({ data }) {
                         </p>
                     )}
                     <p style={{ fontSize: '13px', marginBottom: '10px' }}>My Profile</p>
+                    {decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? (
+                        <div className="hoverable-div" onClick={routeChange3}>
+                            <i className="fa-solid fa-chart-simple"></i>
+                            <p>Dashboard</p>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Empty block */}
+                        </>
+                    )}
                     <div className="hoverable-div">
                         <i className="fa-solid fa-box-open"></i>
                         <p>Orders</p>
@@ -56,7 +70,7 @@ function NavbarItemSliderContent({ data }) {
                     {jwtToken ? (
                         <div className="hoverable-div" onClick={routeChange2}>
                             <i className="fa-solid fa-user"></i>
-                            <p>Sign Out {decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']}</p>
+                            <p>Sign Out {decodedToken['FirstName']}</p>
                         </div>
                     ) : (
                         <div className="hoverable-div" onClick={routeChange}>

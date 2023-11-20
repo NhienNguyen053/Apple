@@ -1,7 +1,7 @@
 import Input from './Input';
 import React, { useState, useEffect, useRef } from 'react';
 
-const Captcha = ({ data, data2, width, margin }) => {
+const Captcha = ({ data, width, margin }) => {
   const generateRandomString = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -15,11 +15,7 @@ const Captcha = ({ data, data2, width, margin }) => {
   const canvasRef = useRef(null);
   const [userInput, setUserInput] = useState('');
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    handleSubmit();
-  }, [data2]);
+  const [error, setError] = useState('Captcha is invalid!');
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,20 +35,19 @@ const Captcha = ({ data, data2, width, margin }) => {
   };
 
   const handleInputChange = (event) => {
-    setUserInput(event.target.value);
-    setError(''); 
-  };
-
-  const handleSubmit = () => {
-    const isInputValid = userInput === captchaText;
+    const inputText = event.target.value;
+    setUserInput(inputText);
+    const isInputValid = inputText === captchaText;
     setIsCaptchaValid(isInputValid);
     if (!isInputValid) {
-      setError('Please enter correct captcha');
-      data('false');
-    }else{
-      data('true');
+        setError('Captcha is invalid!')
+        data(false);
+    } else {
+        setError('Captcha is valid!')
+        data(true);
     }
   };
+
   
   const handleReset = () => {
     const newRandomString = generateRandomString(5);
@@ -67,9 +62,7 @@ const Captcha = ({ data, data2, width, margin }) => {
       <div style={{width: '100%', marginRight: '30px'}}>
           <Input placeholder={'Type the characters in the image'} isVisible={true} width={width ? width : '100%'} margin={margin} borderRadius={'5px'} onInputChange={handleInputChange}/>
           <button className='captcha' onClick={handleReset}>New Code</button>
-          <button className='captcha' onClick={handleSubmit}>Submit</button>
-          {error && <p style={{ color: 'red', margin: '5px 0 0 5px' }}>{error}</p>}
-          {isCaptchaValid && <p style={{ color: 'green', margin: '5px 0 0 5px' }}>Captcha is valid!</p>}
+          {error && <p style={{ color: isCaptchaValid ? 'lightgreen' : 'red', margin: '5px 0 0 5px' }}>{error}</p>}
       </div>
       <br />
       <canvas ref={canvasRef} width={150} height={56} style={{ border: '1px solid #000', height: '56px', margin: margin }}></canvas>

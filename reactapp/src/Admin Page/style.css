@@ -1,0 +1,14 @@
+.MuiOutlinedInput-notchedOutline {
+    border-color: black !important;
+}
+
+.MuiFilledInput-root {
+    border-bottom: 1px solid black !important;
+}
+
+.MuiInput-root {
+    border-bottom: 1px solid black !important;
+}
+.css-v4u5dn-MuiInputBase-root-MuiInput-root:after{
+    border-bottom: 1px solid black !important;
+}

@@ -5,7 +5,8 @@ import Input from '../Components/Input';
 import Footer from '../Components/Footer';
 import Select from '../Components/Select';
 import Captcha from '../Components/Captcha';
-import { Link } from "react-router-dom";
+import Button from '../Components/Button';
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [fn, setfn] = useState('');
@@ -24,6 +25,8 @@ const SignUp = () => {
   const [confirmError, setconfirmError] = useState('');
   const [captcha, setCaptcha] = useState(false);
   const [country, setCountry] = useState('United States');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handelFirstNameChange = (e) => {
     setfnError('');
@@ -76,6 +79,7 @@ const SignUp = () => {
   
 
   const handleRegister = async () => {
+    setLoading(true);
     var count = 0;
     if (fn.trim() === '') {
       setfnError('Enter a first name');
@@ -127,6 +131,8 @@ const SignUp = () => {
     }
     if(captcha === true){
       count++;
+    }else{
+      setCaptcha(true);
     }
     if(count === 7){
       await fetch('https://localhost:7061/api/Users/register', {
@@ -143,17 +149,20 @@ const SignUp = () => {
           Password: password
         }),
       });
-      window.location.href = '/signin';
-    }else{}
+      setLoading(false);
+      navigate('/signin');
+    }else{
+      setLoading(false);
+    }
   };
   return (
     <>
       <Navbar darkmode={true} />
-      <div style={{width: '100%', borderBottom: '0.5px solid rgb(201, 201, 201)', marginTop: '50px'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', width: '67%', margin: 'auto'}}>
-                <p style={{color: 'black', fontSize: '25px', fontFamily: 'SF-Pro-Display-Medium', margin: '10px 0'}}>Apple ID</p>
-                <Link to='/signin' className='a2'>Sign In</Link>
-          </div>
+      <div className='container5'>
+        <div className='container6'>
+          <p className='p6'>Apple ID</p>
+          <Link to='/signin' className='a2'>Sign In</Link>
+        </div>
       </div>
       <div className='container display' style={{marginTop: '25px'}}>
         <p className='p2'>Create your Apple ID</p>
@@ -202,7 +211,15 @@ const SignUp = () => {
           <div style={{borderBottom: '0.5px solid rgb(201, 201, 201)', padding: '25px 0'}}>
             <Captcha data={setCaptcha} data2={captcha}/>
           </div>
-          <button className='btn2' onClick={handleRegister}>Continue</button>
+          {loading ? (
+            <div class="lds-spinner">
+              <div></div><div></div><div></div><div></div>
+              <div></div><div></div><div></div><div></div>
+              <div></div><div></div><div></div><div></div>
+            </div>
+          ) : (
+            <Button text={'Continue'} onclick={handleRegister}/>
+          )}
         </div>
       </div>
       <Footer />

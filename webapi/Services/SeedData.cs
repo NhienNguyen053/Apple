@@ -16,7 +16,7 @@ namespace Apple.Services
                 var userService = scope.ServiceProvider.GetRequiredService<UserService>();
 
                 var users = await userService.GetAsync();
-                CreatePasswordHash("123456789", out byte[] passwordHash, out byte[] passwordSalt); // account password
+                CreatePasswordHash("123456789", out byte[] passwordHash, out byte[] passwordSalt);
                 if (users == null || users.Count == 0)
                 {
                     var user = new User
@@ -25,15 +25,15 @@ namespace Apple.Services
                         LastName = "Admin",
                         Country = "Vietnam",
                         Birthday = DateTime.MinValue,
-                        Email = "admin123@gmail.com",
-                        PhoneNumber = "0956473848",
+                        Email = "nhiennguyen3999@gmail.com",
+                        PhoneNumber = "+84967835585",
                         PasswordHash = passwordHash,
                         PasswordSalt = passwordSalt,
-                        VerificationToken = null!,
-                        VerificationTokenExpires = DateTime.MinValue,
+                        VerificationToken = null,
+                        VerificationTokenExpires = null,
                         VerifiedAt = DateTime.Now,
-                        PasswordResetToken = null!,
-                        ResetTokenExpires = DateTime.Now,
+                        PasswordResetToken = null,
+                        ResetTokenExpires = null,
                         Role = "Admin"
                     };
 
