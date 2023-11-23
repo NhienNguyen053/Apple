@@ -15,7 +15,6 @@ public class CategoriesController : BaseController<Category>
 
     protected override string GetId(Category item) => item?.Id ?? string.Empty;
 
-    [Authorize]
     [HttpGet("getAllCategories")]
     public async Task<IActionResult> GetAllCategories()
     {

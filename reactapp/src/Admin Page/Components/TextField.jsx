@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TextField2 from '@mui/material/TextField';
 
 const TextField = ({ name }) => {
-    const [active, setActive] = useState(true);
+    const [active, setActive] = useState(false);
     const [inputValue, setInputValue] = useState(name);
 
     const handleInputChange = (event) => {
@@ -27,9 +27,9 @@ const TextField = ({ name }) => {
             )}
             {active ? (
                 <>
-                    <div>
-                        <i className="fa-solid fa-check" style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }}></i>
-                        <i className="fa-solid fa-x" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={handleCancelClick}></i>
+                    <div style={{ display: 'flex' }}>
+                        <i title="Confirm" className="fa-solid fa-check" style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }}></i>
+                        <i title="Cancel" className="fa-solid fa-x" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={handleCancelClick}></i>
                     </div>
                 </>
             ) : (

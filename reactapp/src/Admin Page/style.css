@@ -6,6 +6,10 @@
     border-bottom: 1px solid black !important;
 }
 
+.MuiInputBase-root {
+    margin-right: 10px !important;
+}
+
 .MuiInput-root {
     border-bottom: 1px solid black !important;
 }

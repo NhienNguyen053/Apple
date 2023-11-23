@@ -39,58 +39,21 @@ namespace AppleApi.Controllers
                 {
                     return NotFound();
                 }
-                return new UserReturn{ VerifiedAt = item.VerifiedAt};
+                return new UserReturn { VerifiedAt = item.VerifiedAt };
             }
             else if (type == EnumTypeGet.PhoneNumber)
             {
                 var item = await _service.GetUserByAsync("PhoneNumber", value);
-                if(item == null){
+                if (item == null)
+                {
                     return NotFound();
                 }
-                return new UserReturn{ VerifiedAt = item.VerifiedAt};
+                return new UserReturn { VerifiedAt = item.VerifiedAt };
             }
             else
             {
                 return BadRequest("Invalid type parameter");
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post(T newItem)
-        {
-            await _service.CreateAsync(newItem);
-
-            return CreatedAtAction(nameof(Get), new { id = GetId(newItem) }, newItem);
-        }
-
-        [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, T updatedItem)
-        {
-            var item = await _service.GetAsync(id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            await _service.UpdateAsync(id, updatedItem);
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var item = await _service.GetAsync(id);
-
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            await _service.RemoveAsync(id);
-
-            return NoContent();
         }
 
         protected abstract string GetId(T item);

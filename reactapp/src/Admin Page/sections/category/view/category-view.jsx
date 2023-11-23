@@ -141,7 +141,7 @@ export default function CategoryPage() {
                             </div>
                         </div>
                         <div style={{display: 'flex'}}>
-                            <div style={{width: '80%'}}>
+                            <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
                                     <TextField name={child.categoryName } />
                                 ))}
