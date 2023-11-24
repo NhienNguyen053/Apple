@@ -16,3 +16,10 @@
 .css-v4u5dn-MuiInputBase-root-MuiInput-root:after{
     border-bottom: 1px solid black !important;
 }
+.css-v4u5dn-MuiInputBase-root-MuiInput-root{
+    margin-bottom: 8px
+}
+.css-1nrby9y-MuiTypography-root-MuiLink-root {
+    display: flex !important;
+    justify-content: center;
+}

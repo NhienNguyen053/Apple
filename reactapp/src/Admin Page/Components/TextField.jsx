@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import TextField2 from '@mui/material/TextField';
 
-const TextField = ({ name }) => {
+const TextField = ({ id, name, parentId, onClick }) => {
     const [active, setActive] = useState(false);
+    const original = name;
     const [inputValue, setInputValue] = useState(name);
-
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
     };
@@ -15,11 +15,11 @@ const TextField = ({ name }) => {
 
     const handleCancelClick = () => {
         setActive(false);
-        setInputValue(name);
+        setInputValue(original);
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+        <div style={{ display: 'flex', width: '100%', marginBottom: '8px' }}>
             {active ? (
                 <TextField2 id="standard-basic" value={inputValue} variant="standard" onChange={handleInputChange}/>
             ) : (
@@ -28,7 +28,7 @@ const TextField = ({ name }) => {
             {active ? (
                 <>
                     <div style={{ display: 'flex' }}>
-                        <i title="Confirm" className="fa-solid fa-check" style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }}></i>
+                        <i title="Confirm" className="fa-solid fa-check" style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => { onClick(id, inputValue, parentId); setActive(false); }}></i>
                         <i title="Cancel" className="fa-solid fa-x" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={handleCancelClick}></i>
                     </div>
                 </>

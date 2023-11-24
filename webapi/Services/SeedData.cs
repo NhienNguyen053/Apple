@@ -1,28 +1,27 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Apple.Services;
+using AppleApi.Services;
 using AppleApi.Models;
 using System.Security.Cryptography;
+using AppleApi.Interfaces;
 
-namespace Apple.Services
+namespace AppleApi.Services
 {
     public static class SeedData
     {
-        public static async Task SeedDatabaseIfEmpty(IServiceProvider serviceProvider)
+        public static async Task SeedDatabaseIfEmpty(IServiceProvider serviceProvider, IUserService userService)
         {
             using (var scope = serviceProvider.CreateScope())
             {
-                var userService = scope.ServiceProvider.GetRequiredService<UserService>();
-
-                var users = await userService.GetAsync();
+                var users = await userService.GetAll();
                 CreatePasswordHash("123456789", out byte[] passwordHash, out byte[] passwordSalt);
                 if (users == null || users.Count == 0)
                 {
                     var user = new User
                     {
-                        FirstName = "Admin",
-                        LastName = "Admin",
+                        FirstName = "Nhien",
+                        LastName = "Nguyen",
                         Country = "Vietnam",
                         Birthday = DateTime.MinValue,
                         Email = "nhiennguyen3999@gmail.com",
@@ -37,10 +36,11 @@ namespace Apple.Services
                         Role = "Admin"
                     };
 
-                    await userService.CreateAsync(user);
+                    await userService.InsertOneAsync(user);
                 }
             }
         }
+
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())

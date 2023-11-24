@@ -1,5 +1,3 @@
-import SimpleBar from 'simplebar-react';
-
 import { alpha, styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
@@ -10,17 +8,18 @@ export const StyledRootScrollbar = styled('div')(() => ({
   overflow: 'hidden',
 }));
 
-export const StyledScrollbar = styled(SimpleBar)(({ theme }) => ({
-  maxHeight: '100%',
-  '& .simplebar-scrollbar': {
-    '&:before': {
-      backgroundColor: alpha(theme.palette.grey[600], 0.48),
+export const StyledScrollbar = styled('div')(({ theme }) => ({
+    maxHeight: '100%',
+    overflowY: 'auto',
+    '&::-webkit-scrollbar': {
+        width: '8px',
+        height: '8px'
     },
-    '&.simplebar-visible:before': {
-      opacity: 1,
+    '&::-webkit-scrollbar-thumb': {
+        backgroundColor: alpha(theme.palette.grey[600], 0.48),
+        borderRadius: '8px',
     },
-  },
-  '& .simplebar-mask': {
-    zIndex: 'inherit',
-  },
+    '&::-webkit-scrollbar-track': {
+        backgroundColor: 'transparent',
+    },
 }));

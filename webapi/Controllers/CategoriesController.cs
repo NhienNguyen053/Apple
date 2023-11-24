@@ -2,23 +2,25 @@ using AppleApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using AppleApi.Interfaces;
 
 namespace AppleApi.Controllers;
 
 [Route("api/[controller]")]
-public class CategoriesController : BaseController<Category>
+public class CategoriesController : ControllerBase
 {
-    public CategoriesController(IOptions<AppleDatabaseSettings> settings)
-        : base(settings, "Category")
+    private readonly ICategoryService categoryService;
+
+    public CategoriesController(ICategoryService categoryService)
     {
+        this.categoryService = categoryService;
     }
 
-    protected override string GetId(Category item) => item?.Id ?? string.Empty;
 
     [HttpGet("getAllCategories")]
     public async Task<IActionResult> GetAllCategories()
     {
-        var categories = await _service.GetAsync();
+        List<Category> categories = await categoryService.GetAll();
         if (categories == null)
         {
             return Ok();
@@ -27,7 +29,7 @@ public class CategoriesController : BaseController<Category>
         return Ok(dashboardCategories);
     }
 
-    [Authorize(Roles = "Admin")]
+    /*[Authorize(Roles = "Admin")]
     [HttpPost("createCategory")]
     public async Task<IActionResult> CreateCategory(Category category)
     {
@@ -67,7 +69,7 @@ public class CategoriesController : BaseController<Category>
             CategoryName = category.CategoryName,
             Description = category.Description,
             ImageURL = category.ImageURL,
-            ParentCategoryId = null
+            ParentCategoryId = category.ParentCategoryId
         };
         await _service.UpdateAsync(updateCategory.Id!, updateCategory);
         return Ok("Updated successfully");
@@ -84,11 +86,15 @@ public class CategoriesController : BaseController<Category>
         var childCategory = await _service.GetCategoryByIdAsync("ParentCategoryId", id);
         if (childCategory != null)
         {
-            return BadRequest("Can't delete category that has subcategories");
+            return BadRequest("Can't delete category that has subcategory!");
         }
         await _service.RemoveAsync(id);
-        return Ok("Delete successfully");
-    }
+        if(category.ImageURL == null)
+        {
+            return Ok("No Image!");
+        }
+        return Ok("Delete successfully!");
+    }*/
     private List<DashboardCategory> ConvertToDashboardCategories(List<Category> categories)
     {
         var parentCategories = categories.Where(c => c.ParentCategoryId == null).ToList();

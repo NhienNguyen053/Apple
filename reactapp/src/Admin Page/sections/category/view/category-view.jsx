@@ -19,8 +19,10 @@ export default function CategoryPage() {
     const jwtToken = Cookies.get('jwtToken');
     const [categories, setCategories] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalVisible2, setModalVisible2] = useState(false);
     const [deleteCategory, setDeleteCategory] = useState('');
     const [deleteId, setDeleteId] = useState('');
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -68,16 +70,24 @@ export default function CategoryPage() {
             });
             const data = await response.text();
             if (data === "Delete successfully!") {
+                const existingImage = ref(storage, `images/CategoryImages/category_${deleteId}`);
+                deleteObject(existingImage);
+                const newCategories = categories.filter(category => category.id !== deleteId);
+                setCategories(newCategories);
                 setLoading(false);
                 setModalVisible(!isModalVisible);
-            } else {
+            } else if (data === "No Image!") {
+                const newCategories = categories.filter(category => category.id !== deleteId);
+                setCategories(newCategories);
                 setLoading(false);
                 setModalVisible(!isModalVisible);
             }
-            const existingImage = ref(storage, `images/CategoryImages/category_${deleteId}`);
-            await deleteObject(existingImage);
-            const newCategories = categories.filter(category => category.id !== deleteId);
-            setCategories(newCategories);
+            else {
+                setLoading(false);
+                setModalVisible(!isModalVisible);
+                setModalVisible2(true);
+                setError(data);
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -113,11 +123,32 @@ export default function CategoryPage() {
         }
     }
 
+    const updateSubCategory = async (id, name, parentId) => {
+        fetch('https://localhost:7061/api/Categories/updateCategory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({
+                Id: id,
+                CategoryName: name,
+                Description: null,
+                ImageURL: null,
+                ParentCategoryId: parentId
+            }),
+        });
+    }
+
     const toggleModal = (param, param1) => {
         setDeleteCategory(param);
         setDeleteId(param1);
         setModalVisible(!isModalVisible);
     };
+
+    const toggleModal2 = () => {
+        setModalVisible2(!isModalVisible2);
+    }
 
     return (
         <Container>
@@ -129,6 +160,12 @@ export default function CategoryPage() {
                 </Button>
             </Stack>
             <div className="container7 display" style={{ flexWrap: 'wrap', padding: '15px 15px' }}>
+                {isModalVisible2 && (
+                    <div style={{ width: '95%', backgroundColor: 'rgb(255, 192, 203)', padding: '15px', borderRadius: '10px', margin: 'auto' }}>
+                        <span style={{ fontFamily: 'SF-Pro-Display-Medium', color: 'black' }}>{error}</span>
+                        <button style={{ background: 'transparent', border: 'none', fontSize: '18px', float: 'right', lineHeight: '1', cursor: 'pointer' }} onClick={toggleModal2}>x</button>
+                    </div>
+                )}
                 {categories.map((category) => (
                     <>
                     <div className="container7" style={{ width: '41%', margin: '10px 15px', padding: '0 25px' }}>
@@ -143,7 +180,7 @@ export default function CategoryPage() {
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <TextField name={child.categoryName } />
+                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} />
                                 ))}
                             </div>
                             <div style={{ width: '100px', height: '100px' }}>

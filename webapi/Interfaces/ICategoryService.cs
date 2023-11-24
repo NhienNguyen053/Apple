@@ -1,0 +1,12 @@
+﻿using AppleApi.Models;
+using MongoDB.Bson;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AppleApi.Common;
+
+namespace AppleApi.Interfaces
+{
+    public interface ICategoryService : ICommonRepository<Category>
+    {
+    }
+}

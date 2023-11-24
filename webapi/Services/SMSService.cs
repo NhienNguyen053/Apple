@@ -2,7 +2,7 @@ using System;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace Apple.Services
+namespace AppleApi.Services
 {
     public class SMSService
     {

@@ -42,6 +42,7 @@ export default function Nav({ openNav, onCloseNav }) {
           height: 1,
           display: 'flex',
           flexDirection: 'column',
+          justifyContent: 'center'
         },
       }}
     >

@@ -11,24 +11,24 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Apple.Services;
+using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using AppleApi.Interfaces;
 
 namespace AppleApi.Controllers 
 {
     [Route("api/[controller]")]
-    public class UsersController : BaseController<User>
+    public class UsersController : ControllerBase
     {
-        private readonly IConfiguration configuration;
-        public UsersController(IOptions<AppleDatabaseSettings> settings, IConfiguration configuration)
-            : base(settings, "User")
+        private readonly IUserService userService;
+
+        public UsersController(IUserService userService)
         {
-            this.configuration = configuration;
+            this.userService = userService;
         }
 
-        protected override string GetId(User item) => item?.Id ?? string.Empty;
 
-        [Authorize(Roles = "Admin")]
+        /*[Authorize(Roles = "Admin")]
         [HttpPost("getall")]
         public async Task<IActionResult> GetAll()
         {
@@ -350,6 +350,6 @@ namespace AppleApi.Controllers
             string code = new(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
             return code;
-        }
+        }*/
     }
 }

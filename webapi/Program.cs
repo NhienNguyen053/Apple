@@ -1,9 +1,10 @@
-using Apple.Services;
+using AppleApi.Services;
 using AppleApi.Models;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AppleApi.Interfaces;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -26,9 +27,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
-builder.Services.AddSingleton<CategoryService>();
-builder.Services.AddSingleton<UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -69,6 +69,11 @@ app.UseSession();
 
 app.MapControllers();
 
-await SeedData.SeedDatabaseIfEmpty(app.Services);
+using (var scope = app.Services.CreateScope())
+{
+    var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+    await SeedData.SeedDatabaseIfEmpty(scope.ServiceProvider, userService);
+}
+
 
 app.Run();
