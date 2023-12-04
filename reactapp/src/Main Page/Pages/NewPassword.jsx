@@ -9,7 +9,6 @@ const NewPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();  
   const email = location.state?.email;
-  const type = location.state?.type;
   const [password, setPassword] = useState('');
   const [first, setFirst] = useState(false);
   const [second, setSecond] = useState(false);
@@ -56,7 +55,8 @@ const NewPassword = () => {
   const updatepassword = async () => {
       if (first === false || second === false || third === false) { }
       else {
-          const response = await fetch(`https://localhost:7061/api/Users/updatepassword?emailorphone=${email}&newPassword=${password}&type=${type}`, {
+          const encodeEmailorPhone = encodeURIComponent(email)
+          const response = await fetch(`https://localhost:7061/api/Users/updatePassword?emailorphone=${encodeEmailorPhone}&newPassword=${password}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',

@@ -29,39 +29,24 @@ public class CategoriesController : ControllerBase
         return Ok(dashboardCategories);
     }
 
-    /*[Authorize(Roles = "Admin")]
-    [HttpPost("createCategory")]
-    public async Task<IActionResult> CreateCategory(Category category)
-    {
-        var newCategory = new Category
-        {
-            CategoryName = category.CategoryName,
-            Description = category.Description,
-            ImageURL = category.ImageURL,
-            ParentCategoryId = null
-        };
-        Category newlyAdded = await _service.CreateAsync(newCategory);
-        return Ok(newlyAdded.Id);
-    }
-
     [Authorize(Roles = "Admin")]
-    [HttpPost("createSubCategory")]
-    public async Task<IActionResult> CreateSubCategory(Category category)
+    [HttpPost("createCategory")]
+    public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {
         var newCategory = new Category
         {
             CategoryName = category.CategoryName,
             Description = category.Description,
             ImageURL = category.ImageURL,
-            ParentCategoryId = category.Id
+            ParentCategoryId = category.ParentCategoryId
         };
-        Category newlyAdded = await _service.CreateAsync(newCategory);
+        Category newlyAdded = await categoryService.InsertOneAsync(newCategory);
         return Ok(newlyAdded);
     }
-
+    
     [Authorize(Roles = "Admin")]
     [HttpPost("updateCategory")]
-    public async Task<IActionResult> UpdateCategory(Category category)
+    public async Task<IActionResult> UpdateCategory([FromBody] Category category)
     {
         var updateCategory = new Category
         {
@@ -71,30 +56,31 @@ public class CategoriesController : ControllerBase
             ImageURL = category.ImageURL,
             ParentCategoryId = category.ParentCategoryId
         };
-        await _service.UpdateAsync(updateCategory.Id!, updateCategory);
+        await categoryService.UpdateOneAsync(updateCategory.Id!, updateCategory);
         return Ok("Updated successfully");
     }
+    
     [Authorize(Roles = "Admin")]
     [HttpDelete("deleteCategory")]
     public async Task<IActionResult> DeleteCategory(string id)
     {
-        var category = await _service.GetAsync(id);
+        var category = await categoryService.FindByIdAsync(id);
         if(category == null)
         {
             return BadRequest("Couldn't find category!");
         }
-        var childCategory = await _service.GetCategoryByIdAsync("ParentCategoryId", id);
+        var childCategory = await categoryService.FindByFieldAsync("ParentCategoryId", id);
         if (childCategory != null)
         {
             return BadRequest("Can't delete category that has subcategory!");
         }
-        await _service.RemoveAsync(id);
+        await categoryService.DeleteOneAsync(id);
         if(category.ImageURL == null)
         {
             return Ok("No Image!");
         }
         return Ok("Delete successfully!");
-    }*/
+    }
     private List<DashboardCategory> ConvertToDashboardCategories(List<Category> categories)
     {
         var parentCategories = categories.Where(c => c.ParentCategoryId == null).ToList();

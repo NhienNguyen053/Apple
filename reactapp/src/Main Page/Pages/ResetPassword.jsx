@@ -21,41 +21,49 @@ const ResetPassword = () => {
   }
   
   const handleReset = async () => {
-    setLoading(true);
-    var count = -1;
+    var count = 0;
     const regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     const regex2 = /^\d+$/;
     const regex3 = /^\+\d+$/;
 
-    if(regex.test(email)){
-      const response = await fetch(`https://localhost:7061/api/users/${email}?type=${1}`);
-      const data = await response.json();
-      if (data.status !== 404) {
+    if (regex.test(email)) {
+      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${email}`, {
+          method: 'POST',
+          headers: {
+              'Accept': '*/*',
+              'Content-Type': 'application/json',
+          },
+      });
+      if (response.status !== 204) {
         setemailError('');
         count++;
       }
       else{
-        setemailError("This Apple ID doesn't exist");
+        setemailError("This email address isn't linked to any Apple ID");
       }
-    }else if(regex2.test(email)){
+    } else if(regex2.test(email)){
       setemailError('Please enter phone number with your international dialing code');
-    }else if(regex3.test(email)){
-      const response = await fetch(`https://localhost:7061/api/users/${email}?type=${2}`);
-      const data = await response.json();
-      if (data.status !== 404) {
+    } else if(regex3.test(email)){
+      const encodeNumber = encodeURIComponent(email);
+      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${encodeNumber}`, {
+          method: 'POST',
+          headers: {
+              'Accept': '*/*',
+              'Content-Type': 'application/json',
+          },
+      });
+      if (response.status !== 204) {
         setemailError('');
         count = count + 2;
       }
       else{
         setemailError("This phone number isn't linked to any Apple ID");
       }
-    }else{
+    } else{
       setemailError('Enter a valid email address or phone number');
     }
-    if(captcha === true){
-      count++;
-    }
-    if(count === 1){
+    if(count === 1 && captcha === true){
+      setLoading(true);
       await fetch(`https://localhost:7061/api/users/sendemailotp?receiveEmail=${email}`, {
         method: 'POST',
         headers: {
@@ -63,21 +71,23 @@ const ResetPassword = () => {
         },
       });
       setLoading(false);
+      navigate('/otp', {state: {email: email, type: count}});
     }
-    else if(count === 2){
+    else if(count === 2 && captcha === true){
+      setLoading(true);
       const encodedPhoneNumber = encodeURIComponent(email);
-      await fetch(`https://localhost:7061/api/Users/send-SMS?phone=${encodedPhoneNumber}`, {
+      await fetch(`https://localhost:7061/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       });
       setLoading(false);
+      navigate('/otp', {state: {email: email, type: count}});
     }
     else{
       setLoading(false);
     }
-    navigate('/otp', {state: {email: email, type: count}});
   };
   return (
     <>

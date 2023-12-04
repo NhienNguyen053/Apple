@@ -19,6 +19,7 @@ import CreateUser from './Admin Page/Pages/createUser';
 import CategoryPage from './Admin Page/Pages/category';
 import CreateCategory from './Admin Page/Pages/createCategory';
 import EditCategory from './Admin Page/Pages/editCategory';
+import EditUser from './Admin Page/Pages/editUser';
 
 function App() {
     return (
@@ -70,6 +71,16 @@ function App() {
                 <AuthRoute>
                   <DashboardLayout>
                     <CreateUser />
+                  </DashboardLayout>
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/dashboard/users/editUser"
+              element={
+                <AuthRoute>
+                  <DashboardLayout>
+                    <EditUser />
                   </DashboardLayout>
                 </AuthRoute>
               }

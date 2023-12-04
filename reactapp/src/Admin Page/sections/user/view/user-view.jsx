@@ -41,8 +41,8 @@ export default function UserPage() {
   useEffect(() => {
       const fetchData = async () => {
           try {
-              const response = await fetch('https://localhost:7061/api/Users/getall', {
-                  method: 'POST',
+              const response = await fetch('https://localhost:7061/api/Users/getAllUsers', {
+                  method: 'GET',
                   headers: {
                       'Content-Type': 'application/json',
                       'Authorization': `Bearer ${jwtToken}`
@@ -57,6 +57,10 @@ export default function UserPage() {
               const apiUsers = await response.json();
               const dashboardUsers = apiUsers.map(apiUser => ({
                   id: apiUser.id,
+                  firstName: apiUser.firstName,
+                  lastName: apiUser.lastName,
+                  country: apiUser.country,
+                  birthday: apiUser.birthday,
                   name: `${apiUser.firstName} ${apiUser.lastName}`,
                   email: apiUser.email,
                   isVerified: apiUser.verifiedAt,
@@ -101,6 +105,14 @@ export default function UserPage() {
 
   const routeChange = () => {
       navigate('/dashboard/users/createUser');
+  }
+
+  const editUser = (id, fn, ln, country, birthday, role) => {
+      navigate('/dashboard/users/editUser', { state: { id: id, fn: fn, ln: ln, country: country, birthday: birthday, role: role } });
+  }
+
+  const deleteUser = (id, name) => {
+      
   }
 
   const notFound = !dataFiltered.length && !!filterName;
@@ -150,6 +162,8 @@ export default function UserPage() {
                       email={row.email}
                       phone={row.phone}
                       isVerified={row.isVerified}
+                      edit={() => {editUser(row.id, row.firstName, row.lastName, row.country, row.birthday, row.role)}}
+                      remove={() => {deleteUser(row.id, row.name)}}
                     />
                   ))}
 

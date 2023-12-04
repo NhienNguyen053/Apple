@@ -8,5 +8,6 @@ namespace AppleApi.Interfaces
 {
     public interface IUserService : ICommonRepository<User>
     {
+        Task<bool> TokenExistsAsync(string token);
     }
 }

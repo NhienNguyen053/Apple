@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Input from './Input';
 import React, { useState, useEffect, useRef } from 'react';
 
@@ -13,7 +14,7 @@ const Captcha = ({ data, width, margin }) => {
 
   const [captchaText, setCaptchaText] = useState(generateRandomString(5));
   const canvasRef = useRef(null);
-  const [userInput, setUserInput] = useState('');
+  const [, setUserInput] = useState('');
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const [error, setError] = useState('Captcha is invalid!');
 
@@ -54,7 +55,8 @@ const Captcha = ({ data, width, margin }) => {
     setCaptchaText(newRandomString);
     setUserInput('');
     setIsCaptchaValid(false);
-    setError('');
+    setError('Captcha is invalid!');
+      data(false);
   };
 
   return (

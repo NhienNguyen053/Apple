@@ -35,7 +35,7 @@ const Otp = () => {
         setError(data);
       }else{
         setError('');
-        navigate('/newpassword', {state: {email: email, type: type}});
+        navigate('/newpassword', {state: {email: email}});
       }
     }
   }
@@ -51,7 +51,7 @@ const Otp = () => {
     }
     else if(type === 2){
       const encodedPhoneNumber = encodeURIComponent(email);
-      await fetch(`https://localhost:7061/api/Users/send-SMS?phone=${encodedPhoneNumber}`, {
+      await fetch(`https://localhost:7061/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

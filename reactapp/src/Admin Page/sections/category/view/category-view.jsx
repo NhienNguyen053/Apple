@@ -7,10 +7,10 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Iconify from '../../../Components/iconify';
 import Cookies from 'js-cookie';
-import Button2 from '../../../../Main Page/Components/Button';
 import { ref, deleteObject } from "firebase/storage";
 import { storage } from '../../../../Firebase';
 import TextField from '../../../Components/TextField';
+import Modal from '../../../Components/Modal';
 
 // ----------------------------------------------------------------------
 
@@ -94,18 +94,17 @@ export default function CategoryPage() {
     };
 
     const newSubCategory = async (id) => {
-        const response = await fetch('https://localhost:7061/api/Categories/createSubCategory', {
+        const response = await fetch('https://localhost:7061/api/Categories/createCategory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${jwtToken}`
             },
             body: JSON.stringify({
-                Id: id,
                 CategoryName: "New Subcategory",
                 Description: null,
                 ImageURL: null,
-                ParentCategoryId: null
+                ParentCategoryId: id
             }),
         });
         const data = await response.json();
@@ -114,7 +113,7 @@ export default function CategoryPage() {
         if (categoryIndex !== -1) {
             const updatedCategories = [...categories];
             updatedCategories[categoryIndex].childCategories.push({
-                id: data.id,
+                id: data.parentCategoryId,
                 categoryName: data.categoryName,
                 description: data.description,
                 imageURL: data.imageURL,
@@ -168,7 +167,7 @@ export default function CategoryPage() {
                 )}
                 {categories.map((category) => (
                     <>
-                    <div className="container7" style={{ width: '41%', margin: '10px 15px', padding: '0 25px' }}>
+                    <div className="container7" style={{ width: '41%', margin: '10px 15px', padding: '0 25px 10px 25px' }}>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
                             <div style={{display: 'flex'}}>
@@ -191,25 +190,7 @@ export default function CategoryPage() {
                     </>
                 ))}
             </div>
-            {isModalVisible && (
-                <div className="modalBg">
-                    <div className="modal">
-                        <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '20px' }}>Are you sure you want to delete the <span style={{fontFamily: 'SF-Pro-Display-Bold', color: 'black'}}>{deleteCategory}</span> category?</p>
-                        <div style={{ display: 'flex', width: 'fit-content', height: 'fit-content' }}>
-                            <Button2 text={'No'} onclick={toggleModal} background={'white'} textColor={'black'} margin={'20px 10px 20px 0'} />
-                            {loading ? (
-                                <div class="lds-spinner">
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            ) : (
-                                <Button2 text={'Yes'} background={'black'} textColor={'white'} onclick={removeCategory} />
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+            <Modal name={deleteCategory} isVisible={isModalVisible} toggleModal={toggleModal} func={removeCategory} />
         </Container>
     );
 }

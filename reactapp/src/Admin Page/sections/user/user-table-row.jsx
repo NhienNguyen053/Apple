@@ -17,6 +17,8 @@ export default function UserTableRow({
   role,
   isVerified,
   phone,
+  edit,
+  remove
 }) {
   const [open, setOpen] = useState(null);
   const handleOpenMenu = (event) => {
@@ -61,12 +63,12 @@ export default function UserTableRow({
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={edit}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={remove} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
         </MenuItem>
@@ -82,4 +84,6 @@ UserTableRow.propTypes = {
   name: PropTypes.any,
   role: PropTypes.any,
   phone: PropTypes.string,
+  edit: PropTypes.func,
+  remove: PropTypes.func
 };

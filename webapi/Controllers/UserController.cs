@@ -14,6 +14,8 @@ using System.Text;
 using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using AppleApi.Interfaces;
+using System.Text.RegularExpressions;
+using webapi.Models;
 
 namespace AppleApi.Controllers 
 {
@@ -21,18 +23,19 @@ namespace AppleApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IConfiguration configuration;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IConfiguration configuration)
         {
+            this.configuration = configuration;
             this.userService = userService;
         }
 
-
-        /*[Authorize(Roles = "Admin")]
-        [HttpPost("getall")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _service.GetAsync();
+            var users = await userService.GetAll();
             if(users == null)
             {
                 return Ok();
@@ -58,10 +61,43 @@ namespace AppleApi.Controllers
             return Ok(dashboardUserList);
         }
 
-        [HttpPost("newUser")]
-        public async Task<IActionResult> NewUser(NewUserRequest request)
+        [HttpPost("getUser")]
+        public async Task<IActionResult> GetUser(string emailOrPhone)
         {
-            var user = await _service.GetUserByAsync("Email", request.Email);
+            bool isPhoneNumber = Regex.IsMatch(emailOrPhone, @"^[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]+$");
+            if (isPhoneNumber)
+            {
+                User user = await userService.FindByFieldAsync("PhoneNumber", emailOrPhone);
+                if (user == null)
+                {
+                    return NoContent();
+                }
+                if (user.VerifiedAt == null)
+                {
+                    return Ok("User not verified!");
+                }
+                return Ok();
+            }
+            else
+            {
+                User user = await userService.FindByFieldAsync("Email", emailOrPhone);
+                if(user == null)
+                {
+                    return NoContent();
+                }
+                if (user.VerifiedAt == null)
+                {
+                    return Ok("User not verified!");
+                }
+                return Ok();
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("newUser")]
+        public async Task<IActionResult> NewUser([FromBody] NewUserRequest request)
+        {
+            var user = await userService.FindByFieldAsync("Email", request.Email);
             if (user != null)
             {
                 if (user.VerifiedAt == null)
@@ -85,15 +121,15 @@ namespace AppleApi.Controllers
                 VerificationTokenExpires = DateTime.Now.AddDays(1),
                 Role = request.Role
             };
-            await _service.CreateAsync(newUser);
+            await userService.InsertOneAsync(newUser);
             SendEmail(newUser.VerificationToken, newUser.Email);
             return Ok("Registration successful!");
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] UserRegisterRequest request)
         {
-            var user = await _service.GetUserByAsync("Email", request.Email);
+            var user = await userService.FindByFieldAsync("Email", request.Email);
             if(user != null)
             {
                 if(user.VerifiedAt == null){
@@ -116,61 +152,54 @@ namespace AppleApi.Controllers
                 VerificationTokenExpires = DateTime.Now.AddDays(1),
                 Role = "Customer"
             };
-            await _service.CreateAsync(newUser);
+            await userService.InsertOneAsync(newUser);
             SendEmail(newUser.VerificationToken, newUser.Email);
             return Ok("Registration successful!");
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginRequest request)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
+            bool isPhoneNumber = Regex.IsMatch(request.EmailOrPhone, @"^[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]+$");
             User? user;
-            if (request.TypeRegister == EnumTypeGet.Email)
+            if (isPhoneNumber)
             {
-                user = await _service.GetUserByAsync("Email", request.EmailOrPhone);
-            }
-            else if (request.TypeRegister == EnumTypeGet.PhoneNumber)
-            {
-                user = await _service.GetUserByAsync("Phone", request.EmailOrPhone);
+                user = await userService.FindByFieldAsync("PhoneNumber", request.EmailOrPhone);
             }
             else
             {
-                return BadRequest("Invalid value");
+                user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
             }
             if (user == null)
             {
-                return BadRequest("User already exist!");
+                return NoContent();
             }
-            if (user.VerifiedAt == null){
-                return BadRequest("Please verify account!");
+            if(user.VerifiedAt == null)
+            {
+                return Unauthorized();
             }
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt)){
-                return BadRequest("Incorrect password!");
+                return BadRequest();
             }
             var token = CreateToken(user);
-            LoggedInUser loggedInUser = new()
-            {
-                FirstName = user.FirstName,
-                Token = token
-            };
-            return Ok(loggedInUser);
+            return Ok(token);
         }
 
-        [HttpPost("resendemail")]
+        [HttpPost("resendEmail")]
         public async Task<IActionResult> ResendEmail(string email){
-            var user = await _service.GetUserByAsync("Email", email);
+            var user = await userService.FindByFieldAsync("Email", email);
             if(user == null){
                 return BadRequest("User not found!");
             }
             user.VerificationToken = await CreateUniqueRandomTokenAsync();
             user.VerificationTokenExpires = DateTime.Now.AddDays(1);
-            await _service.UpdateAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id!, user);
             SendEmail(user.VerificationToken, email);
             return Ok("Email sent!");
         }
 
 
-        [HttpPost("sendemail")]
+        [HttpPost("sendEmail")]
         public IActionResult SendEmail(string token, string receiveEmail)
         {
             string senderEmail = "nhiennguyen3999@gmail.com";
@@ -194,9 +223,9 @@ namespace AppleApi.Controllers
             return Ok();
         }
 
-        [HttpGet("verifyemail")]
+        [HttpGet("verifyEmail")]
         public async Task<IActionResult> VerifyEmail(string token){
-            var user = await _service.GetUserByAsync("VerificationToken", token);
+            var user = await userService.FindByFieldAsync("VerificationToken", token);
             if (user == null)
             {
                 return BadRequest("User not found!");
@@ -207,14 +236,14 @@ namespace AppleApi.Controllers
             user.VerifiedAt = DateTime.Now;
             user.VerificationToken = null;
             user.VerificationTokenExpires = null;
-            await _service.UpdateAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id!, user);
             return Ok("User verified!");
         }
 
-        [HttpPost("sendemailotp")]
+        [HttpPost("sendEmailOtp")]
         public async Task<IActionResult> SendEmailOTP(string receiveEmail)
         {
-            var user = await _service.GetUserByAsync("Email", receiveEmail);
+            var user = await userService.FindByFieldAsync("Email", receiveEmail);
             if (user == null)
             {
                 return BadRequest("User not found!");
@@ -238,17 +267,17 @@ namespace AppleApi.Controllers
             }
             user.PasswordResetToken = verificationcode;
             user.ResetTokenExpires = DateTime.Now.AddMinutes(10);
-            await _service.UpdateAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id!, user);
             return Ok();
         }
 
-        [HttpPost("confirmotp")]
+        [HttpPost("confirmOtp")]
         public async Task<IActionResult> ConfirmOtp(string otp, string emailorphone, EnumTypeGet type){
             var user = new User();
             if(type == EnumTypeGet.Email){
-                user = await _service.GetUserByAsync("Email", emailorphone);
+                user = await userService.FindByFieldAsync("Email", emailorphone);
             }else if(type == EnumTypeGet.PhoneNumber){
-                user = await _service.GetUserByAsync("PhoneNumber", emailorphone);
+                user = await userService.FindByFieldAsync("PhoneNumber", emailorphone);
             }
             if(user == null){
                 return BadRequest("User not found!");
@@ -262,9 +291,9 @@ namespace AppleApi.Controllers
             return Ok();
         }
 
-        [HttpPost("send-SMS")]
+        [HttpPost("sendSMS")]
         public async Task<IActionResult> SendSMS(string phone){
-            var user = await _service.GetUserByAsync("PhoneNumber", phone);
+            var user = await userService.FindByFieldAsync("PhoneNumber", phone);
             if (user == null)
             {
                 return BadRequest("User not found!");
@@ -274,23 +303,24 @@ namespace AppleApi.Controllers
             var code = GenerateCode(6);
             user.PasswordResetToken = code;
             user.ResetTokenExpires = DateTime.Now.AddMinutes(10);
-            await _service.UpdateAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id!, user);
             var messageBody = "Your password reset code is: " + code;
             twilioSmsService.SendSms(toPhoneNumber, messageBody);
             return Ok("SMS sent");
         }
 
-        [HttpPost("updatepassword")]
-        public async Task<IActionResult> UpdatePassword(string emailorphone, string newPassword, EnumTypeGet type)
+        [HttpPost("updatePassword")]
+        public async Task<IActionResult> UpdatePassword(string emailorphone, string newPassword)
         {
             var user = new User();
-            if (type == EnumTypeGet.Email)
+            bool isPhoneNumber = Regex.IsMatch(emailorphone, @"^[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]+$");
+            if (!isPhoneNumber)
             {
-                user = await _service.GetUserByAsync("Email", emailorphone);
+                user = await userService.FindByFieldAsync("Email", emailorphone);
             }
-            else if (type == EnumTypeGet.PhoneNumber)
+            else
             {
-                user = await _service.GetUserByAsync("PhoneNumber", emailorphone);
+                user = await userService.FindByFieldAsync("PhoneNumber", emailorphone);
             }
             if (user == null)
             {
@@ -299,8 +329,33 @@ namespace AppleApi.Controllers
             CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            await _service.UpdateAsync(user.Id, user);
+            await userService.UpdateOneAsync(user.Id, user);
             return Ok("Reset successful!");
+        }
+
+        [HttpPost("updateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
+        {
+            var user = await userService.FindByIdAsync(request.id);
+            if(user == null)
+            {
+                return NoContent();
+            }
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.Country = request.Country;
+            user.Birthday = request.Birthday;
+            user.Role = request.Role;
+            await userService.UpdateOneAsync(request.id, user);
+            return Ok("Update successful!");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("deleteUser")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            await userService.DeleteOneAsync(id);
+            return Ok("Delete successful");
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -321,7 +376,7 @@ namespace AppleApi.Controllers
             do
             {
                 token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-            } while (await _service.TokenExistsAsync(token));
+            } while (await userService.TokenExistsAsync(token));
             return token;
         }
         private string CreateToken(User user)
@@ -347,9 +402,8 @@ namespace AppleApi.Controllers
         {
             const string chars = "0123456789";
             var random = new Random();
-            string code = new(Enumerable.Repeat(chars, length)
-              .Select(s => s[random.Next(s.Length)]).ToArray());
+            string code = new(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
             return code;
-        }*/
+        }
     }
 }

@@ -27,6 +27,11 @@ namespace AppleApi.Common
             return doc;
         }
 
+        public async Task<T> FindAsync(FilterDefinition<T> filter)
+        {
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task<T> FindByIdAsync(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))
@@ -38,10 +43,31 @@ namespace AppleApi.Common
             return default!;
         }
 
+        public async Task<T> FindByFieldAsync(string field, string value)
+        {
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);
+            T doc = await _collection.Find(filter).FirstOrDefaultAsync();
+            return doc;
+        }
+
         public async Task<T> InsertOneAsync(T model)
         {
             await _collection.InsertOneAsync(model);
             return model;
+        }
+
+        public async Task UpdateOneAsync(string id, T model)
+        {
+            ObjectId.TryParse(id, out var objectId);
+            var filter = Builders<T>.Filter.Eq("_id", objectId);
+            await _collection.ReplaceOneAsync(filter, model);
+        }
+
+        public async Task<T> DeleteOneAsync(string id)
+        {
+            FilterDefinition<T> filter = FilterById(id);
+            T result = await _collection.FindOneAndDeleteAsync(filter);
+            return result;
         }
 
         private FilterDefinition<T> FilterById(string id)

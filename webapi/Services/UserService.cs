@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AppleApi.Common;
 using AppleApi.Interfaces;
+using System.Collections;
 
 namespace AppleApi.Services
 {
@@ -17,6 +18,13 @@ namespace AppleApi.Services
         public UserService(IOptions<AppleDatabaseSettings> settings)
         : base(settings, "User")
         {
+        }
+
+        public async Task<bool> TokenExistsAsync(string token)
+        {
+            var filter = Builders<User>.Filter.Eq("VerificationToken", token);
+            var result = await FindAsync(filter);
+            return result != null;
         }
     }
 }

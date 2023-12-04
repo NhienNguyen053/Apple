@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState } from 'react';
 import Navbar from '../Components/Navbar';
 import '../style.css';
@@ -43,7 +44,7 @@ const SignIn = () => {
 
   const handleVerificationLinkClick = async () => {
     try {
-        await fetch(`https://localhost:7061/api/Users/resendemail?email=${encodeURIComponent(inputValue)}`, {
+        await fetch(`https://localhost:7061/api/Users/resendEmail?email=${encodeURIComponent(inputValue)}`, {
             method: 'POST',
             headers: {
                 'Accept': '*/*',
@@ -57,28 +58,32 @@ const SignIn = () => {
 
   const handleEnterKeyPress = async () => {
     try {
-      const numericRegex = /^[0-9]+$/;
-      var typeRegister;
-      if (numericRegex.test(inputValue) == true) {
-        typeRegister = 2;
-      } else {
-        typeRegister = 1;
-      }
-      const response = await fetch(`https://localhost:7061/api/users/${inputValue}?type=${typeRegister}`);
-      const data = await response.json();
-      if (data.status === 404) {
-        setError("Email or phone number isn't registered!");
-        setVerify(false);
-        setUser(false);
-      }else if (data.verifiedAt == null){
-        setError('');
-        setVerify(true);
-        setUser(false);
+      if (inputValue.trim() === '') {
+        setError('Please enter an email or phone number!');
       }
       else {
-        setError('');
-        setVerify(false);
-        setUser(true);
+          const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${inputValue}`, {
+              method: 'POST',
+              headers: {
+                  'Accept': '*/*',
+                  'Content-Type': 'application/json',
+              },
+          });
+          const data = await response.text();
+          if (response.status === 204) {
+              setError("Email or phone number isn't registered!");
+              setVerify(false);
+              setUser(false);
+          } else if (data === "User not verified!") {
+              setError('');
+              setVerify(true);
+              setUser(false);
+          }
+          else {
+              setError('');
+              setVerify(false);
+              setUser(true);
+          }
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -86,44 +91,45 @@ const SignIn = () => {
   };
 
   const handleEnterKeyPress2 = async () => {
-    try {
-      const numericRegex = /^[0-9]+$/;
-      var typeRegister;
-      if (numericRegex.test(inputValue) == true) {
-        typeRegister = 2;
-      } else {
-        typeRegister = 1;
+      if (password.trim() === '') {
+        setError2('Please enter a password!');
       }
-      const response = await fetch('https://localhost:7061/api/Users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          emailOrPhone: inputValue,
-          password: password,
-          typeRegister: typeRegister,
-        }),
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        if(isChecked === false){
-          var expirationDate = new Date();
-          expirationDate.setDate(expirationDate.getDate() + 1);      
-          var expirationDateString = expirationDate.toUTCString();      
-          document.cookie = `jwtToken=${data.token}; expires=${expirationDateString}; path=/`;      
-          navigate('/')
-          setError2('');
-        }else{
-          document.cookie = `jwtToken=${data.token}; expires=${expirationDateString}; path=/`;      
-          navigate('/');
-          setError2('');
-        }
+      else {
+          const response = await fetch('https://localhost:7061/api/Users/login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  emailOrPhone: inputValue,
+                  password: password,
+              }),
+          });
+          if (response.ok) {
+              const data = await response.text();
+              if (isChecked === false) {
+                  var expirationDate = new Date();
+                  expirationDate.setDate(expirationDate.getDate() + 1);
+                  var expirationDateString = expirationDate.toUTCString();
+                  document.cookie = `jwtToken=${data}; expires=${expirationDateString}; path=/`;
+                  navigate('/')
+                  setError2('');
+              } else {
+                  document.cookie = `jwtToken=${data}; expires=${expirationDateString}; path=/`;
+                  navigate('/');
+                  setError2('');
+              }
+          }
+          else if (response.status === 204) {
+              setError2("User doesn't exist!");
+          }
+          else if (response.status === 401) {
+              setError2("Account not verified!");
+          }
+          else {
+              setError2('Incorrect Password!');
+          }
       }
-    } catch (error) {
-      setError2('Incorrect password!');
-    }
   };
   
 

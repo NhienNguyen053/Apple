@@ -6,6 +6,7 @@ import Select from '../../../../Main Page/Components/Select';
 import Button from '../../../../Main Page/Components/Button';
 import Typography from '@mui/material/Typography';
 import '../../../style.css';
+import Cookies from 'js-cookie';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,7 @@ export default function CreateUser() {
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('Customer');
     const navigate = useNavigate();
+    const jwtToken = Cookies.get('jwtToken');
 
     const handelFirstNameChange = (e) => {
         setfnError('');
@@ -96,7 +98,6 @@ export default function CreateUser() {
             setfnError('');
             count++;
         }
-
         if (ln.trim() === '') {
             setlnError('Enter a last name');
         } else {
@@ -118,9 +119,14 @@ export default function CreateUser() {
         }
         const regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
         if (regex.test(email)) {
-            const response = await fetch(`https://localhost:7061/api/users/${email}?type=${1}`);
-            const data = await response.json();
-            if (data.status === 404) {
+            const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${email}`, {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 204) {
                 setemailError('');
                 count++;
             } else {
@@ -143,6 +149,7 @@ export default function CreateUser() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
                 },
                 body: JSON.stringify({
                     FirstName: fn,

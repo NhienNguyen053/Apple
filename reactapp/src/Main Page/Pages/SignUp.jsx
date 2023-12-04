@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/Navbar';
 import '../style.css';
@@ -109,9 +110,14 @@ const SignUp = () => {
     }
     const regex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
     if(regex.test(email)){
-      const response = await fetch(`https://localhost:7061/api/users/${email}?type=${1}`);
-      const data = await response.json();
-      if (data.status === 404) {
+      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${email}`, {
+          method: 'POST',
+          headers: {
+              'Accept': '*/*',
+              'Content-Type': 'application/json',
+          },
+      });
+      if (response.status === 204) {
         setemailError('');
         count++;
       }else{
