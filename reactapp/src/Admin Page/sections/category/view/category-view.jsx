@@ -23,7 +23,7 @@ export default function CategoryPage() {
     const [deleteCategory, setDeleteCategory] = useState('');
     const [deleteId, setDeleteId] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,7 +60,6 @@ export default function CategoryPage() {
 
     const removeCategory = async () => {
         try {
-            setLoading(true);
             const response = await fetch(`https://localhost:7061/api/Categories/deleteCategory?id=${deleteId}`, {
                 method: 'DELETE',
                 headers: {
@@ -74,16 +73,20 @@ export default function CategoryPage() {
                 deleteObject(existingImage);
                 const newCategories = categories.filter(category => category.id !== deleteId);
                 setCategories(newCategories);
-                setLoading(false);
                 setModalVisible(!isModalVisible);
             } else if (data === "No Image!") {
                 const newCategories = categories.filter(category => category.id !== deleteId);
                 setCategories(newCategories);
-                setLoading(false);
+                setModalVisible(!isModalVisible);
+            } else if (data === "Deleted subcategory!") {
+                var newCategories = categories.map(category => ({
+                    ...category,
+                    childCategories: category.childCategories.filter(childCategory => childCategory.id !== deleteId)
+                }));
+                setCategories(newCategories);
                 setModalVisible(!isModalVisible);
             }
             else {
-                setLoading(false);
                 setModalVisible(!isModalVisible);
                 setModalVisible2(true);
                 setError(data);
@@ -113,10 +116,11 @@ export default function CategoryPage() {
         if (categoryIndex !== -1) {
             const updatedCategories = [...categories];
             updatedCategories[categoryIndex].childCategories.push({
-                id: data.parentCategoryId,
+                id: data.id,
                 categoryName: data.categoryName,
                 description: data.description,
                 imageURL: data.imageURL,
+                parentCategoryId: data.parentCategoryId
             });
             setCategories(updatedCategories);
         }
@@ -139,7 +143,8 @@ export default function CategoryPage() {
         });
     }
 
-    const toggleModal = (param, param1) => {
+    const toggleModal = (param, param1, param2) => {
+        setName(param2);
         setDeleteCategory(param);
         setDeleteId(param1);
         setModalVisible(!isModalVisible);
@@ -147,6 +152,10 @@ export default function CategoryPage() {
 
     const toggleModal2 = () => {
         setModalVisible2(!isModalVisible2);
+    }
+
+    const toggleModal3 = () => {
+        setModalVisible(!isModalVisible);
     }
 
     return (
@@ -173,13 +182,13 @@ export default function CategoryPage() {
                             <div style={{display: 'flex'}}>
                                 <i class="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
                                 <i class="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id, category.categoryName, category.description, category.imageURL)}></i>
-                                <i class="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id)}></i>
+                                <i class="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
                             </div>
                         </div>
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} />
+                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} />
                                 ))}
                             </div>
                             <div style={{ width: '100px', height: '100px' }}>
@@ -190,7 +199,7 @@ export default function CategoryPage() {
                     </>
                 ))}
             </div>
-            <Modal name={deleteCategory} isVisible={isModalVisible} toggleModal={toggleModal} func={removeCategory} />
+            <Modal name={deleteCategory} name2={name} isVisible={isModalVisible} toggleModal={toggleModal3} func={removeCategory} />
         </Container>
     );
 }

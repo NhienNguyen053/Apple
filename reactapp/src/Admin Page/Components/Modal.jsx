@@ -1,10 +1,10 @@
 import Button2 from '../../Main Page/Components/Button';
 
-const Modal = ({ name, isVisible, toggleModal, loading, func }) => {
+const Modal = ({ name, name2, name3, isVisible, toggleModal, loading, func }) => {
     return (
         <div className="modalBg" style={{ display: isVisible ? 'block' : 'none' }}>
             <div className="modal">
-                <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '20px' }}>Are you sure you want to delete the <span style={{ fontFamily: 'SF-Pro-Display-Bold', color: 'black' }}>{name}</span> category?</p>
+                <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '20px' }}>Are you sure you want to delete the {name3}<span style={{ fontFamily: 'SF-Pro-Display-Bold', color: 'black' }}>{name}</span> {name2} ?</p>
                 <div style={{ display: 'flex', width: 'fit-content', height: 'fit-content' }}>
                     <Button2 text={'No'} onclick={toggleModal} background={'white'} textColor={'black'} margin={'20px 10px 20px 0'} />
                     {loading ? (

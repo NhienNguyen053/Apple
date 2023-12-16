@@ -351,9 +351,18 @@ namespace AppleApi.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("deleteUser")]
+        [HttpDelete("deleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
         {
+            var user = await userService.FindByIdAsync(id);
+            if(user == null)
+            {
+                return NoContent();
+            }
+            if(user.Role == "Admin")
+            {
+                return BadRequest("Can't delete admin account");
+            }
             await userService.DeleteOneAsync(id);
             return Ok("Delete successful");
         }

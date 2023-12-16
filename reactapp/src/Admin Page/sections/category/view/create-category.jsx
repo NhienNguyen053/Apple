@@ -103,8 +103,8 @@ export default function CreateCategory() {
                         ParentCategoryId: null
                     }),
                 });
-                const data = await response.text();
-                const imageRef = ref(storage, `images/CategoryImages/category_${data}`)
+                const data = await response.json();
+                const imageRef = ref(storage, `images/CategoryImages/category_${data.id}`)
                 uploadBytes(imageRef, file).then(() => {
                     return getDownloadURL(imageRef);
                 })
@@ -116,7 +116,7 @@ export default function CreateCategory() {
                             'Authorization': `Bearer ${jwtToken}`
                         },
                         body: JSON.stringify({
-                            Id: data,
+                            Id: data.id,
                             CategoryName: categoryName,
                             Description: desc,
                             ImageURL: downloadURL,

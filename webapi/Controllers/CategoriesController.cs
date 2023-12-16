@@ -69,16 +69,26 @@ public class CategoriesController : ControllerBase
         {
             return BadRequest("Couldn't find category!");
         }
-        var childCategory = await categoryService.FindByFieldAsync("ParentCategoryId", id);
-        if (childCategory != null)
+        if (category.ParentCategoryId == null)
         {
-            return BadRequest("Can't delete category that has subcategory!");
+            var childCategory = await categoryService.FindByFieldAsync("ParentCategoryId", id);
+            if (childCategory != null)
+            {
+                return BadRequest("Can't delete category that has subcategory!");
+            }
+            await categoryService.DeleteOneAsync(id);
+            if (category.ImageURL == null)
+            {
+                return Ok("No Image!");
+            }
         }
-        await categoryService.DeleteOneAsync(id);
-        if(category.ImageURL == null)
+        else
         {
-            return Ok("No Image!");
+            // Add check product!
+            await categoryService.DeleteOneAsync(id);
+            return Ok("Deleted subcategory!");
         }
+       
         return Ok("Delete successfully!");
     }
     private List<DashboardCategory> ConvertToDashboardCategories(List<Category> categories)
