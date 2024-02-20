@@ -28,7 +28,7 @@ export default function CategoryPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:7061/api/Categories/getAllCategories', {
+                const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export default function CategoryPage() {
 
     const removeCategory = async () => {
         try {
-            const response = await fetch(`https://localhost:7061/api/Categories/deleteCategory?id=${deleteId}`, {
+            const response = await fetch(`https://localhost:7061/api/Category/deleteCategory?id=${deleteId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function CategoryPage() {
     };
 
     const newSubCategory = async (id) => {
-        const response = await fetch('https://localhost:7061/api/Categories/createCategory', {
+        const response = await fetch('https://localhost:7061/api/Category/createCategory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ export default function CategoryPage() {
     }
 
     const updateSubCategory = async (id, name, parentId) => {
-        fetch('https://localhost:7061/api/Categories/updateCategory', {
+        fetch('https://localhost:7061/api/Category/updateCategory', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -180,9 +180,9 @@ export default function CategoryPage() {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
                             <div style={{display: 'flex'}}>
-                                <i class="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
-                                <i class="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id, category.categoryName, category.description, category.imageURL)}></i>
-                                <i class="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
+                                <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
+                                <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id, category.categoryName, category.description, category.imageURL)}></i>
+                                <i className="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
                             </div>
                         </div>
                         <div style={{display: 'flex'}}>

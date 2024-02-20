@@ -161,7 +161,7 @@ export default function UserPage() {
         <Typography variant="h4">Users</Typography>
 
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange}>
-                  { color}
+                  { color}New User
         </Button>
       </Stack>
 

@@ -70,7 +70,7 @@ function NavbarItemSliderContent({ data }) {
                     {jwtToken ? (
                         <div className="hoverable-div" onClick={routeChange2}>
                             <i className="fa-solid fa-user"></i>
-                            <p>Sign Out {decodedToken['FirstName']}</p>
+                            <p>Sign Out {decodedToken == null ? "" : decodedToken['FirstName']}</p>
                         </div>
                     ) : (
                         <div className="hoverable-div" onClick={routeChange}>
@@ -84,7 +84,7 @@ function NavbarItemSliderContent({ data }) {
     }else if(data === 'search'){
         return(
             <div className="container" style={{alignItems: 'baseline'}}>
-                <i class="fa-solid fa-magnifying-glass" style={{color: 'gray', marginRight: '20px', fontSize: '20px'}}></i>
+                <i className="fa-solid fa-magnifying-glass" style={{color: 'gray', marginRight: '20px', fontSize: '20px'}}></i>
                 <input type="text" placeholder="Search apple.com" style={{backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'gray', fontSize: '20px'}}/>
             </div>
         );

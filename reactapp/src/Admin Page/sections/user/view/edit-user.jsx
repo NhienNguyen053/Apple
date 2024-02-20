@@ -150,7 +150,7 @@ export default function EditUser() {
                     <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                     <div style={{ width: '15px' }}></div>
                     {loading ? (
-                        <div class="lds-spinner">
+                        <div className="lds-spinner">
                             <div></div><div></div><div></div><div></div>
                             <div></div><div></div><div></div><div></div>
                             <div></div><div></div><div></div><div></div>

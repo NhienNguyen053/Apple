@@ -26,7 +26,7 @@ const Navbar = ({darkmode}) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("https://localhost:7061/api/Categories/getAllCategories");
+        const response = await fetch("https://localhost:7061/api/Category/getAllCategories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
-
+import Iconify from '../../../Components/iconify';
 import { products } from '../../../_mock/products';
-
+import Button from '@mui/material/Button';
 import ProductCard from '../product-card';
 import ProductSort from '../product-sort';
 import ProductFilters from '../product-filters';
@@ -16,6 +16,7 @@ import ProductCartWidget from '../product-cart-widget';
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
@@ -25,11 +26,19 @@ export default function ProductsView() {
     setOpenFilter(false);
   };
 
+  const routeChange = () => {
+    navigate('/dashboard/products/createProduct');
+  }
+
   return (
     <Container>
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Products
-      </Typography>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+              <Typography variant="h4">Products</Typography>
+
+              <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange}>
+                  New Product
+              </Button>
+          </Stack>
 
       <Stack
         direction="row"

@@ -10,7 +10,7 @@ function Footer() {
                   <p style={{fontSize: '13.7px'}}>The Apple Online Store uses industry-standard encryption to protect the confidentiality of the information you submit. Learn more about our <a href="" style={{color: '#80818f', textDecoration: 'underline'}}>Security Policy</a></p>
                 </div>
                 <div style={{display: 'flex'}}>
-                  <p style={{fontSize: '13.7px'}}>Copyright <i class="fa-regular fa-copyright" style={{fontSize: '10px'}}></i> 2023 Apple Inc. All rights reserved.</p>
+                  <p style={{fontSize: '13.7px'}}>Copyright <i className="fa-regular fa-copyright" style={{fontSize: '10px'}}></i> 2023 Apple Inc. All rights reserved.</p>
                   <div style={{display: 'flex', fontSize: '13.7px'}} className="container2">
                     <p>Privacy Policy</p>
                     <p>Terms of Use</p>

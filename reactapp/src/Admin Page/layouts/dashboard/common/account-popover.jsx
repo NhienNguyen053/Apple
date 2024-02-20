@@ -65,7 +65,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-      <i class="fa-solid fa-user" style={{ fontSize: '18px' }}></i>
+      <i className="fa-solid fa-user" style={{ fontSize: '18px' }}></i>
       </IconButton>
 
       <Popover
@@ -85,10 +85,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {decodedToken['FirstName'] + " " + decodedToken['LastName']}
+            {decodedToken == null ? "" : decodedToken['FirstName'] + " " + decodedToken['LastName']}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {decodedToken['Email']}
+            {decodedToken == null ? "" : decodedToken['Email']}
           </Typography>
         </Box>
 

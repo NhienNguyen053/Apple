@@ -123,7 +123,7 @@ function NavItem({ item }) {
         }),
       }}
     >
-    <i class={item.icon} style={{ marginRight: '20px', color: active ? 'white' : 'black' }}></i>
+    <i className={item.icon} style={{ marginRight: '20px', color: active ? 'white' : 'black' }}></i>
       <Box component="span" sx={{ color: active ? 'white' : 'black'}}>{item.title}</Box>
     </ListItemButton>
   );

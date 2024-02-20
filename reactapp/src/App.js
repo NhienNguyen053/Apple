@@ -20,6 +20,7 @@ import CategoryPage from './Admin Page/Pages/category';
 import CreateCategory from './Admin Page/Pages/createCategory';
 import EditCategory from './Admin Page/Pages/editCategory';
 import EditUser from './Admin Page/Pages/editUser';
+import CreateProduct from './Admin Page/sections/products/view/create-product';
 
 function App() {
     return (
@@ -51,6 +52,16 @@ function App() {
               <AuthRoute>
                 <DashboardLayout>
                   <ProductsPage />
+                </DashboardLayout>
+              </AuthRoute>
+            }
+            />
+            <Route
+            path="/dashboard/products/createProduct"
+            element={
+              <AuthRoute>
+                <DashboardLayout>
+                  <CreateProduct />
                 </DashboardLayout>
               </AuthRoute>
             }

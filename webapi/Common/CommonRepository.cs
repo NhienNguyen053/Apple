@@ -43,6 +43,14 @@ namespace AppleApi.Common
             return default!;
         }
 
+        public async Task<T> FindNewest(string field)
+        {
+            FilterDefinition<T> filter = Builders<T>.Filter.Empty;
+            var sort = Builders<T>.Sort.Descending(field);
+            T doc = await _collection.Find(filter).Sort(sort).FirstOrDefaultAsync();
+            return doc;
+        }
+
         public async Task<T> FindByFieldAsync(string field, string value)
         {
             FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);

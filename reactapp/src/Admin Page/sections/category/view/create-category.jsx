@@ -76,7 +76,7 @@ export default function CreateCategory() {
             const input = document.querySelector('#categoryimage');
             const file = input.files[0];
             if (file == null) {
-                await fetch('https://localhost:7061/api/Categories/createCategory', {
+                await fetch('https://localhost:7061/api/Category/createCategory', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export default function CreateCategory() {
                     }),
                 });
             } else {
-                const response = await fetch('https://localhost:7061/api/Categories/createCategory', {
+                const response = await fetch('https://localhost:7061/api/Category/createCategory', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -109,7 +109,7 @@ export default function CreateCategory() {
                     return getDownloadURL(imageRef);
                 })
                 .then((downloadURL) => {
-                    fetch('https://localhost:7061/api/Categories/updateCategory', {
+                    fetch('https://localhost:7061/api/Category/updateCategory', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ export default function CreateCategory() {
                             <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                             <div style={{width: '15px'}}></div>
                             {loading ? (
-                                <div class="lds-spinner">
+                                <div className="lds-spinner">
                                     <div></div><div></div><div></div><div></div>
                                     <div></div><div></div><div></div><div></div>
                                     <div></div><div></div><div></div><div></div>

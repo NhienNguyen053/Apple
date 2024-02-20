@@ -218,7 +218,7 @@ const SignUp = () => {
             <Captcha data={setCaptcha} data2={captcha}/>
           </div>
           {loading ? (
-            <div class="lds-spinner">
+            <div className="lds-spinner">
               <div></div><div></div><div></div><div></div>
               <div></div><div></div><div></div><div></div>
               <div></div><div></div><div></div><div></div>

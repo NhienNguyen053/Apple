@@ -23,3 +23,10 @@
     display: flex !important;
     justify-content: center;
 }
+.tox-tinymce {
+    width: 100%;
+    margin-top: 32px;
+}
+.btn2:hover {
+    filter: brightness(95%);
+}

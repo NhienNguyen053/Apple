@@ -105,7 +105,7 @@ const ResetPassword = () => {
             <Input placeholder={'Email or phone number'} isVisible={true} margin={'0'} borderRadius={'5px'} width={'379px'} onInputChange={handleEmailChange} error={emailError}/>
             <Captcha data={setCaptcha} data2={captcha} margin={'15px 0 0 0'}/>
             {loading ? (
-              <div class="lds-spinner" style={{margin: '0'}}>
+              <div className="lds-spinner" style={{margin: '0'}}>
                 <div></div><div></div><div></div><div></div>
                 <div></div><div></div><div></div><div></div>
                 <div></div><div></div><div></div><div></div>
@@ -116,7 +116,7 @@ const ResetPassword = () => {
         </div>
         <div style={{width: '40%'}}>
             <div style={{display: 'flex', margin: '50px auto', justifyContent: 'center'}}>
-                <i class="fa-solid fa-users" style={{color: 'gray', fontSize: '35px', margin: '25px 25px 0 0'}}></i>
+                <i className="fa-solid fa-users" style={{color: 'gray', fontSize: '35px', margin: '25px 25px 0 0'}}></i>
                 <p style={{fontSize: '16px', fontFamily: 'SF-Pro-Display-Light'}}>You've come to the right place <br />to reset a forgotten password. <br />For your security, we'll ask you a <br />few questions to verify that <br />you're the owner of this <br />account.</p>
             </div>
         </div>

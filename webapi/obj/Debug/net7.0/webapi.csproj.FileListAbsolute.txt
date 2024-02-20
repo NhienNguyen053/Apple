@@ -139,9 +139,9 @@ C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\staticweb
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.webapi.props
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\staticwebassets.pack.json
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\scopedcss\bundle\webapi.styles.css
-C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\webapi.csproj.CopyComplete
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\webapi.dll
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\refint\webapi.dll
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\webapi.pdb
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\webapi.genruntimeconfig.cache
 C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\ref\webapi.dll
+C:\Users\nhien\OneDrive\Documents\GitHub\Apple\webapi\obj\Debug\net7.0\webapi.csproj.Up2Date
