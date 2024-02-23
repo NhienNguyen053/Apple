@@ -3,6 +3,7 @@ using AppleApi.Models;
 using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using webapi.Models;
 
 namespace webapi.Controllers
 {
@@ -37,8 +38,39 @@ namespace webapi.Controllers
             newProduct.CategoryId = product.CategoryId;
             newProduct.ProductDescription = product.ProductDescription;
             newProduct.Colors = product.Colors;
+            newProduct.Specifications = product.Specifications;
+            newProduct.Options = product.Options;
             Product newlyAdded = await productService.InsertOneAsync(newProduct);
-            return Ok(newlyAdded.Id);
+            return Ok(newlyAdded);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("updateProductImages")]
+        public async Task<IActionResult> UpdateProductImages([FromBody] UpdateProductImages data)
+        {
+            Product product = await productService.FindByIdAsync(data.productId);
+            if(product != null)
+            {
+                if (product.ProductImages == null)
+                {
+                    product.ProductImages = new List<ProductImage>();
+                }
+                foreach (var image in data.productImages)
+                {
+                    ProductImage newProductImage = new ProductImage
+                    {
+                        Color = data.Color!,
+                        ImageURL = image
+                    };
+                    product.ProductImages.Add(newProductImage);
+                }
+                await productService.UpdateOneAsync(product.Id!, product);
+            }
+            else
+            {
+                return BadRequest("Couldn't find product");
+            }
+            return Ok();
         }
     }
 }

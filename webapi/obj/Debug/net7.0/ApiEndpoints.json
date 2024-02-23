@@ -74,6 +74,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "UpdateProductImages",
+    "RelativePath": "api/Product/updateProductImages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "AppleApi.Models.UpdateProductImages",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AppleApi.Controllers.UsersController",
     "Method": "ConfirmOtp",
     "RelativePath": "api/Users/confirmOtp",

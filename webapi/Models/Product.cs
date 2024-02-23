@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using webapi.Models;
 
 
 namespace AppleApi.Models
@@ -17,8 +18,8 @@ namespace AppleApi.Models
         public string CategoryId { get; set; } = null!;
         public string? ProductDescription { get; set; }
         public List<string> Colors { get; set; } = null!;
-        public Specification Specification { get; set; } = null!;
-        public List<string> ProductImages { get; set; } = null!;
-        public List<BoxItem> BoxItems { get; set; } = null!;
+        public Specification Specifications { get; set; } = null!;
+        public Option Options { get; set; } = null!;
+        public List<ProductImage> ProductImages { get; set; } = null!;
     }
 }

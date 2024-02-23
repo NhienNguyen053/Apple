@@ -1,5 +1,4 @@
 /* eslint-disable no-loop-func */
-/* eslint-disable jsx-a11y/alt-text */
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
@@ -28,6 +27,8 @@ import { Editor } from '@tinymce/tinymce-react';
 import TabPanel from '../../../Components/TabPanel';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
+import { v4 as uuidv4 } from 'uuid';
+import set from 'date-fns/fp/set/index';
 
 // ----------------------------------------------------------------------
 let nextId = -1;
@@ -54,6 +55,15 @@ export default function CreateProduct() {
     const [open, setOpen] = React.useState(false);
     const [imageError, setImageError] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
+    const [display, setDisplay] = useState('');
+    const [material, setMaterial] = useState('');
+    const [chip, setChip] = useState('');
+    const [camera, setCamera] = useState('');
+    const [functionality, setFunctionality] = useState('');
+    const [sizeAndWeight, setSizeAndWeight] = useState('');
+    const [powerAndBattery, setPowerAndBattery] = useState('');
+    const [connector, setConnector] = useState('');
+
     const jwtToken = Cookies.get('jwtToken');
     const names = [
         'Red',
@@ -68,6 +78,21 @@ export default function CreateProduct() {
         'Black',
         'White'
     ];
+    const memories = [
+        '4GB',
+        '8GB',
+        '16GB',
+        '32GB',
+        '64GB'
+    ]
+    const storages = [
+        '64GB',
+        '128GB',
+        '256GB',
+        '512GB',
+        '1TB',
+        '2TB'
+    ]
     const editorRef = useRef(null);
     const log = () => {
         if (editorRef.current) {
@@ -118,6 +143,37 @@ export default function CreateProduct() {
         setProductStatus(e.target.value);
     }
 
+    const handleDisplay = (e) => {
+        setDisplay(e.target.value);
+    }
+
+    const handleMaterial = (e) => {
+        setMaterial(e.target.value);
+    }
+
+    const handleChip = (e) => {
+        setChip(e.target.value);
+    }
+
+    const handleCamera = (e) => {
+        setCamera(e.target.value);
+    }
+
+    const handleFunctionality = (e) => {
+        setFunctionality(e.target.value);
+    }
+
+    const handleSizeAndWeight = (e) => {
+        setSizeAndWeight(e.target.value);
+    }
+
+    const handlePowerAndBattery = (e) => {
+        setPowerAndBattery(e.target.value);
+    }
+
+    const handleConnector = (e) => {
+        setConnector(e.target.value);
+    }
 
     function getStyles(name , personName, theme) {
         return {
@@ -179,6 +235,8 @@ export default function CreateProduct() {
     };
     const theme = useTheme();
     const [personName, setPersonName] = React.useState([]);
+    const [productMemory, setProductMemory] = React.useState([]);
+    const [productStorage, setProductStorage] = React.useState([]);
     const handleChange2 = (event) => {
         const {
             target: { value },
@@ -187,16 +245,21 @@ export default function CreateProduct() {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
-
-    const handleChangeMultiple = (event) => {
-        const { options } = event.target;
-        const value = [];
-        for (let i = 0, l = options.length; i < l; i += 1) {
-            if (options[i].selected) {
-                value.push(options[i].value);
-            }
-        }
-        setPersonName(value);
+    const handleChange3 = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setProductMemory(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+    const handleChange4 = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setProductStorage(
+            typeof value === 'string' ? value.split(',') : value,
+        );
     };
 
     const handleNewProduct = async () => {
@@ -235,7 +298,7 @@ export default function CreateProduct() {
             setProductQuantityError('Invalid product quantity')
         }
         if (count === 5) {
-            const productId = await fetch('https://localhost:7061/api/Product/createProduct', {
+            const product = await fetch('https://localhost:7061/api/Product/createProduct', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -248,10 +311,26 @@ export default function CreateProduct() {
                     ProductStatus: productStatus,
                     CategoryId: categoryId,
                     ProductDescription: productDescription,
-                    Colors: personName
+                    Colors: personName,
+                    Specifications: {
+                        Display: display,
+                        Material: material,
+                        Chip: chip,
+                        Camera: camera,
+                        Functionality: functionality,
+                        SizeAndWeight: sizeAndWeight,
+                        PowerAndBattery: powerAndBattery,
+                        Connector: connector
+                    },
+                    Options: {
+                        Memory: productMemory,
+                        Storage: productStorage
+                    }
                 }),
             });
-            setProductId(await productId.text());
+            const newProduct = await product.json();
+            setProductId(newProduct.id);
+            setTitle(`Product #${newProduct.productNumber}`)
             setCreated(true);
             setOpen(true);
             setTimeout(() => {
@@ -282,10 +361,9 @@ export default function CreateProduct() {
                     setImageError('');
                     const reader = new FileReader();
                     reader.addEventListener('load', (event) => {
-                        nextId = nextId + 1;
                         setProductImages((prevImages) => [
                             ...prevImages,
-                            { id: nextId, path: event.target.result },
+                            { id: uuidv4(), path: event.target.result },
                         ]);
                     });
                     if (file) {
@@ -312,17 +390,57 @@ export default function CreateProduct() {
     };
 
     const handleUploadImage = async () => {
+        setLoading(true);
+        var imageURLs = [];
+        var hasColors = false;
         if (personName.length === 0) {
-
+            hasColors = false;
         } else {
             if (selectedColor === 'empty') {
                 setImageError('Please select a color!');
+                setLoading(false);
                 return;
             } else {
                 setImageError('');
+                hasColors = true;
             }
         }
-
+        for (let i = 0; i < productImages.length; i++) {
+            const file = productImages[i].path;
+            var byteString = atob(file.split(',')[1]);
+            var mimeString = file.split(',')[0].split(':')[1].split(';')[0];
+            var arrayBuffer = new ArrayBuffer(byteString.length);
+            var uint8Array = new Uint8Array(arrayBuffer);
+            for (var j = 0; j < byteString.length; j++) {
+                uint8Array[j] = byteString.charCodeAt(j);
+            }
+            const blob = new Blob([arrayBuffer], { type: mimeString })
+            const imageRef = ref(storage, `images/ProductImages/${productId}/${i}`)
+            await uploadBytes(imageRef, blob).then(() => {
+                return getDownloadURL(imageRef);
+            })
+            .then((downloadURL) => {
+                imageURLs.push(downloadURL);
+            })
+        }
+        if (productImages.length > 0) {
+            await fetch('https://localhost:7061/api/Product/updateProductImages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    productImages: imageURLs,
+                    Color: hasColors === true ? personName.toString() : null
+                }),
+            });
+        }
+        setTimeout(() => {
+            setLoading(false);
+            navigate('/dashboard/products');
+        }, 3000);
     }
 
     const removeImage = (e) => {
@@ -339,7 +457,7 @@ export default function CreateProduct() {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Info" {...a11yProps(0)} />
-                    <Tab label="Images" disabled={created === false ? true : false} {...a11yProps(1)} onClick={() => setTitle('Product' + {})} />
+                    <Tab label="Images" disabled={created === false ? true : false} />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -372,62 +490,17 @@ export default function CreateProduct() {
                                     errorMargin={'3px 0 0 0'}
                                 />
                             </div>
-                            <div style={{width: '46.8%'}}>
-                                <TextField
-                                    label="Product Price"
-                                    id="filled-start-adornment"
-                                    sx={{
-                                        '&:focus-within': {
-                                            border: '2px solid black',
-                                        },
-                                        width: '100%',
-                                        border: '0.5px solid gray',
-                                        borderRadius: '5px',
-                                        transition: 'border-color 0.3s',
-                                        margin: '16px 0 0 0',
-                                        boxSizing: 'border-box',
-                                        height: '56px',
-                                        '& .MuiInputBase-root': {
-                                            bgcolor: 'white',
-                                            borderBottomLeftRadius: '4px',
-                                        },
-                                        '& .css-o943dk-MuiFormLabel-root-MuiInputLabel-root': {
-                                            fontFamily: 'SF-Pro-Display-Regular',
-                                            fontSize: '17px',
-                                        },
-                                        '& .MuiFilledInput-root': {
-                                            borderBottom: 'none !important'
-                                        },
-                                        '& .css-1iulo1y-MuiInputBase-root-MuiFilledInput-root:before': {
-                                            content: 'none'
-                                        },
-                                        '& .css-o943dk-MuiFormLabel-root-MuiInputLabel-root.Mui-focused': {
-                                            color: 'gray'
-                                        },
-                                        '& .css-1iulo1y-MuiInputBase-root-MuiFilledInput-root.Mui-focused': {
-                                            bgcolor: 'white',
-                                            paddingTop: '0',
-                                        },
-                                        '& .css-1iulo1y-MuiInputBase-root-MuiFilledInput-root:after': {
-                                            borderBottom: 'none'
-                                        },
-                                        '& .css-16d1ey4-MuiFormControl-root-MuiTextField-root .MuiInputBase-root:hover': {
-                                            bgcolor: 'white',
-                                            borderBottom: 'none'
-                                        },
-                                        '& .css-1iulo1y-MuiInputBase-root-MuiFilledInput-root:hover': {
-                                            bgcolor: 'white'
-                                        },
-                                        '& .css-1iulo1y-MuiInputBase-root-MuiFilledInput-root': {
-                                            height: '53px',
-                                            boxSizing: 'border-box',
-                                        }
-                                    }}
-                                    InputProps={{
-                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                    }}
-                                    variant="filled"
-                                    onChange={handleProductPrice}
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Product Price ($)"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleProductPrice}
+                                    error={productPriceError}
+                                    errorMargin={'3px 0 0 0'}
                                 />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: productPriceError === false ? 'none' : 'block', fontSize: '15px' }}>Product price must be a number with up to two decimals</p>
                             </div>
@@ -484,6 +557,162 @@ export default function CreateProduct() {
                                 }}
                                 onEditorChange={log}
                             />
+                            <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Product Specifications:</p>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Display"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    onInputChange={handleDisplay}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Material"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    onInputChange={handleMaterial}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Chip"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleChip}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Camera"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleCamera}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Functionality"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleFunctionality}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"SizeAndWeight"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleSizeAndWeight}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"PowerAndBattery"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handlePowerAndBattery}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <div style={{ width: '47%' }}>
+                                <Input
+                                    placeholder={"Connector"}
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"5px"}
+                                    width={'100%'}
+                                    margin={'16px 0 0 0'}
+                                    onInputChange={handleConnector}
+                                    errorMargin={'3px 0 0 0'}
+                                />
+                            </div>
+                            <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Options:</p>
+                            <FormControl sx={{ mt: 2, width: '47%' }}>
+                                <InputLabel id="demo-multiple-chip-label">Memory</InputLabel>
+                                <Select
+                                    labelId="demo-multiple-chip-label"
+                                    id="demo-multiple-chip"
+                                    multiple
+                                    sx={{ width: '100%', height: '56px' }}
+                                    value={productMemory}
+                                    onChange={handleChange3}
+                                    input={<OutlinedInput id="select-multiple-chip" label="Colors" />}
+                                    renderValue={(selected) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            {selected.map((value) => (
+                                                <Chip key={value} label={value} sx={{ bgcolor: value, '& .MuiChip-label': { color: value === 'Black' ? 'white' : 'black' } }} />
+                                            ))}
+                                        </Box>
+                                    )}
+                                    MenuProps={MenuProps}
+                                >
+                                    {memories.map((memory) => (
+                                        <MenuItem
+                                            key={memory}
+                                            value={memory}
+                                            style={getStyles(memory, personName, theme)}
+                                        >
+                                            {memory}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <FormControl sx={{ mt: 2, width: '47%' }}>
+                                <InputLabel id="demo-multiple-chip-label">Storage</InputLabel>
+                                <Select
+                                    labelId="demo-multiple-chip-label"
+                                    id="demo-multiple-chip"
+                                    multiple
+                                    sx={{ width: '100%', height: '56px' }}
+                                    value={productStorage}
+                                    onChange={handleChange4}
+                                    input={<OutlinedInput id="select-multiple-chip" label="Colors" />}
+                                    renderValue={(selected) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            {selected.map((value) => (
+                                                <Chip key={value} label={value} sx={{ bgcolor: value, '& .MuiChip-label': { color: value === 'Black' ? 'white' : 'black' } }} />
+                                            ))}
+                                        </Box>
+                                    )}
+                                    MenuProps={MenuProps}
+                                >
+                                    {storages.map((storage) => (
+                                        <MenuItem
+                                            key={storage}
+                                            value={storage}
+                                            style={getStyles(storage, personName, theme)}
+                                        >
+                                            {storage}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                             <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Product Status</p>
                             <Select2 type={"status"} width={'47%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} />
                             <div style={{width: '100%'}}></div>
@@ -520,10 +749,10 @@ export default function CreateProduct() {
                         />
                         <p style={{ color: 'red', margin: '8px 0' }}>{imageError}</p>
                         <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                            {productImages.map(image => (
+                            {productImages.map((image, index) => (
                                 <div>
                                     <div style={{ width: '140px', height: '140px', margin: '10px' }}>
-                                        <img key={image.id} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                        <img key={index} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                     </div>
                                     <Button text={'Remove'} background={'white'} textColor={'red'} fontSize={'14px'} margin={'0 auto'} border={'1px solid red'} onclick={() => removeImage(image.id)} />
                                 </div>
