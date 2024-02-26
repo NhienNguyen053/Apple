@@ -3,6 +3,6 @@
     public class ProductImage
     {
         public string? Color { get; set; }
-        public string ImageURL { get; set; } = null!;
+        public List<string> ImageURLs { get; set; } = null!;
     }
 }

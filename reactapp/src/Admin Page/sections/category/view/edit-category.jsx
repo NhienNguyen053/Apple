@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Container from '@mui/material/Container';
@@ -9,6 +8,8 @@ import Button from '../../../../Main Page/Components/Button';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../../../Firebase";
 import Cookies from 'js-cookie';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +26,8 @@ export default function EditCategory() {
     const [loading, setLoading] = useState(false);
     const [imageError, setImageError] = useState('');
     const jwtToken = Cookies.get('jwtToken');
+    const [open, setOpen] = useState(false);
+
     const handleNameChange = (e) => {
         setCategoryError('');
         setCategoryName(e.target.value);
@@ -105,26 +108,29 @@ export default function EditCategory() {
                 uploadBytes(imageRef, file).then(() => {
                     return getDownloadURL(imageRef);
                 })
-                    .then((downloadURL) => {
-                        fetch('https://localhost:7061/api/Category/updateCategory', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${jwtToken}`
-                            },
-                            body: JSON.stringify({
-                                Id: id,
-                                CategoryName: categoryName,
-                                Description: desc,
-                                ImageURL: downloadURL,
-                                ParentCategoryId: null
-                            }),
-                        });
-                    })
+                .then((downloadURL) => {
+                    fetch('https://localhost:7061/api/Category/updateCategory', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${jwtToken}`
+                        },
+                        body: JSON.stringify({
+                            Id: id,
+                            CategoryName: categoryName,
+                            Description: desc,
+                            ImageURL: downloadURL,
+                            ParentCategoryId: null
+                        }),
+                    });
+                })
             }
             setTimeout(() => {
                 setLoading(false);
-                navigate('/dashboard/categories');
+                navigate('/dashboard/categories'); setOpen(true);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 3000);
             }, 2000);
         } else {
             setLoading(false);
@@ -133,10 +139,15 @@ export default function EditCategory() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">Edit Category</Typography>
+                <Typography variant="h4" style={{ marginLeft: '3%' }}>Edit Category</Typography>
             </Stack>
             <div className='container7 display'>
-                <div style={{ width: 'fit-content', height: '80%' }}>
+                <Collapse in={open} sx={{ width: '100%' }}>
+                    <Alert sx={{ mb: 2 }}>
+                        Created category successfully!
+                    </Alert>
+                </Collapse>
+                <div style={{ width: 'fit-content', height: '80%' }} className="formInputs2">
                     <div style={{ paddingBottom: '25px' }}>
                         <Input
                             placeholder={"Category Name"}
@@ -144,7 +155,7 @@ export default function EditCategory() {
                             icon={false}
                             borderRadius={"5px"}
                             error={categoryError}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleNameChange}
                             margin={'0 auto 0 auto'}
                             inputValue={categoryName}
@@ -154,7 +165,7 @@ export default function EditCategory() {
                             isVisible={true}
                             icon={false}
                             borderRadius={"5px"}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleDescChange}
                             margin={'30px auto 0 auto'}
                             inputValue={desc}
@@ -165,7 +176,7 @@ export default function EditCategory() {
                             icon={false}
                             type={"file"}
                             borderRadius={"5px"}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleImageChange}
                             margin={'30px auto 0 auto'}
                             id={"categoryimage"}

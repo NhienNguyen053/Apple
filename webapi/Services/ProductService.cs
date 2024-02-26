@@ -19,5 +19,22 @@ namespace AppleApi.Services
         : base(settings, "Product")
         {
         }
+
+        public async Task<List<string>> FindImagesByColorAsync(string id, string color)
+        {
+            var result = await FindByIdAsync(id);
+
+            if (result != null && result.ProductImages != null)
+            {
+                var productImage = result.ProductImages.FirstOrDefault(x => x.Color == color);
+
+                if (productImage != null)
+                {
+                    return productImage.ImageURLs;
+                }
+            }
+
+            return new List<string>();
+        }
     }
 }

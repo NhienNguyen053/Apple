@@ -431,7 +431,7 @@ a:hover{
     top: 20%;
     background-color: #d9d9d9;
     padding: 20px 20px 10px 20px;
-    width: 500px;
+    width: 40vw;
     height: 175px;
     border-radius: 10px;
     display: flex;
@@ -517,11 +517,55 @@ a:hover{
     transform: rotate(330deg);
     animation-delay: 0s;
 }
+.tox-sidebar {
+    width: 10px !important;
+}
 @keyframes lds-spinner {
     0% {
       opacity: 1;
     }
     100% {
       opacity: 0;
+    }
+}
+@media (max-width: 768px) {
+    .formInputs {
+        width: 90% !important;
+    }
+    .formInputs2 {
+        width: 90% !important;
+        margin: auto
+    }
+    .container7 {
+        padding: 30px 0px 5px 0px;
+        margin: 10px auto;
+    }
+    .formButtons {
+        margin-left: 5% !important
+    }
+}
+@media (max-width: 1000px) {
+    .container7 {
+        width: 90% !important;
+    }
+}
+@media (max-width: 780px) {
+    #formButtons {
+        width: fit-content !important;
+        margin: 0 0 0 5% !important
+    }
+    .formInputs3 > div {
+        width: 90% !important;
+        margin: 0px auto 10px auto !important
+    }
+    .formInputs3 > select {
+        width: 95% !important;
+        margin: 0px auto 10px auto !important
+    }
+    .formInputs3 p {
+        margin: 16px 0 5px 5% !important
+    }
+    #demo-multiple-chip-label {
+        padding-left: 16px;
     }
 }

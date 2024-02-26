@@ -75,6 +75,32 @@
   },
   {
     "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "GetAllProducts",
+    "RelativePath": "api/Product/getAllProducts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "GetProductImagesByColor",
+    "RelativePath": "api/Product/getProductImagesByColor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "webapi.Models.GetImagesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
     "Method": "UpdateProductImages",
     "RelativePath": "api/Product/updateProductImages",
     "HttpMethod": "POST",

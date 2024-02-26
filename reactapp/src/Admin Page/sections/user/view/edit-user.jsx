@@ -6,6 +6,8 @@ import Select from '../../../../Main Page/Components/Select';
 import Button from '../../../../Main Page/Components/Button';
 import Typography from '@mui/material/Typography';
 import '../../../style.css';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 const { format, parseISO } = require("date-fns");
 
 // ----------------------------------------------------------------------
@@ -27,6 +29,7 @@ export default function EditUser() {
     const [country, setCountry] = useState('United States');
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('Customer');
+    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         const parsedDate = parseISO(bday);
@@ -106,47 +109,57 @@ export default function EditUser() {
                 }),
             });
             setLoading(false);
-            navigate('/dashboard/users');
+            setOpen(true);
+            setTimeout(() => {
+                setOpen(false);
+            }, 3000);
         } else {
             setLoading(false);
         }
     };
     return (
         <>
-            <Typography variant="h4">Edit User</Typography>
+            <Typography variant="h4" style={{ marginLeft: '3%' }}>Edit User</Typography>
             <div className='container7 display'>
-                <div style={{ width: '93%', margin: 'auto', height: '80%', justifyContent: 'left', display: 'flex' }}>
-                    <div style={{ paddingBottom: '25px' }}>
-                        <Input
-                            placeholder={"Firstname"}
-                            isVisible={true}
-                            icon={false}
-                            borderRadius={"5px"}
-                            error={fnError}
-                            width={'470px'}
-                            onInputChange={handelFirstNameChange}
-                            margin={'0 auto 0 auto'}
-                            inputValue={fn}
-                        />
-                        <Input
-                            placeholder={"Lastname"}
-                            isVisible={true}
-                            icon={false}
-                            borderRadius={"5px"}
-                            error={lnError}
-                            width={'470px'}
-                            onInputChange={handelLastNameChange}
-                            margin={'15px auto 0 auto'}
-                            inputValue={ln}
-                        />
-                        <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '30px 0 5px 0' }}>COUNTRY / REGION</p>
-                        <Select width={'470px'} type={'countries'} borderRadius={"5px"} onInputChange={handleCountryChange} selectedValue={country} />
-                        <Input type={'date'} placeholder={'Birthday'} isVisible={true} width={'470px'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handelBirthdayChange} error={bdError} inputValue={bd} />
-                        <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '10px 0 5px 0' }}>ROLE</p>
-                        <Select width={'470px'} type={'roles'} borderRadius={"5px"} onInputChange={handleRoleChange} selectedValue={role} />
+                <Collapse in={open} sx={{ width: '100%' }}>
+                    <Alert sx={{ mb: 2 }}>
+                        Updated user successfully!
+                    </Alert>
+                </Collapse>
+                <div style={{ width: '98%', margin: 'auto', height: open == false ? '80%' : '70%' }}>
+                    <div style={{ width: '50%' }} className="formInputs2">
+                        <div style={{ paddingBottom: '25px' }}>
+                            <Input
+                                placeholder={"Firstname"}
+                                isVisible={true}
+                                icon={false}
+                                borderRadius={"5px"}
+                                error={fnError}
+                                width={'100%'}
+                                onInputChange={handelFirstNameChange}
+                                margin={'0 auto 0 auto'}
+                                inputValue={fn}
+                            />
+                            <Input
+                                placeholder={"Lastname"}
+                                isVisible={true}
+                                icon={false}
+                                borderRadius={"5px"}
+                                error={lnError}
+                                width={'100%'}
+                                onInputChange={handelLastNameChange}
+                                margin={'15px auto 0 auto'}
+                                inputValue={ln}
+                            />
+                            <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '30px 0 5px 0' }}>COUNTRY / REGION</p>
+                            <Select width={'100%'} type={'countries'} borderRadius={"5px"} onInputChange={handleCountryChange} selectedValue={country} />
+                            <Input type={'date'} placeholder={'Birthday'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handelBirthdayChange} error={bdError} inputValue={bd} />
+                            <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '10px 0 5px 0' }}>ROLE</p>
+                            <Select width={'100%'} type={'roles'} borderRadius={"5px"} onInputChange={handleRoleChange} selectedValue={role} />
+                        </div>
                     </div>
                 </div>
-                <div style={{ display: 'flex', height: 'fit-content', marginLeft: '40px' }}>
+                <div style={{ display: 'flex', height: 'fit-content', marginLeft: '1%', width: 'fit-content' }} className="formButtons">
                     <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                     <div style={{ width: '15px' }}></div>
                     {loading ? (

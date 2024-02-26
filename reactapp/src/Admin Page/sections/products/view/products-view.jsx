@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import Iconify from '../../../Components/iconify';
-import { products } from '../../../_mock/products';
 import Button from '@mui/material/Button';
 import ProductCard from '../product-card';
 import ProductSort from '../product-sort';
@@ -17,6 +16,20 @@ import ProductCartWidget from '../product-cart-widget';
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("https://localhost:7061/api/Product/getAllProducts");
+        const data = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleOpenFilter = () => {
     setOpenFilter(true);

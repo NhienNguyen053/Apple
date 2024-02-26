@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
+import { useNavigate } from 'react-router-dom';
 import { fCurrency } from '../../utils/format-number';
 
 import Label from '../../Components/label';
@@ -14,10 +14,17 @@ import { ColorPreview } from '../../Components/color-utils';
 // ----------------------------------------------------------------------
 
 export default function ShopProductCard({ product }) {
+  const navigate = useNavigate();
+  const [image, setImage] = useState(product.productImages === null ? null : product.productImages[0].imageURLs[0]);
+
+  const handleEditClick = (product) => {
+    navigate('/dashboard/products/editProduct', { state: { product: product } });
+  }
+
   const renderStatus = (
     <Label
       variant="filled"
-      color={(product.status === 'sale' && 'error') || 'info'}
+      color={(product.productStatus === 'Inactive' && 'error') || 'info'}
       sx={{
         zIndex: 9,
         top: 16,
@@ -26,20 +33,27 @@ export default function ShopProductCard({ product }) {
         textTransform: 'uppercase',
       }}
     >
-      {product.status}
+      {product.productStatus}
     </Label>
   );
+
+    const handleColorClick = (color) => {
+        const matchingImage = product.productImages.find((img) => img.color === color);
+        if (matchingImage) {
+            setImage(matchingImage.imageURLs[0]);
+        }
+    };
 
   const renderImg = (
     <Box
       component="img"
-      alt={product.name}
-      src={product.cover}
+      alt={product.productName}
+      src={image}
       sx={{
         top: 0,
         width: 1,
         height: 1,
-        objectFit: 'cover',
+        objectFit: 'contain',
         position: 'absolute',
       }}
     />
@@ -47,36 +61,25 @@ export default function ShopProductCard({ product }) {
 
   const renderPrice = (
     <Typography variant="subtitle1">
-      <Typography
-        component="span"
-        variant="body1"
-        sx={{
-          color: 'text.disabled',
-          textDecoration: 'line-through',
-        }}
-      >
-        {product.priceSale && fCurrency(product.priceSale)}
-      </Typography>
-      &nbsp;
-      {fCurrency(product.price)}
+      {fCurrency(product.productPrice)}
     </Typography>
   );
 
   return (
     <Card>
-      <Box sx={{ pt: '100%', position: 'relative' }}>
-        {product.status && renderStatus}
+      <Box sx={{ pt: '100%', position: 'relative', cursor: 'pointer' }} onClick={() => handleEditClick(product)}>
+        {'sale' && renderStatus}
 
         {renderImg}
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
+      <Stack spacing={2} sx={{ p: 2 }}>
         <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
-          {product.name}
+          {product.productName}
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={product.colors} />
+          <ColorPreview colors={product.colors} onClick={handleColorClick}/>
           {renderPrice}
         </Stack>
       </Stack>

@@ -7,6 +7,8 @@ import Button from '../../../../Main Page/Components/Button';
 import Typography from '@mui/material/Typography';
 import '../../../style.css';
 import Cookies from 'js-cookie';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +30,7 @@ export default function CreateUser() {
     const [country, setCountry] = useState('United States');
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('Customer');
+    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const jwtToken = Cookies.get('jwtToken');
 
@@ -162,16 +165,24 @@ export default function CreateUser() {
                 }),
             });
             setLoading(false);
-            navigate('/dashboard/users');
+            setOpen(true);
+            setTimeout(() => {
+                setOpen(false);
+            }, 3000);
         } else {
             setLoading(false);
         }
     };
     return (
         <>
-            <Typography variant="h4">New User</Typography>
+            <Typography variant="h4" sx={{ marginLeft: '3%' }}>New User</Typography>
             <div className='container7 display'>
-                <div style={{ width: 'fit-content', margin: 'auto', height: '80%' }}>
+                <Collapse in={open} sx={{ width: '100%' }}>
+                    <Alert sx={{ mb: 2 }}>
+                        Created user successfully!
+                    </Alert>
+                </Collapse>
+                <div style={{ width: '48%', margin: 'auto', height: open == false ? '80%' : '70%' }} className="formInputs">
                     <div style={{ paddingBottom: '25px' }}>
                         <Input
                             placeholder={"Firstname"}
@@ -179,7 +190,7 @@ export default function CreateUser() {
                             icon={false}
                             borderRadius={"5px"}
                             error={fnError}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handelFirstNameChange}
                             margin={'0 auto 0 auto'}
                         />
@@ -189,21 +200,21 @@ export default function CreateUser() {
                             icon={false}
                             borderRadius={"5px"}
                             error={lnError}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handelLastNameChange}
                             margin={'15px auto 0 auto'}
                         />
                         <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '30px 0 5px 0' }}>COUNTRY / REGION</p>
-                        <Select width={'470px'} type={'countries'} borderRadius={"5px"} onInputChange={handleCountryChange} />
-                        <Input type={'date'} placeholder={'Birthday'} isVisible={true} width={'470px'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handelBirthdayChange} error={bdError} />
+                        <Select width={'100%'} type={'countries'} borderRadius={"5px"} onInputChange={handleCountryChange} />
+                        <Input type={'date'} placeholder={'Birthday'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handelBirthdayChange} error={bdError} />
                         <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '10px 0 5px 0' }}>ROLE</p>
-                        <Select width={'470px'} type={'roles'} borderRadius={"5px"} onInputChange={handleRoleChange} />
+                        <Select width={'100%'} type={'roles'} borderRadius={"5px"} onInputChange={handleRoleChange} />
                     </div>
                 </div>
-                <div style={{ width: 'fit-content', margin: 'auto', height: '80%' }}>
+                <div style={{ width: '48%', margin: '0 auto', height: open == false ? '80%' : '70%' }} className="formInputs">
                     <div style={{ paddingBottom: '25px'}}>
-                        <Input placeholder={'name@example.com'} isVisible={true} width={'470px'} margin={'0 auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleEmailChange} error={emailError} />
-                        <Input placeholder={'Password'} type={'password'} isVisible={true} width={'470px'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handlePasswordChange} />
+                        <Input placeholder={'name@example.com'} isVisible={true} width={'100%'} margin={'0 auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleEmailChange} error={emailError} />
+                        <Input placeholder={'Password'} type={'password'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handlePasswordChange} />
                         <div>
                             <p style={{ color: 'black' }}>Your password must have:</p>
                             <ul>
@@ -212,10 +223,10 @@ export default function CreateUser() {
                                 <li style={{ color: third ? 'lightgreen' : 'red' }}>At least one number</li>
                             </ul>
                         </div>
-                        <Input placeholder={'Confirm password'} type={'password'} isVisible={true} width={'470px'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleConfirmChange} error={confirmError} />
+                        <Input placeholder={'Confirm password'} type={'password'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleConfirmChange} error={confirmError} />
                     </div>
                 </div>
-                <div style={{ display: 'flex', height: 'fit-content', marginLeft: '40px' }}>
+                <div style={{ display: 'flex', height: 'fit-content', marginLeft: '1%', width: 'fit-content' }} className="formButtons">
                     <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                     <div style={{width: '15px'}}></div>
                     {loading ? (
@@ -225,7 +236,7 @@ export default function CreateUser() {
                             <div></div><div></div><div></div><div></div>
                         </div>
                     ) : (
-                        <Button text={'Continue'} onclick={handleRegister}  background={'black'} textColor={'white'}/>
+                        <Button text={'Continue'} onclick={handleRegister} background={'black'} textColor={'white'} />
                     )}
                 </div>
             </div>

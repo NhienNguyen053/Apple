@@ -17,6 +17,13 @@ namespace webapi.Controllers
             this.productService = productService;
         }
 
+        [HttpGet("getAllProducts")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            List<Product> products = await productService.GetAll();
+            return Ok(products);
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
@@ -36,6 +43,7 @@ namespace webapi.Controllers
             newProduct.ProductQuantity = product.ProductQuantity;
             newProduct.ProductStatus = product.ProductStatus;
             newProduct.CategoryId = product.CategoryId;
+            newProduct.SubCategoryId = product.SubCategoryId;
             newProduct.ProductDescription = product.ProductDescription;
             newProduct.Colors = product.Colors;
             newProduct.Specifications = product.Specifications;
@@ -55,15 +63,12 @@ namespace webapi.Controllers
                 {
                     product.ProductImages = new List<ProductImage>();
                 }
-                foreach (var image in data.productImages)
+                ProductImage newProductImage = new ProductImage
                 {
-                    ProductImage newProductImage = new ProductImage
-                    {
-                        Color = data.Color!,
-                        ImageURL = image
-                    };
-                    product.ProductImages.Add(newProductImage);
-                }
+                    Color = data.Color!,
+                    ImageURLs = data.productImages
+                };
+                product.ProductImages.Add(newProductImage);
                 await productService.UpdateOneAsync(product.Id!, product);
             }
             else
@@ -71,6 +76,14 @@ namespace webapi.Controllers
                 return BadRequest("Couldn't find product");
             }
             return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("getProductImagesByColor")]
+        public async Task<IActionResult> GetProductImagesByColor([FromBody] GetImagesRequest request)
+        {
+            List<string> imageURLs = await productService.FindImagesByColorAsync(request.productId, request.color);
+            return Ok(imageURLs);
         }
     }
 }

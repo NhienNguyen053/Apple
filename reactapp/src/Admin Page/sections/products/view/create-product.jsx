@@ -14,8 +14,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
@@ -28,7 +26,6 @@ import TabPanel from '../../../Components/TabPanel';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
 import { v4 as uuidv4 } from 'uuid';
-import set from 'date-fns/fp/set/index';
 
 // ----------------------------------------------------------------------
 let nextId = -1;
@@ -50,7 +47,7 @@ export default function CreateProduct() {
     const [productDescription, setProductDescription] = useState('');
     const [productStatus, setProductStatus] = useState('Inactive');
     const [productImages, setProductImages] = useState([]);
-    const [created, setCreated] = useState(true);
+    const [created, setCreated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);
     const [imageError, setImageError] = useState('');
@@ -63,7 +60,6 @@ export default function CreateProduct() {
     const [sizeAndWeight, setSizeAndWeight] = useState('');
     const [powerAndBattery, setPowerAndBattery] = useState('');
     const [connector, setConnector] = useState('');
-
     const jwtToken = Cookies.get('jwtToken');
     const names = [
         'Red',
@@ -115,8 +111,37 @@ export default function CreateProduct() {
         setCategoryError(false);
     }
 
-    const handleColorChange = (e) => {
+    const handleColorChange = async (e) => {
         setSelectedColor(e.target.value);
+        try {
+            const response = await fetch('https://localhost:7061/api/Product/getProductImagesByColor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    color: e.target.value
+                }),
+            });
+            if (response.status === 401) {
+                navigate('/signin');
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setProductImages([]);
+            data.forEach(item => {
+                setProductImages((prevImages) => [
+                    ...prevImages,
+                    { id: uuidv4(), path: item },
+                ]);
+            })
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     }
 
     const handleSubCategoryId = (e) => {
@@ -310,6 +335,7 @@ export default function CreateProduct() {
                     ProductQuantity: productQuantity,
                     ProductStatus: productStatus,
                     CategoryId: categoryId,
+                    SubCategoryId: subCategoryId,
                     ProductDescription: productDescription,
                     Colors: personName,
                     Specifications: {
@@ -433,13 +459,12 @@ export default function CreateProduct() {
                 body: JSON.stringify({
                     productId: productId,
                     productImages: imageURLs,
-                    Color: hasColors === true ? personName.toString() : null
+                    Color: hasColors === true ? selectedColor.toString() : null
                 }),
             });
         }
         setTimeout(() => {
             setLoading(false);
-            navigate('/dashboard/products');
         }, 3000);
     }
 
@@ -464,12 +489,12 @@ export default function CreateProduct() {
                 <div className='container7 display' style={{ marginTop: 0 }}>
                     <Collapse in={open} sx={{width: '100%'}}>
                         <Alert sx={{ mb: 2 }}>
-                            Created product successfully!
+                            Created product successfully. You can now add images to the product!
                         </Alert>
                     </Collapse>
                     <div style={{ width: 'fit-content', height: '80%' }}>
-                        <div style={{ paddingBottom: '25px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                            <div style={{width: '47%'}}>
+                        <div style={{ paddingBottom: '25px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} className="formInputs3">
+                            <div style={{ width: '47%' }}>
                                 <Select2 type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: categoryError === false ? 'none' : 'block'}}>Please select a category</p>
                             </div>
@@ -523,7 +548,7 @@ export default function CreateProduct() {
                                 labelId="demo-multiple-chip-label"
                                 id="demo-multiple-chip"
                                 multiple
-                                sx={{width: '100%', height: '56px'}}
+                                sx={{width: '100%', height: '56px', paddingLeft: '50px'}}
                                 value={personName}
                                 onChange={handleChange2}
                                 input={<OutlinedInput id="select-multiple-chip" label="Colors" />}
@@ -716,9 +741,9 @@ export default function CreateProduct() {
                             <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Product Status</p>
                             <Select2 type={"status"} width={'47%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} />
                             <div style={{width: '100%'}}></div>
-                            <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
+                            <div style={{ display: 'flex', height: 'fit-content', marginLeft: '1%', width: 'fit-content' }} className="formButtons" id="formButtons">
                                 <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
-                                <div style={{ width: '15px' }}></div>
+                                <span style={{ width: '15px' }}></span>
                                 {loading ? (
                                     <div className="lds-spinner">
                                         <div></div><div></div><div></div><div></div>

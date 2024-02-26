@@ -8,5 +8,6 @@ namespace AppleApi.Interfaces
 {
     public interface IProductService : ICommonRepository<Product>
     {
+        Task<List<string>> FindImagesByColorAsync(string id, string color);
     }
 }

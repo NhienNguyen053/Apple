@@ -21,6 +21,7 @@ import CreateCategory from './Admin Page/Pages/createCategory';
 import EditCategory from './Admin Page/Pages/editCategory';
 import EditUser from './Admin Page/Pages/editUser';
 import CreateProduct from './Admin Page/sections/products/view/create-product';
+import EditProduct from './Admin Page/sections/products/view/edit-product';
 
 function App() {
     return (
@@ -65,6 +66,16 @@ function App() {
                 </DashboardLayout>
               </AuthRoute>
             }
+            />
+            <Route
+              path="/dashboard/products/editProduct"
+              element={
+                <AuthRoute>
+                  <DashboardLayout>
+                    <EditProduct />
+                  </DashboardLayout>
+                </AuthRoute>
+              }
             />
             <Route
             path="/dashboard/users"

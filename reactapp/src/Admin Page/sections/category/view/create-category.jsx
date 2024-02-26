@@ -8,6 +8,8 @@ import Button from '../../../../Main Page/Components/Button';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../../../Firebase";
 import Cookies from 'js-cookie';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +21,7 @@ export default function CreateCategory() {
     const [loading, setLoading] = useState(false);
     const [imageError, setImageError] = useState('');
     const jwtToken = Cookies.get('jwtToken');
+    const [open, setOpen] = useState(false);
 
     const handleNameChange = (e) => {
         setCategoryError('');
@@ -127,7 +130,10 @@ export default function CreateCategory() {
             }
             setTimeout(() => {
                 setLoading(false);
-                navigate('/dashboard/categories');
+                setOpen(true);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 3000);
             }, 2000);
         } else {
             setLoading(false);
@@ -137,10 +143,15 @@ export default function CreateCategory() {
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-                <Typography variant="h4">New Category</Typography>
+                <Typography variant="h4" style={{ marginLeft: '3%' }}>New Category</Typography>
             </Stack>
             <div className='container7 display'>
-                <div style={{ width: 'fit-content', height: '80%' }}>
+                <Collapse in={open} sx={{ width: '100%' }}>
+                    <Alert sx={{ mb: 2 }}>
+                        Created category successfully!
+                    </Alert>
+                </Collapse>
+                <div style={{ width: 'fit-content', height: '80%' }} className="formInputs2">
                     <div style={{ paddingBottom: '25px' }}>
                         <Input
                             placeholder={"Category Name"}
@@ -148,7 +159,7 @@ export default function CreateCategory() {
                             icon={false}
                             borderRadius={"5px"}
                             error={categoryError}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleNameChange}
                             margin={'0 auto 0 auto'}
                         />
@@ -157,7 +168,7 @@ export default function CreateCategory() {
                             isVisible={true}
                             icon={false}
                             borderRadius={"5px"}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleDescChange}
                             margin={'30px auto 0 auto'}
                         />
@@ -167,7 +178,7 @@ export default function CreateCategory() {
                             icon={false}
                             type={"file"}
                             borderRadius={"5px"}
-                            width={'470px'}
+                            width={'100%'}
                             onInputChange={handleImageChange}
                             margin={'30px auto 0 auto'}
                             id={"categoryimage"}
