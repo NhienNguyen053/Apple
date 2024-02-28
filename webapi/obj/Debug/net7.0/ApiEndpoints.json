@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "category",
-        "Type": "AppleApi.Models.Category",
+        "Type": "webapi.Models.Category.Category",
         "IsRequired": true
       }
     ],
@@ -51,7 +51,7 @@
     "Parameters": [
       {
         "Name": "category",
-        "Type": "AppleApi.Models.Category",
+        "Type": "webapi.Models.Category.Category",
         "IsRequired": true
       }
     ],
@@ -67,7 +67,23 @@
     "Parameters": [
       {
         "Name": "product",
-        "Type": "AppleApi.Models.Product",
+        "Type": "webapi.Models.Product.Product",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "DeleteProductImage",
+    "RelativePath": "api/Product/deleteProductImage",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "webapi.Models.Product.DeleteImageRequest",
         "IsRequired": true
       }
     ],
@@ -93,7 +109,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "webapi.Models.GetImagesRequest",
+        "Type": "webapi.Models.Product.GetImagesRequest",
         "IsRequired": true
       }
     ],
@@ -109,7 +125,7 @@
     "Parameters": [
       {
         "Name": "data",
-        "Type": "AppleApi.Models.UpdateProductImages",
+        "Type": "webapi.Models.Product.UpdateProductImages",
         "IsRequired": true
       }
     ],
@@ -193,7 +209,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "AppleApi.Models.UserLoginRequest",
+        "Type": "webapi.Models.User.UserLoginRequest",
         "IsRequired": true
       }
     ],
@@ -209,7 +225,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "AppleApi.Models.NewUserRequest",
+        "Type": "webapi.Models.User.NewUserRequest",
         "IsRequired": true
       }
     ],
@@ -225,7 +241,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "AppleApi.Models.UserRegisterRequest",
+        "Type": "webapi.Models.User.UserRegisterRequest",
         "IsRequired": true
       }
     ],
@@ -331,7 +347,7 @@
     "Parameters": [
       {
         "Name": "request",
-        "Type": "webapi.Models.UpdateUserRequest",
+        "Type": "webapi.Models.User.UpdateUserRequest",
         "IsRequired": true
       }
     ],

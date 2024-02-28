@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using AppleApi.Common;
 using AppleApi.Interfaces;
 using System.Collections;
+using webapi.Models.User;
 
 namespace AppleApi.Services
 {

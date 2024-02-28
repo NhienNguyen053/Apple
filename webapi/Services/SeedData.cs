@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using AppleApi.Services;
-using AppleApi.Models;
+using webapi.Models.User;
 using System.Security.Cryptography;
 using AppleApi.Interfaces;
 

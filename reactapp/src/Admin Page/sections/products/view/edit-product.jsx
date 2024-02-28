@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Input from '../../../../Main Page/Components/Input';
 import Select2 from '../../../../Main Page/Components/Select';
 import Button from '../../../../Main Page/Components/Button';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject, getStorage } from "firebase/storage";
 import { storage } from "../../../../Firebase";
 import Cookies from 'js-cookie';
 import Tabs from '@mui/material/Tabs';
@@ -26,9 +26,10 @@ import TabPanel from '../../../Components/TabPanel';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
 import { v4 as uuidv4 } from 'uuid';
+import Modal from '../../../Components/Modal';
 
 // ----------------------------------------------------------------------
-let nextId = -1;
+
 export default function EditProduct() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -49,9 +50,11 @@ export default function EditProduct() {
     const [productDescription, setProductDescription] = useState(product.productDescription);
     const [productStatus, setProductStatus] = useState(product.productStatus);
     const [productImages, setProductImages] = useState([]);
+    const [activeImages, setActiveImages] = useState([]);
     const [created, setCreated] = useState(true);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
     const [imageError, setImageError] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
     const [display, setDisplay] = useState('');
@@ -62,6 +65,9 @@ export default function EditProduct() {
     const [sizeAndWeight, setSizeAndWeight] = useState('');
     const [powerAndBattery, setPowerAndBattery] = useState('');
     const [connector, setConnector] = useState('');
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [deleteImageId, setDeleteImageId] = useState('');
+    const [deleted, setDeleted] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
     const names = [
         'Red',
@@ -113,8 +119,9 @@ export default function EditProduct() {
         setCategoryError(false);
     }
 
-    const handleColorChange = (e) => {
+    const handleColorChange = async (e) => {
         setSelectedColor(e.target.value);
+        getProductImagesByColor(e.target.value);
     }
 
     const handleSubCategoryId = (e) => {
@@ -211,7 +218,42 @@ export default function EditProduct() {
             }
         };
         fetchData();
+        if (product.colors.length === 0) {
+            getProductImagesByColor(null);
+        }
     }, []);
+
+    const getProductImagesByColor = async (e) => {
+        try {
+            const response = await fetch('https://localhost:7061/api/Product/getProductImagesByColor', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    color: e
+                }),
+            });
+            if (response.status === 401) {
+                navigate('/signin');
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setActiveImages([]);
+            data.forEach(item => {
+                setActiveImages((prevImages) => [
+                    ...prevImages,
+                    { id: uuidv4(), path: item },
+                ]);
+            })
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
     const back = () => {
         navigate('/dashboard/products');
@@ -328,6 +370,7 @@ export default function EditProduct() {
             });
             const newProduct = await product.json();
             setProductId(newProduct.id);
+            setActiveImages([]);
             setTitle(`Product #${newProduct.productNumber}`)
             setCreated(true);
             setOpen(true);
@@ -379,10 +422,9 @@ export default function EditProduct() {
             var blob = item.getAsFile();
             var img = new Image();
             img.src = URL.createObjectURL(blob);
-            nextId = nextId + 1;
             setProductImages((prevImages) => [
                 ...prevImages,
-                { id: nextId, path: img.src },
+                { id: uuidv4(), path: img.src },
             ]);
         })
     };
@@ -413,11 +455,15 @@ export default function EditProduct() {
                 uint8Array[j] = byteString.charCodeAt(j);
             }
             const blob = new Blob([arrayBuffer], { type: mimeString })
-            const imageRef = ref(storage, `images/ProductImages/${productId}/${i}`)
+            const imageRef = ref(storage, `images/ProductImages/${productId}/${uuidv4()}`)
             await uploadBytes(imageRef, blob).then(() => {
                 return getDownloadURL(imageRef);
             })
                 .then((downloadURL) => {
+                    setActiveImages((prevImages) => [
+                        ...prevImages,
+                        { id: uuidv4(), path: downloadURL },
+                    ]);
                     imageURLs.push(downloadURL);
                 })
         }
@@ -437,6 +483,11 @@ export default function EditProduct() {
         }
         setTimeout(() => {
             setLoading(false);
+            setProductImages([]);
+            setOpen2(true);
+            setTimeout(() => {
+                setOpen2(false);
+            }, 3000);
         }, 3000);
     }
 
@@ -444,6 +495,45 @@ export default function EditProduct() {
         setProductImages((prevImages) =>
             prevImages.filter((image) => image.id !== e)
         );
+    }
+
+    const removeImage2 = () => {
+        const decodedUrl = decodeURIComponent(deleteImageId);
+        const urlObject = new URL(decodedUrl);
+        const path = urlObject.pathname;
+        const pathSegments = path.split('/');
+        const extractedPath = pathSegments.slice(5).join('/');
+        const storage = getStorage();
+        const desertRef = ref(storage, extractedPath);
+        deleteObject(desertRef).then(async () => {
+            await fetch('https://localhost:7061/api/Product/deleteProductImage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    imageUrl: deleteImageId,
+                    color: personName.length !== 0 ? selectedColor.toString() : null
+                }),
+            });
+            setDeleted(true);
+            setActiveImages(activeImages.filter(x => x.path !== deleteImageId))
+            setModalVisible(!isModalVisible);
+            setOpen2(true);
+            setTimeout(() => {
+                setOpen2(false);
+                setDeleted(false);
+            }, 3000);
+        }).catch((error) => {
+            console.error(error);
+        })
+    }
+
+    const toggleModal = (e) => {
+        setDeleteImageId(e);
+        setModalVisible(!isModalVisible);
     }
 
     return (
@@ -734,9 +824,14 @@ export default function EditProduct() {
                 </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }} onPaste={handlePaste}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} onPaste={handlePaste}>
+                    <Collapse in={open2} sx={{ width: '100%' }}>
+                        <Alert sx={{ mb: 2 }}>
+                            {deleted == false ? 'Uploaded images successfully!' : 'Deleted image successfully!'}
+                        </Alert>
+                    </Collapse>
                     <div>
-                        <p style={{ width: '100%', color: 'black', margin: '16px 0 10px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Add product images</p>
+                        <p style={{ width: '100%', color: 'black', margin: '16px 0 10px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Add product images:</p>
                         <button style={{ fontSize: '14px', padding: '4px 8px', cursor: 'pointer' }} onClick={handleButtonClick}>Choose Files</button> <span style={{ color: 'black' }}>or paste your images here!</span>
                         <Input
                             placeholder={""}
@@ -759,7 +854,7 @@ export default function EditProduct() {
                             ))}
                         </div>
                     </div>
-                    <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300 }}>
+                    <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300, display: personName.lenght == 0 ? 'none' : 'flex' }}>
                         <InputLabel shrink htmlFor="select-multiple-native">
                             Colors
                         </InputLabel>
@@ -771,7 +866,7 @@ export default function EditProduct() {
                             inputProps={{
                                 id: 'select-multiple-native',
                             }}
-                            sx={{ color: selectedColor, background: selectedColor === 'White' ? '#e6e2da' : 'white' }}
+                            sx={{ color: selectedColor, background: selectedColor === 'White' ? '#e6e2da' : 'white',  }}
                         >
                             <option value="" style={{ display: 'none' }}></option>
                             {personName.map((name) => (
@@ -795,7 +890,21 @@ export default function EditProduct() {
                         <Button text={'Continue'} background={'black'} textColor={'white'} onclick={handleUploadImage} />
                     )}
                 </div>
+                <div>
+                    <p style={{ width: '100%', color: 'black', margin: '16px 0 10px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Active product images:</p>
+                    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                        {activeImages.map((image, index) => (
+                            <div>
+                                <div style={{ width: '140px', height: '140px', margin: '10px' }}>
+                                    <img key={index} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                </div>
+                                <Button text={'Remove'} background={'white'} textColor={'red'} fontSize={'14px'} margin={'0 auto'} border={'1px solid red'} onclick={() => removeImage2(image.path)} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </TabPanel>
+            <Modal name2={"image"} isVisible={isModalVisible} toggleModal={toggleModal} func={removeImage2} />
         </Container>
     );
 }

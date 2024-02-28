@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using AppleApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MailKit.Net.Smtp;
@@ -15,9 +14,9 @@ using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using AppleApi.Interfaces;
 using System.Text.RegularExpressions;
-using webapi.Models;
+using webapi.Models.User;
 
-namespace AppleApi.Controllers 
+namespace AppleApi.Controllers
 {
     [Route("api/[controller]")]
     public class UsersController : ControllerBase

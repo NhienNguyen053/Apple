@@ -1,9 +1,9 @@
 ﻿using AppleApi.Interfaces;
-using AppleApi.Models;
 using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using webapi.Models;
+using MongoDB.Bson;
+using webapi.Models.Product;
 
 namespace webapi.Controllers
 {
@@ -62,13 +62,17 @@ namespace webapi.Controllers
                 if (product.ProductImages == null)
                 {
                     product.ProductImages = new List<ProductImage>();
+                    ProductImage newProductImage = new ProductImage
+                    {
+                        Color = data.Color!,
+                        ImageURLs = data.productImages
+                    };
+                    product.ProductImages.Add(newProductImage);
                 }
-                ProductImage newProductImage = new ProductImage
+                else
                 {
-                    Color = data.Color!,
-                    ImageURLs = data.productImages
-                };
-                product.ProductImages.Add(newProductImage);
+                    product.ProductImages.FirstOrDefault(x => x.Color == data.Color)!.ImageURLs.AddRange(data.productImages);
+                }
                 await productService.UpdateOneAsync(product.Id!, product);
             }
             else
@@ -84,6 +88,14 @@ namespace webapi.Controllers
         {
             List<string> imageURLs = await productService.FindImagesByColorAsync(request.productId, request.color);
             return Ok(imageURLs);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("deleteProductImage")]
+        public async Task<IActionResult> DeleteProductImage([FromBody] DeleteImageRequest request)
+        {
+            await productService.DeleteProductImage(request.productId, request.color, request.imageUrl);
+            return Ok();
         }
     }
 }

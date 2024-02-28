@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AppleApi.Common;
 using AppleApi.Interfaces;
+using webapi.Models.Category;
 
 namespace AppleApi.Services
 {
