@@ -30,7 +30,7 @@ namespace AppleApi.Controllers
             this.userService = userService;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Employee")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {

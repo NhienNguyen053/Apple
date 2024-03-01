@@ -117,6 +117,22 @@
   },
   {
     "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "UpdateProduct",
+    "RelativePath": "api/Product/updateProduct",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "product",
+        "Type": "webapi.Models.Product.Product",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
     "Method": "UpdateProductImages",
     "RelativePath": "api/Product/updateProductImages",
     "HttpMethod": "POST",

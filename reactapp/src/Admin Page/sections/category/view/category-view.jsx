@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
@@ -11,12 +10,14 @@ import { ref, deleteObject } from "firebase/storage";
 import { storage } from '../../../../Firebase';
 import TextField from '../../../Components/TextField';
 import Modal from '../../../Components/Modal';
+import jwt_decode from 'jwt-decode';
 
 // ----------------------------------------------------------------------
 
 export default function CategoryPage() {
     const navigate = useNavigate();
     const jwtToken = Cookies.get('jwtToken');
+    const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const [categories, setCategories] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalVisible2, setModalVisible2] = useState(false);
@@ -163,7 +164,7 @@ export default function CategoryPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Categories</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange}>
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' }}>
                     New Category
                 </Button>
             </Stack>
@@ -179,7 +180,7 @@ export default function CategoryPage() {
                     <div className="container7" style={{ width: '41%', margin: '10px 15px', padding: '0 25px 10px 25px' }}>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
-                            <div style={{display: 'flex'}}>
+                            <div style={{display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
                                 <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
                                 <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id, category.categoryName, category.description, category.imageURL)}></i>
                                 <i className="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
@@ -188,7 +189,7 @@ export default function CategoryPage() {
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} />
+                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} role={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']} />
                                 ))}
                             </div>
                             <div style={{ width: '100px', height: '100px' }}>

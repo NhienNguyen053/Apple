@@ -15,6 +15,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import AuthRoute from './Admin Page/routes/AuthRoute';
+import AuthRoute2 from './Admin Page/routes/AuthRoute2';
 import CreateUser from './Admin Page/Pages/createUser';
 import CategoryPage from './Admin Page/Pages/category';
 import CreateCategory from './Admin Page/Pages/createCategory';
@@ -40,21 +41,21 @@ function App() {
             <Route
             path="/dashboard/"
             element={
-              <AuthRoute>
+              <AuthRoute2>
                 <DashboardLayout>
                   <AppPage />
                 </DashboardLayout>
-              </AuthRoute>
+              </AuthRoute2>
             }
             />
             <Route
             path="/dashboard/products"
             element={
-              <AuthRoute>
+              <AuthRoute2>
                 <DashboardLayout>
                   <ProductsPage />
                 </DashboardLayout>
-              </AuthRoute>
+              </AuthRoute2>
             }
             />
             <Route
@@ -70,21 +71,21 @@ function App() {
             <Route
               path="/dashboard/products/editProduct"
               element={
-                <AuthRoute>
+                <AuthRoute2>
                   <DashboardLayout>
                     <EditProduct />
                   </DashboardLayout>
-                </AuthRoute>
+                </AuthRoute2>
               }
             />
             <Route
             path="/dashboard/users"
             element={
-              <AuthRoute>
+              <AuthRoute2>
                 <DashboardLayout>
                   <UserPage />
                 </DashboardLayout>
-              </AuthRoute>
+              </AuthRoute2>
             }
             />
             <Route
@@ -110,11 +111,11 @@ function App() {
             <Route
               path="/dashboard/categories"
               element={
-                <AuthRoute>
+                <AuthRoute2>
                   <DashboardLayout>
                     <CategoryPage />
                   </DashboardLayout>
-                </AuthRoute>
+                </AuthRoute2>
               }
             />
             <Route

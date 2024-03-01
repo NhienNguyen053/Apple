@@ -18,7 +18,8 @@ export default function UserTableRow({
   isVerified,
   phone,
   edit,
-  remove
+  remove,
+  userRole
 }) {
   const [open, setOpen] = useState(null);
   const handleOpenMenu = (event) => {
@@ -42,11 +43,11 @@ export default function UserTableRow({
 
         <TableCell>{role}</TableCell>
 
-        <TableCell>
+        <TableCell align="center">
           <Label color={(isVerified === null && 'error') || 'success'}>{isVerified === null ? 'No' : 'Yes'}</Label>
         </TableCell>
 
-        <TableCell align="right">
+        <TableCell align="right" sx={{display: userRole === 'Admin' ? 'flex' : 'none'}}>
           <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -85,5 +86,6 @@ UserTableRow.propTypes = {
   role: PropTypes.any,
   phone: PropTypes.string,
   edit: PropTypes.func,
-  remove: PropTypes.func
+  remove: PropTypes.func,
+  userRole: PropTypes.any
 };

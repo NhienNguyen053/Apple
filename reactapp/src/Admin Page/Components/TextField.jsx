@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TextField2 from '@mui/material/TextField';
 
-const TextField = ({ id, name, parentId, onClick, onClick2 }) => {
+const TextField = ({ id, name, parentId, onClick, onClick2, role }) => {
     const [active, setActive] = useState(false);
     const original = name;
     const [inputValue, setInputValue] = useState(name);
@@ -19,7 +19,7 @@ const TextField = ({ id, name, parentId, onClick, onClick2 }) => {
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', marginBottom: '8px' }}>
+        <div style={{ display: role === 'Admin' ? 'flex' : 'none', width: '100%', marginBottom: '8px' }}>
             {active ? (
                 <TextField2 id="standard-basic" value={inputValue} variant="standard" onChange={handleInputChange}/>
             ) : (

@@ -53,6 +53,25 @@ namespace webapi.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpPost("updateProduct")]
+        public async Task<IActionResult> UpdateProduct([FromBody] Product product)
+        {
+            Product updateProduct = await productService.FindByIdAsync(product.Id);
+            updateProduct.ProductName = product.ProductName;
+            updateProduct.ProductPrice = product.ProductPrice;
+            updateProduct.ProductQuantity = product.ProductQuantity;
+            updateProduct.ProductStatus = product.ProductStatus;
+            updateProduct.CategoryId = product.CategoryId;
+            updateProduct.SubCategoryId = product.SubCategoryId;
+            updateProduct.ProductDescription = product.ProductDescription;
+            updateProduct.Colors = product.Colors;
+            updateProduct.Specifications = product.Specifications;
+            updateProduct.Options = product.Options;
+            await productService.UpdateOneAsync(product.Id, updateProduct);
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateProductImages")]
         public async Task<IActionResult> UpdateProductImages([FromBody] UpdateProductImages data)
         {

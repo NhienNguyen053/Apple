@@ -7,15 +7,18 @@ import Typography from '@mui/material/Typography';
 import Iconify from '../../../Components/iconify';
 import Button from '@mui/material/Button';
 import ProductCard from '../product-card';
-import ProductSort from '../product-sort';
 import ProductFilters from '../product-filters';
+import jwt_decode from 'jwt-decode';
 import ProductCartWidget from '../product-cart-widget';
+import Cookies from 'js-cookie';
 
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
+  const jwtToken = Cookies.get('jwtToken');
+  const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -45,13 +48,13 @@ export default function ProductsView() {
 
   return (
     <Container>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h4">Products</Typography>
-
-              <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange}>
-                  New Product
-              </Button>
-          </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4">Products</Typography>
+      
+          <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} sx={{ display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' }} onClick={routeChange}>
+              New Product
+          </Button>
+      </Stack>
 
       <Stack
         direction="row"
@@ -67,7 +70,6 @@ export default function ProductsView() {
             onCloseFilter={handleCloseFilter}
           />
 
-          <ProductSort />
         </Stack>
       </Stack>
 

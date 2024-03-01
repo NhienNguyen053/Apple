@@ -16,6 +16,7 @@ import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
+import jwt_decode from 'jwt-decode';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import Cookies from 'js-cookie';
 import Modal from '../../../Components/Modal';
@@ -31,6 +32,7 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const jwtToken = Cookies.get('jwtToken');
+  const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
   const [userName, setUserName] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const [deleteId, setDeleteId] = useState('');
@@ -159,19 +161,18 @@ export default function UserPage() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
-
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange}>
-                  { color}New User
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
+          {color}New User
         </Button>
       </Stack>
 
-          <Card>
-              {isModalVisible2 && (
-                  <div style={{ width: '95%', backgroundColor: `${color}`, padding: '15px', borderRadius: '10px', margin: '20px auto 0 auto' }}>
-                      <span style={{ fontFamily: 'SF-Pro-Display-Medium', color: 'black' }}>{error}</span>
-                      <button style={{ background: 'transparent', border: 'none', fontSize: '18px', float: 'right', lineHeight: '1', cursor: 'pointer' }} onClick={toggleModal3}>x</button>
-                  </div>
-              )}
+      <Card>
+          {isModalVisible2 && (
+              <div style={{ width: '95%', backgroundColor: `${color}`, padding: '15px', borderRadius: '10px', margin: '20px auto 0 auto' }}>
+                  <span style={{ fontFamily: 'SF-Pro-Display-Medium', color: 'black' }}>{error}</span>
+                  <button style={{ background: 'transparent', border: 'none', fontSize: '18px', float: 'right', lineHeight: '1', cursor: 'pointer' }} onClick={toggleModal3}>x</button>
+              </div>
+          )}
         <UserTableToolbar
           filterName={filterName}
           onFilterName={handleFilterByName}
@@ -192,8 +193,8 @@ export default function UserPage() {
                   { id: 'phone', label: 'Phone Number' },
                   { id: 'role', label: 'Role' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: '' },
-                ]}
+                  decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? { id: '', label: '' } : null,
+                ].filter(Boolean)}
               />
               <TableBody>
                 {dataFiltered
@@ -208,6 +209,7 @@ export default function UserPage() {
                       isVerified={row.isVerified}
                       edit={() => {editUser(row.id, row.firstName, row.lastName, row.country, row.birthday, row.role)}}
                       remove={() => toggleModal(row.name, row.id)}
+                      userRole={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']}
                     />
                   ))}
 
