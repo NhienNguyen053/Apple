@@ -580,16 +580,25 @@ export default function EditProduct() {
     }
 
     const deleteProduct = async () => {
-        await fetch('https://localhost:7061/api/Product/deleteProduct', {
+        const response = await fetch(`https://localhost:7061/api/Product/deleteProduct?id=${productId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${jwtToken}`
-            },
-            body: JSON.stringify({
-                id: productId,
-            }),
+            }
         });
+        const data = await response.json();
+        data.forEach(item => {
+            const decodedUrl = decodeURIComponent(item);
+            const urlObject = new URL(decodedUrl);
+            const path = urlObject.pathname;
+            const pathSegments = path.split('/');
+            const extractedPath = pathSegments.slice(5).join('/');
+            const storage = getStorage();
+            const desertRef = ref(storage, extractedPath);
+            deleteObject(desertRef);
+        });
+        navigate('/dashboard/products/');
     }
 
     const toggleModal = (e) => {
@@ -998,7 +1007,7 @@ export default function EditProduct() {
                 </div>
             </TabPanel>
             <Modal name2={"image"} isVisible={isModalVisible} toggleModal={toggleModal} func={removeImage2} />
-            <Modal name3={"product"} name={" #" } isVisible={isModalVisible2} toggleModal={toggleModal2} func={deleteProduct} />
+            <Modal name3={"product"} name={product ? " #" + product.productNumber : "" } isVisible={isModalVisible2} toggleModal={toggleModal2} func={deleteProduct} />
             <Modal name1={'!'} name4={"update"} name3={"product's colors? This will delete previous images"} isVisible={isModalVisible3} toggleModal={toggleModal3} func={() => handleUpdateProduct(1)} />
         </Container>
     );

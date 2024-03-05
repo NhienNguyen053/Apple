@@ -20,25 +20,38 @@ export default function ProductsView() {
   const jwtToken = Cookies.get('jwtToken');
   const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("https://localhost:7061/api/Product/getAllProducts");
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchProducts = async () => {
+      try {
+          const response = await fetch("https://localhost:7061/api/Product/getAllProducts");
+          const data = await response.json();
+          setProducts(data);
+      } catch (error) {
+          console.error('Error fetching categories:', error);
+      }
+  };
+
+  const fetchCategories = async () => {
+      try {
+          const response = await fetch("https://localhost:7061/api/Category/getAllCategories");
+          const data = await response.json();
+          setCategories(data);
+      } catch (error) {
+          console.error('Error fetching categories:', error);
+      }
+  };
 
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
 
-  const handleCloseFilter = () => {
+  const handleCloseFilter = (categoryId, subCategoryId, selectedPrice, productStatus, productName) => {
     setOpenFilter(false);
   };
 
@@ -68,6 +81,7 @@ export default function ProductsView() {
             openFilter={openFilter}
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
+            categories={categories}
           />
 
         </Stack>

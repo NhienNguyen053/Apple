@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using webapi.Models.Product;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace webapi.Controllers
 {
@@ -110,10 +111,16 @@ namespace webapi.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("deleteProduct")]
-        public async Task<IActionResult> DeleteProduct([FromBody] string id)
+        public async Task<IActionResult> DeleteProduct(string id)
         {
-            Console.WriteLine(id);
-            return Ok();
+            List<string> allImageURLs = new();
+            Product product = await productService.FindByIdAsync(id);
+            foreach(var productImages in product.ProductImages)
+            {
+                allImageURLs.AddRange(productImages.ImageURLs);
+            }
+            await productService.DeleteOneAsync(id);
+            return Ok(allImageURLs);
         }
 
         [Authorize(Roles = "Admin")]

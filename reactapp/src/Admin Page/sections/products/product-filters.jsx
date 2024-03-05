@@ -1,59 +1,87 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-
+import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
-import Rating from '@mui/material/Rating';
 import Divider from '@mui/material/Divider';
-import Checkbox from '@mui/material/Checkbox';
-import FormGroup from '@mui/material/FormGroup';
-import RadioGroup from '@mui/material/RadioGroup';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import FormControlLabel from '@mui/material/FormControlLabel';
-
 import Iconify from '../../Components/iconify';
 import Scrollbar from '../../Components/scrollbar';
-import { ColorPicker } from '../../Components/color-utils';
+import Select from '../../../Main Page/Components/Select';
 
 // ----------------------------------------------------------------------
 
-export const CATEGORY_OPTIONS = ['All', 'Shose', 'Apparel', 'Accessories'];
 export const PRICE_OPTIONS = [
-  { value: 'below', label: 'Below $25' },
-  { value: 'between', label: 'Between $25 - $75' },
-  { value: 'above', label: 'Above $75' },
+  { value: 'below', label: 'Below $100' },
+  { value: 'between', label: 'Between $100 - $500' },
+  { value: 'above', label: 'Above $500' },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter }) {
+export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, categories }) {
+  const [categoryId, setCategoryId] = useState('');
+  const [subCategoryId, setSubCategoryId] = useState('');
+  const [productStatus, setProductStatus] = useState('Inactive');
+  const [selectedPrice, setSelectedPrice] = useState(null);
+  const [productName, setProductName] = useState('');
+
+  const handleProductNameChange = (event) => {
+    setProductName(event.target.value);
+  };
+
+  const handleRadioChange = (value) => {
+    setSelectedPrice(value);
+  };
+
+  const handleCategoryId = (e) => {
+    setCategoryId(e.target.value);
+  }
+
+  const handleSubCategoryId = (e) => {
+    setSubCategoryId(e.target.value);
+  }
+
+  const handleProductStatus = (e) => {
+    setProductStatus(e.target.value);
+  }
+
   const renderCategory = (
-    <Stack spacing={1}>
-      <Typography variant="subtitle2">Category</Typography>
-      <RadioGroup>
-        {CATEGORY_OPTIONS.map((item) => (
-          <FormControlLabel key={item} value={item} control={<Radio />} label={item} />
-        ))}
-      </RadioGroup>
-    </Stack>
+      <Stack spacing={1}>
+          <Select type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} />
+      </Stack>
+  );
+
+  const renderSubCategory = (
+     <Stack spacing={1}>
+         <Select type={'subcategory'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} disabled={categoryId === "" ? true : null} categoryId={categoryId} onInputChange={handleSubCategoryId} />
+     </Stack>
   );
 
   const renderPrice = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Price</Typography>
-      <RadioGroup>
-        {PRICE_OPTIONS.map((item) => (
-          <FormControlLabel
-            key={item.value}
-            value={item.value}
-            control={<Radio />}
-            label={item.label}
-          />
+      <Typography variant="subtitle2">Price:</Typography>
+        {PRICE_OPTIONS.map((item, index) => (
+            <div class="form-check" style={{ display: 'flex' }} onClick={() => handleRadioChange(index)}>
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" style={{ height: 'fit-content', marginTop: '4px', marginRight: '10px' }} />
+                <p style={{margin: 0, }}>{item.label}</p>
+            </div>
         ))}
-      </RadioGroup>
+    </Stack>
+  );
+
+  const renderName = (
+    <Stack spacing={1}>
+      <TextField id="outlined-basic" label="Product Name" variant="outlined" onChange={handleProductNameChange}/>
+    </Stack>
+  );
+
+  const renderStatus = (
+    <Stack spacing={1}>
+      <Select type={"status"} width={'100%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} />
     </Stack>
   );
 
@@ -71,7 +99,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
       <Drawer
         anchor="right"
         open={openFilter}
-        onClose={onCloseFilter}
+        onClose={() => onCloseFilter(categoryId, subCategoryId, selectedPrice, productStatus, productName)}
         PaperProps={{
           sx: { width: 280, border: 'none', overflow: 'hidden' },
         }}
@@ -96,7 +124,13 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
           <Stack spacing={3} sx={{ p: 3 }}>
             {renderCategory}
 
+            {renderSubCategory}
+
             {renderPrice}
+
+            {renderName}
+
+            {renderStatus}
           </Stack>
         </Scrollbar>
 
@@ -121,4 +155,5 @@ ProductFilters.propTypes = {
   openFilter: PropTypes.bool,
   onOpenFilter: PropTypes.func,
   onCloseFilter: PropTypes.func,
+  categories: PropTypes.array,
 };
