@@ -34,22 +34,23 @@ import jwt_decode from 'jwt-decode';
 export default function EditProduct() {
     const navigate = useNavigate();
     const location = useLocation();
-    const product = location.state?.product;
-    const [title, setTitle] = useState(`Product #${product.productNumber}`);
-    const [productId, setProductId] = useState(product.id);
+    const id = location.state?.id;
+    const [product, setProduct] = useState();
+    const [title, setTitle] = useState();
+    const [productId, setProductId] = useState();
     const [categories, setCategories] = useState([]);
-    const [categoryId, setCategoryId] = useState(product.categoryId);
+    const [categoryId, setCategoryId] = useState();
     const [categoryError, setCategoryError] = useState(false);
-    const [subCategoryId, setSubCategoryId] = useState(product.subCategoryId);
+    const [subCategoryId, setSubCategoryId] = useState();
     const [subCategoryError, setSubCategoryError] = useState(false);
-    const [productName, setProductName] = useState(product.productName);
+    const [productName, setProductName] = useState();
     const [productNameError, setProductNameError] = useState('');
-    const [productPrice, setProductPrice] = useState(product.productPrice);
+    const [productPrice, setProductPrice] = useState();
     const [productPriceError, setProductPriceError] = useState(false);
-    const [productQuantity, setProductQuantity] = useState(product.productQuantity);
+    const [productQuantity, setProductQuantity] = useState();
     const [productQuantityError, setProductQuantityError] = useState('');
-    const [productDescription, setProductDescription] = useState(product.productDescription);
-    const [productStatus, setProductStatus] = useState(product.productStatus);
+    const [productDescription, setProductDescription] = useState();
+    const [productStatus, setProductStatus] = useState();
     const [productImages, setProductImages] = useState([]);
     const [activeImages, setActiveImages] = useState([]);
     const [created, setCreated] = useState(true);
@@ -58,15 +59,17 @@ export default function EditProduct() {
     const [open2, setOpen2] = React.useState(false);
     const [imageError, setImageError] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
-    const [display, setDisplay] = useState(product.specifications.display);
-    const [material, setMaterial] = useState(product.specifications.material);
-    const [chip, setChip] = useState(product.specifications.chip);
-    const [camera, setCamera] = useState(product.specifications.camera);
-    const [functionality, setFunctionality] = useState(product.specifications.functionality);
-    const [sizeAndWeight, setSizeAndWeight] = useState(product.specifications.sizeAndWeight);
-    const [powerAndBattery, setPowerAndBattery] = useState(product.specifications.powerAndBattery);
-    const [connector, setConnector] = useState(product.specifications.connector);
+    const [display, setDisplay] = useState();
+    const [material, setMaterial] = useState();
+    const [chip, setChip] = useState();
+    const [camera, setCamera] = useState();
+    const [functionality, setFunctionality] = useState();
+    const [sizeAndWeight, setSizeAndWeight] = useState();
+    const [powerAndBattery, setPowerAndBattery] = useState();
+    const [connector, setConnector] = useState();
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalVisible2, setModalVisible2] = useState(false);
+    const [isModalVisible3, setModalVisible3] = useState(false);
     const [deleteImageId, setDeleteImageId] = useState('');
     const [deleted, setDeleted] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
@@ -200,32 +203,66 @@ export default function EditProduct() {
 
     useEffect(() => {
         setSelectedColor('empty');
-        const fetchData = async () => {
-            try {
-                const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `bearer ${jwtToken}`
-                    },
-                });
-                if (response.status === 401) {
-                    navigate('/signin');
-                }
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                setCategories(data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+        getProduct();
         fetchData();
+    }, []);
+
+    const getProduct = async () => {
+        const response = await fetch(`https://localhost:7061/api/Product/getProductById?id=${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${jwtToken}`
+            },
+        });
+        const product = await response.json();
+        setProduct(product);
+        setTitle(`Product #${product.productNumber}`);
+        setProductId(product.id);
+        setCategoryId(product.categoryId);
+        setSubCategoryId(product.subCategoryId);
+        setProductName(product.productName);
+        setProductPrice(product.productPrice);
+        setProductQuantity(product.productQuantity);
+        setProductDescription(product.productDescription);
+        setProductStatus(product.productStatus);
+        setDisplay(product.specifications.display);
+        setMaterial(product.specifications.material);
+        setChip(product.specifications.chip);
+        setCamera(product.specifications.camera);
+        setFunctionality(product.specifications.functionality);
+        setSizeAndWeight(product.specifications.sizeAndWeight);
+        setPowerAndBattery(product.specifications.powerAndBattery);
+        setConnector(product.specifications.connector);
+        setPersonName(product.colors);
+        setProductMemory(product.options.memory);
+        setProductStorage(product.options.storage);
         if (product.colors.length === 0) {
             getProductImagesByColor(null);
         }
-    }, []);
+    }
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `bearer ${jwtToken}`
+                },
+            });
+            if (response.status === 401) {
+                navigate('/signin');
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     const getProductImagesByColor = async (e) => {
         try {
@@ -278,9 +315,9 @@ export default function EditProduct() {
         setValue(newValue);
     };
     const theme = useTheme();
-    const [personName, setPersonName] = React.useState(product.colors);
-    const [productMemory, setProductMemory] = React.useState(product.options.memory);
-    const [productStorage, setProductStorage] = React.useState(product.options.storage);
+    const [personName, setPersonName] = React.useState([]);
+    const [productMemory, setProductMemory] = React.useState([]);
+    const [productStorage, setProductStorage] = React.useState([]);
     const handleChange2 = (event) => {
         const {
             target: { value },
@@ -306,7 +343,15 @@ export default function EditProduct() {
         );
     };
 
-    const handleUpdateProduct = async () => {
+    const handleUpdateProduct = async (e) => {
+        if (e === 0) {
+            if ((product.colors.length !== personName.length)) {
+                toggleModal3();
+                return;
+            } else { }
+        } else {
+            setModalVisible3(!isModalVisible3);
+        }
         const priceRegex = /^\d+(\.\d{1,2})?$/;
         const quantityRegex = /^[1-9]\d*$/;
         setLoading(true);
@@ -500,7 +545,7 @@ export default function EditProduct() {
         );
     }
 
-    const removeImage2 = () => {
+    const removeImage2 = async () => {
         const decodedUrl = decodeURIComponent(deleteImageId);
         const urlObject = new URL(decodedUrl);
         const path = urlObject.pathname;
@@ -518,7 +563,7 @@ export default function EditProduct() {
                 body: JSON.stringify({
                     productId: productId,
                     imageUrl: deleteImageId,
-                    color: personName.length !== 0 ? selectedColor.toString() : null
+                    color: selectedColor
                 }),
             });
             setDeleted(true);
@@ -534,15 +579,37 @@ export default function EditProduct() {
         })
     }
 
+    const deleteProduct = async () => {
+        await fetch('https://localhost:7061/api/Product/deleteProduct', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({
+                id: productId,
+            }),
+        });
+    }
+
     const toggleModal = (e) => {
         setDeleteImageId(e);
         setModalVisible(!isModalVisible);
+    }
+
+    const toggleModal2 = () => {
+        setModalVisible2(!isModalVisible2);
+    }
+
+    const toggleModal3 = () => {
+        setModalVisible3(!isModalVisible3);
     }
 
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">{title}</Typography>
+                <Button text={'Delete'} background={'red'} textColor={'white'} margin={0} onclick={toggleModal2} />
             </Stack>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -558,7 +625,7 @@ export default function EditProduct() {
                         </Alert>
                     </Collapse>
                     <div style={{ width: 'fit-content', height: '80%' }}>
-                        <div style={{ paddingBottom: '25px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                        <div style={{ paddingBottom: '25px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} className="formInputs3">
                             <div style={{ width: '47%' }}>
                                 <Select2 type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} selectedCategory={categoryId} disabled={role === 'Admin' ? false : true} />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: categoryError === false ? 'none' : 'block' }}>Please select a category</p>
@@ -842,7 +909,7 @@ export default function EditProduct() {
                                         <div></div><div></div><div></div><div></div>
                                     </div>
                                 ) : (
-                                    <Button text={'Continue'} background={'black'} textColor={'white'} onclick={handleUpdateProduct} />
+                                    <Button text={'Update'} background={'black'} textColor={'white'} onclick={() => handleUpdateProduct(0)} />
                                 )}
                             </div>
                         </div>
@@ -870,17 +937,17 @@ export default function EditProduct() {
                         />
                         <p style={{ color: 'red', margin: '8px 0' }}>{imageError}</p>
                         <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                            {productImages.map((image, index) => (
+                            {productImages.map(image => (
                                 <div>
                                     <div style={{ width: '140px', height: '140px', margin: '10px' }}>
-                                        <img key={index} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                        <img key={image.path} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                     </div>
                                     <Button text={'Remove'} background={'white'} textColor={'red'} fontSize={'14px'} margin={'0 auto'} border={'1px solid red'} onclick={() => removeImage(image.id)} />
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300, display: personName.lenght == 0 ? 'none' : 'flex' }}>
+                    <FormControl sx={{ m: 1, minWidth: 120, maxWidth: 300, display: personName.length === 0 ? 'none' : 'flex' }}>
                         <InputLabel shrink htmlFor="select-multiple-native">
                             Colors
                         </InputLabel>
@@ -913,24 +980,26 @@ export default function EditProduct() {
                             <div></div><div></div><div></div><div></div>
                         </div>
                     ) : (
-                        <Button text={'Continue'} background={'black'} textColor={'white'} onclick={handleUploadImage} />
+                        <Button text={'Upload'} background={'black'} textColor={'white'} onclick={handleUploadImage} />
                     )}
                 </div>
                 <div>
                     <p style={{ width: '100%', color: 'black', margin: '16px 0 10px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Active product images:</p>
                     <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {activeImages.map((image, index) => (
+                        {activeImages.map(image => (
                             <div>
                                 <div style={{ width: '140px', height: '140px', margin: '10px' }}>
-                                    <img key={index} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                    <img key={image.path} src={image.path} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                                 </div>
-                                <Button text={'Remove'} background={'white'} textColor={'red'} fontSize={'14px'} margin={'0 auto'} border={'1px solid red'} onclick={() => removeImage2(image.path)} />
+                                <Button text={'Remove'} background={'white'} textColor={'red'} fontSize={'14px'} margin={'0 auto'} border={'1px solid red'} onclick={() => toggleModal(image.path)} />
                             </div>
                         ))}
                     </div>
                 </div>
             </TabPanel>
             <Modal name2={"image"} isVisible={isModalVisible} toggleModal={toggleModal} func={removeImage2} />
+            <Modal name3={"product"} name={" #" } isVisible={isModalVisible2} toggleModal={toggleModal2} func={deleteProduct} />
+            <Modal name1={'!'} name4={"update"} name3={"product's colors? This will delete previous images"} isVisible={isModalVisible3} toggleModal={toggleModal3} func={() => handleUpdateProduct(1)} />
         </Container>
     );
 }

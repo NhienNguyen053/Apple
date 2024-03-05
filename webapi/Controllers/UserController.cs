@@ -60,6 +60,27 @@ namespace AppleApi.Controllers
             return Ok(dashboardUserList);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("getUserById")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            User user = await userService.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NoContent();
+            }
+            User returnUser = new()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Country = user.Country,
+                Birthday = user.Birthday,
+                Role = user.Role
+            };
+            return Ok(returnUser);
+        }
+
         [HttpPost("getUser")]
         public async Task<IActionResult> GetUser(string emailOrPhone)
         {

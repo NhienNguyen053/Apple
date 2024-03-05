@@ -30,6 +30,18 @@ public class CategoryController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
+    [HttpGet("getCategoryById")]
+    public async Task<IActionResult> GetCategoryById(string id)
+    {
+        Category category = await categoryService.FindByIdAsync(id);
+        if (category == null)
+        {
+            return NoContent();
+        }
+        return Ok(category);
+    }
+
+    [Authorize(Roles = "Admin")]
     [HttpPost("createCategory")]
     public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {

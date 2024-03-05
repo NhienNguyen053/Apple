@@ -3,32 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\webapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\user\\view\\user-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\user\\view\\user-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\products\\product-card.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\product-card.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\webapi\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\webapi\\models\\product\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\models\\product\\productimage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\create-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\create-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\webapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\user\\view\\edit-user.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\user\\view\\edit-user.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|c:\\users\\nhien\\onedrive\\documents\\github\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,89 +50,88 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserController.cs",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\UserController.cs",
-              "RelativeDocumentMoniker": "webapi\\Controllers\\UserController.cs",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\UserController.cs",
-              "RelativeToolTip": "webapi\\Controllers\\UserController.cs",
-              "ViewState": "AQIAABIAAAAAAAAAAAAAACAAAAAiAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-01T06:29:21.629Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "user-view.jsx",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
-              "ViewState": "AQIAADIAAAAAAAAAAAAAwBQAAAAgAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-03-01T04:06:19.403Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "products-view.jsx",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
-              "ViewState": "AQIAABUAAAAAAAAAAAAIwEIAAAAZAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-02-28T03:46:13.745Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProductImage.cs",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Models\\Product\\ProductImage.cs",
-              "RelativeDocumentMoniker": "webapi\\Models\\Product\\ProductImage.cs",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Models\\Product\\ProductImage.cs",
-              "RelativeToolTip": "webapi\\Models\\Product\\ProductImage.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-27T07:21:09.602Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ProductService.cs",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Services\\ProductService.cs",
-              "RelativeDocumentMoniker": "webapi\\Services\\ProductService.cs",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Services\\ProductService.cs",
-              "RelativeToolTip": "webapi\\Services\\ProductService.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAC4AAABLAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-02-27T06:57:03.509Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "edit-product.jsx",
               "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "ViewState": "AQIAAOcBAAAAAAAAAAAmwPkBAAA2AAAA",
+              "ViewState": "AQIAAGYAAAAAAAAAAADwv+AAAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-02-27T06:25:00.143Z"
+              "WhenOpened": "2024-03-04T09:17:21.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "product-card.jsx",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
+              "ViewState": "AQIAABEAAAAAAAAAAAAAwEcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-03-04T09:16:59.418Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProductController.cs",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\ProductController.cs",
+              "RelativeDocumentMoniker": "webapi\\Controllers\\ProductController.cs",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\ProductController.cs",
+              "RelativeToolTip": "webapi\\Controllers\\ProductController.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAA8wCUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-04T09:11:52.569Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "edit-user.jsx",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\edit-user.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\user\\view\\edit-user.jsx",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\edit-user.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\user\\view\\edit-user.jsx",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAADMAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-03-04T09:01:44.594Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "edit-category.jsx",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
+              "ViewState": "AQIAACYAAAAAAAAAAAAAwDkAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-03-04T08:58:15.179Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CategoryController.cs",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\CategoryController.cs",
+              "RelativeDocumentMoniker": "webapi\\Controllers\\CategoryController.cs",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\Controllers\\CategoryController.cs",
+              "RelativeToolTip": "webapi\\Controllers\\CategoryController.cs",
+              "ViewState": "AQIAADQAAAAAAAAAAAAkwB4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-04T08:58:03.114Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "create-product.jsx",
-              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "ViewState": "AQIAAE8BAAAAAAAAAAAAAFYBAAAxAAAA",
+              "Title": "category-view.jsx",
+              "DocumentMoniker": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ToolTip": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ViewState": "AQIAAKQAAAAAAAAAAAAYwLgAAADfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-02-26T09:14:54.903Z"
+              "WhenOpened": "2024-03-01T09:31:15.047Z"
             }
           ]
         }

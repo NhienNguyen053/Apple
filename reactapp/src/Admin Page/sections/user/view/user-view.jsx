@@ -109,8 +109,8 @@ export default function UserPage() {
       navigate('/dashboard/users/createUser');
   }
 
-  const editUser = (id, fn, ln, country, birthday, role) => {
-      navigate('/dashboard/users/editUser', { state: { id: id, fn: fn, ln: ln, country: country, birthday: birthday, role: role } });
+  const editUser = (id) => {
+      navigate('/dashboard/users/editUser', { state: { id: id } });
   }
 
   const deleteUser = async () => {
@@ -207,7 +207,7 @@ export default function UserPage() {
                       email={row.email}
                       phone={row.phone}
                       isVerified={row.isVerified}
-                      edit={() => {editUser(row.id, row.firstName, row.lastName, row.country, row.birthday, row.role)}}
+                      edit={() => {editUser(row.id)}}
                       remove={() => toggleModal(row.name, row.id)}
                       userRole={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']}
                     />

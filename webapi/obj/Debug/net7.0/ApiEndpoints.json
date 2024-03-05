@@ -43,6 +43,22 @@
   },
   {
     "ContainingType": "AppleApi.Controllers.CategoryController",
+    "Method": "GetCategoryById",
+    "RelativePath": "api/Category/getCategoryById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppleApi.Controllers.CategoryController",
     "Method": "UpdateCategory",
     "RelativePath": "api/Category/updateCategory",
     "HttpMethod": "POST",
@@ -75,6 +91,22 @@
   },
   {
     "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "DeleteProduct",
+    "RelativePath": "api/Product/deleteProduct",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
     "Method": "DeleteProductImage",
     "RelativePath": "api/Product/deleteProductImage",
     "HttpMethod": "POST",
@@ -97,6 +129,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapi.Controllers.ProductController",
+    "Method": "GetProductById",
+    "RelativePath": "api/Product/getProductById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -209,6 +257,22 @@
     "Parameters": [
       {
         "Name": "emailOrPhone",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AppleApi.Controllers.UsersController",
+    "Method": "GetUserById",
+    "RelativePath": "api/Users/getUserById",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
         "Type": "System.String",
         "IsRequired": false
       }

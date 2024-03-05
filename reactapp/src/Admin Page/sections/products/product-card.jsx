@@ -15,10 +15,10 @@ import { ColorPreview } from '../../Components/color-utils';
 
 export default function ShopProductCard({ product }) {
   const navigate = useNavigate();
-  const [image, setImage] = useState(product.productImages === null ? null : product.productImages[0].imageURLs[0]);
+  const [image, setImage] = useState(product.productImages.length === 0 ? null : product.productImages[0].imageURLs[0]);
 
-  const handleEditClick = (product) => {
-    navigate('/dashboard/products/editProduct', { state: { product: product } });
+  const handleEditClick = (id, product) => {
+    navigate('/dashboard/products/editProduct', { state: { id: id, product: product } });
   }
 
   const renderStatus = (
@@ -37,12 +37,12 @@ export default function ShopProductCard({ product }) {
     </Label>
   );
 
-    const handleColorClick = (color) => {
-        const matchingImage = product.productImages.find((img) => img.color === color);
-        if (matchingImage) {
+   const handleColorClick = (color) => {
+       const matchingImage = product.productImages.find((img) => img.color === color);
+       if (matchingImage) {
             setImage(matchingImage.imageURLs[0]);
-        }
-    };
+       }
+   };
 
   const renderImg = (
     <Box
@@ -67,7 +67,7 @@ export default function ShopProductCard({ product }) {
 
   return (
     <Card>
-      <Box sx={{ pt: '100%', position: 'relative', cursor: 'pointer' }} onClick={() => handleEditClick(product)}>
+      <Box sx={{ pt: '100%', position: 'relative', cursor: 'pointer' }} onClick={() => handleEditClick(product.id, product)}>
         {'sale' && renderStatus}
 
         {renderImg}

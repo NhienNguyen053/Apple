@@ -505,7 +505,7 @@ export default function CreateProduct() {
                 body: JSON.stringify({
                     productId: productId,
                     imageUrl: deleteImageId,
-                    color: personName.length !== 0 ? selectedColor.toString() : null
+                    color: selectedColor
                 }),
             });
             setDeleted(true);
@@ -803,7 +803,7 @@ export default function CreateProduct() {
                                         <div></div><div></div><div></div><div></div>
                                     </div>
                                 ) : (
-                                    <Button text={'Continue'} background={'black'} textColor={'white'} onclick={handleNewProduct}/>
+                                    <Button text={'Create'} background={'black'} textColor={'white'} onclick={handleNewProduct}/>
                                 )}
                             </div>
                         </div>

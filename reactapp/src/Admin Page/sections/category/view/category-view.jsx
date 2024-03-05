@@ -55,8 +55,8 @@ export default function CategoryPage() {
         navigate('/dashboard/categories/createCategory');
     }
 
-    const routeChange2 = (id, name, desc, image) => {
-        navigate('/dashboard/categories/editCategory', { state: { id: id, name: name, desc: desc, image: image } });
+    const routeChange2 = (id) => {
+        navigate('/dashboard/categories/editCategory', { state: { id: id } });
     }
 
     const removeCategory = async () => {
@@ -182,7 +182,7 @@ export default function CategoryPage() {
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
                             <div style={{display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
                                 <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
-                                <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id, category.categoryName, category.description, category.imageURL)}></i>
+                                <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id)}></i>
                                 <i className="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
                             </div>
                         </div>

@@ -7,6 +7,7 @@ import Button from '../../../../Main Page/Components/Button';
 import Typography from '@mui/material/Typography';
 import '../../../style.css';
 import Collapse from '@mui/material/Collapse';
+import Cookies from 'js-cookie';
 import Alert from '@mui/material/Alert';
 const { format, parseISO } = require("date-fns");
 
@@ -15,11 +16,7 @@ const { format, parseISO } = require("date-fns");
 export default function EditUser() {
     const location = useLocation();
     const id = location.state?.id;
-    const first = location.state?.fn;
-    const last = location.state?.ln;
-    const ctry = location.state?.country;
-    const bday = location.state?.birthday;
-    const Role = location.state?.role;
+    const jwtToken = Cookies.get('jwtToken');
     const [fn, setfn] = useState('');
     const [fnError, setfnError] = useState('');
     const [ln, setln] = useState('');
@@ -32,14 +29,27 @@ export default function EditUser() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
-        const parsedDate = parseISO(bday);
-        const formattedDate = format(parsedDate, "yyyy-MM-dd");
-        setfn(first);
-        setln(last);
-        setCountry(ctry);
-        setbd(formattedDate);
-        setRole(Role);
+        getUser();
     }, []);
+
+    const getUser = async () => {
+        const response = await fetch(`https://localhost:7061/api/Users/getUserById?id=${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${jwtToken}`
+            },
+        });
+        const data = await response.json();
+        setfn(data.firstName);
+        setln(data.lastName);
+        setbd(data.birthday);
+        setRole(data.role);
+        setCountry(data.country);
+        const parsedDate = parseISO(data.birthday);
+        const formattedDate = format(parsedDate, "yyyy-MM-dd");
+        setbd(formattedDate);
+    }
 
     const handelFirstNameChange = (e) => {
         setfnError('');

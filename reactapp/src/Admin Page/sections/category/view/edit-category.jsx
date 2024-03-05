@@ -17,9 +17,7 @@ export default function EditCategory() {
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
-    const name = location.state?.name;
-    const description = location.state?.desc;
-    const image = location.state?.image;
+    const [image, setImage] = useState('');
     const [categoryName, setCategoryName] = useState('');
     const [categoryError, setCategoryError] = useState('');
     const [desc, setDesc] = useState('');
@@ -42,9 +40,22 @@ export default function EditCategory() {
     }
 
     useEffect(() => {
-        setCategoryName(name);
-        setDesc(description);
+        getCategory()
     }, []);
+
+    const getCategory = async () => {
+        const response = await fetch(`https://localhost:7061/api/Category/getCategoryById?id=${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${jwtToken}`
+            },
+        });
+        const data = await response.json();
+        setCategoryName(data.categoryName);
+        setDesc(data.description);
+        setImage(data.imageURL);
+    }
 
     const handleImageChange = () => {
         const input = document.querySelector('#categoryimage');
@@ -76,7 +87,7 @@ export default function EditCategory() {
         }
     }
 
-    const handleNewCategory = async () => {
+    const handleUpdateCategory = async () => {
         setLoading(true);
         var count = 0;
         if (categoryName.trim() === '') {
@@ -127,7 +138,7 @@ export default function EditCategory() {
             }
             setTimeout(() => {
                 setLoading(false);
-                navigate('/dashboard/categories'); setOpen(true);
+                setOpen(true);
                 setTimeout(() => {
                     setOpen(false);
                 }, 3000);
@@ -144,7 +155,7 @@ export default function EditCategory() {
             <div className='container7 display'>
                 <Collapse in={open} sx={{ width: '100%' }}>
                     <Alert sx={{ mb: 2 }}>
-                        Created category successfully!
+                        Updated category successfully!
                     </Alert>
                 </Collapse>
                 <div style={{ width: 'fit-content', height: '80%' }} className="formInputs2">
@@ -183,7 +194,7 @@ export default function EditCategory() {
                         />
                         <p style={{ color: 'red' }}>{imageError}</p>
                         <div id="image-preview" style={{ width: '140px', height: '140px', display: image ? 'block' : 'none', marginTop: '20px' }}>
-                            {image ? <img src={image} alt={name} style={{width:'100%', height: '100%', objectFit: 'contain'}}></img> : null}
+                            {image ? <img src={image} alt={categoryName} style={{ width: '100%', height: '100%', objectFit: 'contain' }}></img> : null}
                         </div>
                         <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                             <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
@@ -195,7 +206,7 @@ export default function EditCategory() {
                                     <div></div><div></div><div></div><div></div>
                                 </div>
                             ) : (
-                                <Button text={'Continue'} background={'black'} onclick={handleNewCategory} textColor={'white'} />
+                                <Button text={'Continue'} background={'black'} onclick={handleUpdateCategory} textColor={'white'} />
                             )}
                         </div>
                     </div>

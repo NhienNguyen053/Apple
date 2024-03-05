@@ -24,6 +24,19 @@ namespace webapi.Controllers
             return Ok(products);
         }
 
+        [Authorize(Roles = "Admin, Employee")]
+        [HttpGet("getProductById")]
+        public async Task<IActionResult> GetProductById(string id)
+        {
+            Product product = await productService.FindByIdAsync(id);
+            if (product == null)
+            {
+                return NoContent();
+            }
+            return Ok(product);
+        }
+
+
         [Authorize(Roles = "Admin")]
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
@@ -48,6 +61,7 @@ namespace webapi.Controllers
             newProduct.Colors = product.Colors;
             newProduct.Specifications = product.Specifications;
             newProduct.Options = product.Options;
+            newProduct.ProductImages = new List<ProductImage>();
             Product newlyAdded = await productService.InsertOneAsync(newProduct);
             return Ok(newlyAdded);
         }
@@ -56,7 +70,30 @@ namespace webapi.Controllers
         [HttpPost("updateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
+            List<string> urls = new();
             Product updateProduct = await productService.FindByIdAsync(product.Id);
+            if (updateProduct.Colors.Count() == 0 && product.Colors.Count() != 0)
+            {
+                var productImageWithoutColor = updateProduct.ProductImages.FirstOrDefault(x => x.Color == null);
+                if (productImageWithoutColor != null)
+                {
+                    urls.AddRange(productImageWithoutColor.ImageURLs);
+                    updateProduct.ProductImages = new List<ProductImage>();
+                }
+            }
+            else if (updateProduct.Colors.Count() > product.Colors.Count())
+            {
+                var colorChanges = updateProduct.Colors.Except(product.Colors).ToArray();
+                foreach (var color in colorChanges)
+                {
+                    var productImageToRemove = updateProduct.ProductImages.FirstOrDefault(x => x.Color == color);
+                    if (productImageToRemove != null)
+                    {
+                        urls.AddRange(productImageToRemove.ImageURLs);
+                        updateProduct.ProductImages.Remove(productImageToRemove);
+                    }
+                }
+            }
             updateProduct.ProductName = product.ProductName;
             updateProduct.ProductPrice = product.ProductPrice;
             updateProduct.ProductQuantity = product.ProductQuantity;
@@ -68,6 +105,14 @@ namespace webapi.Controllers
             updateProduct.Specifications = product.Specifications;
             updateProduct.Options = product.Options;
             await productService.UpdateOneAsync(product.Id, updateProduct);
+            return Ok(urls);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("deleteProduct")]
+        public async Task<IActionResult> DeleteProduct([FromBody] string id)
+        {
+            Console.WriteLine(id);
             return Ok();
         }
 
@@ -90,7 +135,20 @@ namespace webapi.Controllers
                 }
                 else
                 {
-                    product.ProductImages.FirstOrDefault(x => x.Color == data.Color)!.ImageURLs.AddRange(data.productImages);
+                    var existingProductImage = product.ProductImages.FirstOrDefault(x => x.Color == data.Color);
+                    if (existingProductImage != null)
+                    {
+                        existingProductImage.ImageURLs.AddRange(data.productImages);
+                    }
+                    else
+                    {
+                        var newProductImage = new ProductImage
+                        {
+                            Color = data.Color,
+                            ImageURLs = new List<string>(data.productImages)
+                        };
+                        product.ProductImages.Add(newProductImage);
+                    }
                 }
                 await productService.UpdateOneAsync(product.Id!, product);
             }

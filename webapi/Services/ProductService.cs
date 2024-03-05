@@ -43,10 +43,18 @@ namespace AppleApi.Services
             var result = await FindByIdAsync(id);
             if (result != null && result.ProductImages != null)
             {
-                var productImage = result.ProductImages.FirstOrDefault(x => x.Color == color);
+                ProductImage? productImage = new();
+                if (color == "empty")
+                {
+                    productImage = result.ProductImages.FirstOrDefault(x => x.Color == null);
+                }
+                else
+                {
+                    productImage = result.ProductImages.FirstOrDefault(x => x.Color == color);
+                }
                 if (productImage != null && productImage.ImageURLs != null)
                 {
-                    result.ProductImages.FirstOrDefault(x => x.Color == color)!.ImageURLs.Remove(imageUrl);
+                    productImage.ImageURLs.Remove(imageUrl);
                     await UpdateOneAsync(result.Id, result);
                 }
             }
