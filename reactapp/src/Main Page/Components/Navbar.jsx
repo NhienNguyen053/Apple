@@ -69,7 +69,7 @@ const Navbar = ({darkmode}) => {
 
   return (
     <>
-      <div className='header' /*onMouseLeave={handleMouseOut}*/>
+      <div className='header' onMouseLeave={handleMouseOut}>
         <ul className='header2'>
           <li className='li1'>
             <Link to='/'><i className='fa-brands fa-apple'></i></Link>

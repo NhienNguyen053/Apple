@@ -479,7 +479,7 @@ export default function CreateProduct() {
             setTimeout(() => {
                 setOpen2(false);
             }, 3000);
-        }, 3000);
+        }, 2000);
     }
 
     const removeImage = (e) => {

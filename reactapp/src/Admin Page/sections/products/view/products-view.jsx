@@ -20,7 +20,13 @@ export default function ProductsView() {
   const jwtToken = Cookies.get('jwtToken');
   const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState('');
+  const [subCategoryId, setSubCategoryId] = useState('');
+  const [productStatus, setProductStatus] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [productName, setProductName] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -32,6 +38,7 @@ export default function ProductsView() {
           const response = await fetch("https://localhost:7061/api/Product/getAllProducts");
           const data = await response.json();
           setProducts(data);
+          setFilteredProducts(data);
       } catch (error) {
           console.error('Error fetching categories:', error);
       }
@@ -51,8 +58,37 @@ export default function ProductsView() {
     setOpenFilter(true);
   };
 
-  const handleCloseFilter = (categoryId, subCategoryId, selectedPrice, productStatus, productName) => {
-    setOpenFilter(false);
+    const handleCloseFilter = (categoryId, subCategoryId, selectedPrice, productStatus, productName) => {
+      setCategoryId(categoryId);
+      setSubCategoryId(subCategoryId);
+      setSelectedPrice(selectedPrice);
+      setProductStatus(productStatus);
+      setProductName(productName);
+      setFilteredProducts(products);
+      if (categoryId != "") {
+          setFilteredProducts(products.filter(x => x.categoryId == categoryId));
+      }
+      if (subCategoryId != "") {
+          setFilteredProducts(products.filter(x => x.subCategoryId == subCategoryId));
+      }
+      if (selectedPrice != "") {
+          if (selectedPrice == "below") {
+              setFilteredProducts(products.filter(x => x.productPrice < 100));
+          }
+          if (selectedPrice == "between") {
+              setFilteredProducts(products.filter(x => x.productPrice > 100 && x.productPrice < 500));
+          }
+          if (selectedPrice == "above") {
+              setFilteredProducts(products.filter(x => x.productPrice > 500));
+          }
+      }
+      if (productStatus != "") {
+          setFilteredProducts(products.filter(x => x.productStatus == productStatus));
+      }
+      if (productName != "") {
+          setFilteredProducts(products.filter(product => product.productName.toLowerCase().includes(productName.toLowerCase())));
+      }
+      setOpenFilter(false);
   };
 
   const routeChange = () => {
@@ -82,13 +118,18 @@ export default function ProductsView() {
             onOpenFilter={handleOpenFilter}
             onCloseFilter={handleCloseFilter}
             categories={categories}
+            inputCategoryId={categoryId}
+            inputSubCategoryId={subCategoryId}
+            inputSelectedPrice={selectedPrice}
+            inputProductStatus={productStatus}
+            inputProductName={productName}
           />
 
         </Stack>
       </Stack>
 
       <Grid container spacing={3}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
             <ProductCard product={product} />
           </Grid>

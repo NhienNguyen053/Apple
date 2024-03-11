@@ -22,12 +22,12 @@ export const PRICE_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, categories }) {
-  const [categoryId, setCategoryId] = useState('');
-  const [subCategoryId, setSubCategoryId] = useState('');
-  const [productStatus, setProductStatus] = useState('Inactive');
-  const [selectedPrice, setSelectedPrice] = useState(null);
-  const [productName, setProductName] = useState('');
+export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, categories, inputCategoryId, inputSubCategoryId, inputSelectedPrice, inputProductName, inputProductStatus }) {
+  const [categoryId, setCategoryId] = useState(inputCategoryId);
+  const [subCategoryId, setSubCategoryId] = useState(inputSubCategoryId);
+  const [productStatus, setProductStatus] = useState(inputProductStatus);
+  const [selectedPrice, setSelectedPrice] = useState(inputSelectedPrice);
+  const [productName, setProductName] = useState(inputProductName);
 
   const handleProductNameChange = (event) => {
     setProductName(event.target.value);
@@ -51,37 +51,45 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
   const renderCategory = (
       <Stack spacing={1}>
-          <Select type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} />
+          <Select type={'category'} selectedCategory={categoryId} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} />
       </Stack>
   );
 
   const renderSubCategory = (
      <Stack spacing={1}>
-         <Select type={'subcategory'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} disabled={categoryId === "" ? true : null} categoryId={categoryId} onInputChange={handleSubCategoryId} />
+         <Select type={'subcategory'} selectedSubCategory={subCategoryId} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} disabled={categoryId === "" ? true : null} categoryId={categoryId} onInputChange={handleSubCategoryId} />
      </Stack>
   );
 
   const renderPrice = (
     <Stack spacing={1}>
-      <Typography variant="subtitle2">Price:</Typography>
-        {PRICE_OPTIONS.map((item, index) => (
-            <div class="form-check" style={{ display: 'flex' }} onClick={() => handleRadioChange(index)}>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" style={{ height: 'fit-content', marginTop: '4px', marginRight: '10px' }} />
+          <Typography variant="subtitle2">Price:</Typography>
+        {PRICE_OPTIONS.map(item => (
+            <div class="form-check" style={{ display: 'flex' }} onClick={() => handleRadioChange(item.value)}>
+                <input checked={selectedPrice === item.value ? true : null} class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" style={{ height: 'fit-content', marginTop: '4px', marginRight: '10px' }} />
                 <p style={{margin: 0, }}>{item.label}</p>
             </div>
         ))}
     </Stack>
   );
 
+  const clearAll = () => {
+      setCategoryId('');
+      setSubCategoryId('');
+      setProductName('');
+      setProductStatus('');
+      setSelectedPrice('');
+  }
+
   const renderName = (
     <Stack spacing={1}>
-      <TextField id="outlined-basic" label="Product Name" variant="outlined" onChange={handleProductNameChange}/>
+      <TextField id="outlined-basic" label="Product Name" variant="outlined" onChange={handleProductNameChange} value={productName}/>
     </Stack>
   );
 
   const renderStatus = (
     <Stack spacing={1}>
-      <Select type={"status"} width={'100%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} />
+      <Select type={"status2"} width={'100%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} selectedValue={productStatus}/>
     </Stack>
   );
 
@@ -142,6 +150,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
             color="inherit"
             variant="outlined"
             startIcon={<Iconify icon="ic:round-clear-all" />}
+            onClick={clearAll}
           >
             Clear All
           </Button>

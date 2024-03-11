@@ -53,6 +53,28 @@ span{
     font-family: SF-Pro-Display-Light;
     color: var(--text-color);
 }
+.main-page-image {
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FMainPageImages%2F1.jpg?alt=media&token=56d92341-4a10-4750-8be8-99f8183a7056");
+    background-repeat: no-repeat;
+    background-size: 3008px 624px;
+    width: 3008px;
+    height: 624px;
+    background-position: 50%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+.main-page-image-text {
+    font-family: SF-Pro-Display-Semibold;
+    font-size: 50px;
+    margin: 0
+}
+.main-page-image-text-2 {
+    font-family: SF-Pro-Display-Regular;
+    font-size: 27px;
+    margin: 0
+}
 .slidercontent p{
     font-size: 13px;
     margin: 5px;
