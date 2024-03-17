@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import Input from './Input';
 import React, { useState, useEffect, useRef } from 'react';
 

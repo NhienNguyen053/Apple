@@ -13,5 +13,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\Admin Page\sections\category\view\" />
+    <Folder Include="src\Main Page\Components\assets\" />
   </ItemGroup>
 </Project>
