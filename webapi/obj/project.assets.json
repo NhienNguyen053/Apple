@@ -4569,11 +4569,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\webapi.csproj",
+      "projectUniqueName": "D:\\Nhien\\Projects\\Apple\\webapi\\webapi.csproj",
       "projectName": "webapi",
-      "projectPath": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\webapi.csproj",
+      "projectPath": "D:\\Nhien\\Projects\\Apple\\webapi\\webapi.csproj",
       "packagesPath": "C:\\Users\\nhien\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\nhien\\OneDrive\\Documents\\GitHub\\Apple\\webapi\\obj\\",
+      "outputPath": "D:\\Nhien\\Projects\\Apple\\webapi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\nhien\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4681,7 +4681,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

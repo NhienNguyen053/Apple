@@ -90,7 +90,11 @@ export default function CategoryPage() {
             else {
                 setModalVisible(!isModalVisible);
                 setModalVisible2(true);
+                setTimeout(() => {
+                    setModalVisible2(false);
+                }, 3000);
                 setError(data);
+                window.scrollTo(0, 0);
             }
         } catch (error) {
             console.error('Error fetching data:', error);

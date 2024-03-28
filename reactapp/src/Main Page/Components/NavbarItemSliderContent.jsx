@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import '../style.css';
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
@@ -6,6 +6,14 @@ import jwt_decode from 'jwt-decode';
 
 
 function NavbarItemSliderContent({ data }) {
+    const [product, setProduct] = useState({});
+
+    useEffect(() => {
+        if (data) {
+            setProduct(data);
+        }
+    }, [data]);
+
     let navigate = useNavigate(); 
     const routeChange = () => {
         let path = `/signin`; 
@@ -89,8 +97,15 @@ function NavbarItemSliderContent({ data }) {
             </div>
         );
     }else{
-        return(
-            <p></p>
+        return (
+            <div style={{ width: '60%', margin: '10px auto' }}>
+                <div className="slidercontent">
+                    <p style={{ margin: '5px 0 10px 0' }}>Explore {product.categoryName}</p>
+                    {product && product.childCategories && product.childCategories.map((child) => (
+                        <p key={child.id} className="p7">Explore {child.categoryName}</p>
+                    ))}
+                </div>
+            </div>
         );
     }
 }

@@ -11,12 +11,14 @@ const Navbar = ({darkmode}) => {
     root.style.setProperty('--logo-color', '#d0d0d1');
     root.style.setProperty('--icon-color', '#9b9b9b');
     root.style.setProperty('--text-color', '#9e9e9e');
+    root.style.setProperty('--text-color2', 'white');
     root.style.setProperty('--hover-color', 'white');
   }else{
     root.style.setProperty('--background-color', 'white');
     root.style.setProperty('--logo-color', '#333333');
     root.style.setProperty('--icon-color', '#6c6c6c');
     root.style.setProperty('--text-color', '#6c6c6c');
+    root.style.setProperty('--text-color2', 'black');
     root.style.setProperty('--hover-color', 'black');
   }
   const [categories, setCategories] = useState([]);
@@ -36,9 +38,9 @@ const Navbar = ({darkmode}) => {
     fetchCategories();
   }, []);
 
-  const handleCategoryHover = (categoryId) => {
+  const handleCategoryHover = (category) => {
     setIsElementClicked(true);
-    setClickedElement(categoryId);
+    setClickedElement(category);
   };
 
   const handleSearchHover = () => {
@@ -69,13 +71,13 @@ const Navbar = ({darkmode}) => {
 
   return (
     <>
-      <div className='header' onMouseLeave={handleMouseOut}>
+      <div className='header' /*onMouseLeave={handleMouseOut}*/>
         <ul className='header2'>
           <li className='li1'>
             <Link to='/'><i className='fa-brands fa-apple'></i></Link>
           </li>
           {categories.map((category) => (
-            <li className='li1' key={category.id} onMouseOver={() => handleCategoryHover(category.id)}>
+            <li className='li1' key={category.id} onMouseOver={() => handleCategoryHover(category)}>
               <NavbarItem category={category} />
             </li>
           ))}
@@ -87,7 +89,7 @@ const Navbar = ({darkmode}) => {
           </li>
         </ul>
         <div className={`slider ${isElementClicked ? 'visible' : ''}`}>
-          <NavbarItemSlider clickedElement={clickedElement} />
+          <NavbarItemSlider clickedElement={clickedElement}/>
         </div>
       </div>
     </>

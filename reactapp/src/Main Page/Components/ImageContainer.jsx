@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../style.css';
 
-const ImageContainer = ({ parentMargin, parentWidth, height, icon, imageUrl, isTop, textColor, firstText, secondText, thirdText, fourthText }) => {
+const ImageContainer = ({ parentMargin, parentWidth, height, icon, imageUrl, isTop, textColor, firstText, secondText, thirdText, fourthText, className }) => {
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: parentMargin, width: parentWidth }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: parentMargin, width: parentWidth }} className={className}>
             <figure className='main-page-image' style={{ backgroundImage: `url(${imageUrl})`, height: height}}>
                 <div style={{ textAlign: 'center', ...(isTop ? { top: '50px' } : { bottom: '50px' }), position: 'absolute', maxWidth: '400px' }}>
                     <p style={{ color: textColor }} className='main-page-image-text'><span class="fa-brands fa-apple" style={{ display: icon ? 'inline' : 'none', color: textColor, fontSize: '50px', verticalAlign: 'top' }}></span>{firstText}</p>
