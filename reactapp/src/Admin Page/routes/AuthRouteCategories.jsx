@@ -17,9 +17,19 @@ const AuthRouteCategories = ({ children }) => {
         fetchCategories();
     }, []);
 
-    const categoryExists = categories.some(x => x.categoryName.toLowerCase() === category);
     if (categories.length > 0) {
-        if (!categoryExists) {
+        var exist = false;
+        categories.map((item) => {
+            if (item.categoryName.toLowerCase().replace(/\s+/g, '-') === category) {
+                exist = true;
+            };
+            item.childCategories.map((child) => {
+                if (child.categoryName.toLowerCase().replace(/\s+/g, '-') === category) {
+                    exist = true;
+                }
+            });
+        });
+        if (exist === false) {
             return <Navigate to="/notfound" />;
         }
         else {

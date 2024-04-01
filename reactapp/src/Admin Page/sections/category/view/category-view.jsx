@@ -19,6 +19,7 @@ export default function CategoryPage() {
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const [categories, setCategories] = useState([]);
+    const [isActive, setIsActive] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalVisible2, setModalVisible2] = useState(false);
     const [deleteCategory, setDeleteCategory] = useState('');
@@ -70,7 +71,7 @@ export default function CategoryPage() {
             });
             const data = await response.text();
             if (data === "Delete successfully!") {
-                const existingImage = ref(storage, `images/CategoryImages/category_${deleteId}`);
+                const existingImage = ref(storage, `videos/CategoryVideos/category_${deleteId}`);
                 deleteObject(existingImage);
                 const newCategories = categories.filter(category => category.id !== deleteId);
                 setCategories(newCategories);
@@ -111,7 +112,7 @@ export default function CategoryPage() {
             body: JSON.stringify({
                 CategoryName: "New Subcategory",
                 Description: null,
-                ImageURL: null,
+                VideoURL: null,
                 ParentCategoryId: id
             }),
         });
@@ -119,33 +120,28 @@ export default function CategoryPage() {
         const categoryIndex = categories.findIndex(category => category.id === id);
 
         if (categoryIndex !== -1) {
+            setIsActive(true);
             const updatedCategories = [...categories];
             updatedCategories[categoryIndex].childCategories.push({
                 id: data.id,
                 categoryName: data.categoryName,
                 description: data.description,
-                imageURL: data.imageURL,
+                VideoURL: data.videoURL,
                 parentCategoryId: data.parentCategoryId
             });
             setCategories(updatedCategories);
         }
     }
 
-    const updateSubCategory = async (id, name, parentId) => {
-        fetch('https://localhost:7061/api/Category/updateCategory', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            body: JSON.stringify({
-                Id: id,
-                CategoryName: name,
-                Description: null,
-                ImageURL: null,
-                ParentCategoryId: parentId
-            }),
-        });
+    const updateSubCategory = async (status, error) => {
+        if (status === 400) {
+            setError(error);
+            setModalVisible2(true);
+            setTimeout(() => {
+                setModalVisible2(false);
+            }, 3000);
+            window.scrollTo(0, 0);
+        } 
     }
 
     const toggleModal = (param, param1, param2) => {
@@ -193,11 +189,14 @@ export default function CategoryPage() {
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <TextField id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} role={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']} />
+                                    <TextField isActive={child.categoryName === "New Subcategory" && isActive === true ? true : false} id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} role={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']} />
                                 ))}
                             </div>
-                            <div style={{ width: '100px', height: '100px' }}>
-                                {category.imageURL ? <img src={category.imageURL} alt={category.categoryName} style={{ width: '100%', height: '100%', objectFit: 'contain' }}></img> : null}
+                            <div style={{ width: '150px', height: '94px' }}>
+                                {category.videoURL ? <video controls style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '10px' }}>
+                                    <source src={category.videoURL} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video> : null}
                             </div>
                         </div>
                     </div>

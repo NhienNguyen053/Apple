@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
 import TextField2 from '@mui/material/TextField';
+import jwt_decode from 'jwt-decode';
+import Cookies from 'js-cookie';
 
-const TextField = ({ id, name, parentId, onClick, onClick2, role }) => {
-    const [active, setActive] = useState(false);
-    const original = name;
+const TextField = ({ id, name, parentId, onClick, onClick2, role, isActive }) => {
+    const jwtToken = Cookies.get('jwtToken');
+    const [active, setActive] = useState(isActive);
+    const [originalValue] = useState(name);
     const [inputValue, setInputValue] = useState(name);
+
     const handleInputChange = (event) => {
         setInputValue(event.target.value);
     };
 
-    const handleEditClick = () => {
-        setActive(true);
-    };
-
-    const handleCancelClick = () => {
-        setActive(false);
-        setInputValue(original);
-    };
+    const updateSubCategory = async (id, name, parentId) => {
+        const result = await fetch('https://localhost:7061/api/Category/updateCategory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({
+                Id: id,
+                CategoryName: name,
+                Description: null,
+                VideoURL: null,
+                ParentCategoryId: parentId
+            }),
+        });
+        if (result.status === 400) {
+            const error = await result.text();
+            setInputValue(originalValue);
+            onClick(result.status, error);
+        } 
+    }
 
     return (
         <div style={{ display: role === 'Admin' ? 'flex' : 'none', width: '100%', marginBottom: '8px' }}>
@@ -28,7 +45,7 @@ const TextField = ({ id, name, parentId, onClick, onClick2, role }) => {
             {active ? (
                 <>
                     <div style={{ display: 'flex' }}>
-                        <i className="fa-solid fa-pen" title="Edit" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => { onClick(id, inputValue, parentId); setActive(false); }}></i>
+                        <i className="fa-solid fa-pen" title="Edit" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => { updateSubCategory(id, inputValue, parentId); setActive(false); }}></i>
                         <i className="fa-solid fa-trash" title="Delete" style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => { onClick2(inputValue, id, "subcategory") }}></i>
                     </div>
                 </>

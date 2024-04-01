@@ -56,13 +56,13 @@ export default function EditCategory() {
         const data = await response.json();
         setCategoryName(data.categoryName);
         setDesc(data.description);
-        setImage(data.imageURL);
+        setImage(data.videoURL);
     }
 
-    const handleImageChange = () => {
+    const handleVideoChange = () => {
         const input = document.querySelector('#categoryimage');
         const preview = document.querySelector('#image-preview');
-        const allowedTypes = ['image/png', 'image/svg', 'image/jpeg', 'image/webp'];
+        const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime'];
 
         const file = input.files[0];
         if (file == null) {
@@ -70,8 +70,8 @@ export default function EditCategory() {
             preview.innerHTML = "";
             preview.style.display = "none";
         } else {
-            if (!allowedTypes.includes(file.type)) {
-                setImageError('File can only be an image!');
+            if (!allowedVideoTypes.includes(file.type)) {
+                setImageError('File can only be a video!');
                 preview.innerHTML = "";
                 preview.style.display = "none";
                 input.value = '';
@@ -80,7 +80,7 @@ export default function EditCategory() {
                 const reader = new FileReader();
                 reader.addEventListener('load', () => {
                     preview.style.display = "block";
-                    preview.innerHTML = `<img src="${reader.result}" alt="Image preview" style="width:100%; height: 100%; object-fit: contain" id="preview">`;
+                    preview.innerHTML = `<video controls style="width:100%; height: 100%; object-fit: contain, borderRadius: 10px"><source src="${reader.result}" type="${file.type}">Your browser does not support the video tag.</video>`;
                 });
                 if (file) {
                     reader.readAsDataURL(file);
@@ -88,6 +88,7 @@ export default function EditCategory() {
             }
         }
     }
+
 
     const handleUpdateCategory = async () => {
         setLoading(true);
@@ -112,7 +113,7 @@ export default function EditCategory() {
                         Id: id,
                         CategoryName: categoryName,
                         Description: desc,
-                        ImageURL: image,
+                        VideoURL: image,
                         ParentCategoryId: null
                     }),
                 });
@@ -126,7 +127,7 @@ export default function EditCategory() {
                     setOpenText('Updated category successfully!');
                 }
             } else {
-                const imageRef = ref(storage, `images/CategoryImages/category_${id}`)
+                const imageRef = ref(storage, `videos/CategoryVideos/category_${id}`)
                 uploadBytes(imageRef, file).then(() => {
                     return getDownloadURL(imageRef);
                 })
@@ -141,7 +142,7 @@ export default function EditCategory() {
                             Id: id,
                             CategoryName: categoryName,
                             Description: desc,
-                            ImageURL: downloadURL,
+                            VideoURL: downloadURL,
                             ParentCategoryId: null
                         }),
                     });
@@ -201,20 +202,25 @@ export default function EditCategory() {
                             margin={'30px auto 0 auto'}
                             inputValue={desc}
                         />
+                        <p style={{ margin: '15px 0 0 0', color: 'black', fontFamily: 'SF-Pro-Display-Medium' }}>Intro Video:</p>
                         <Input
                             placeholder={""}
                             isVisible={true}
                             icon={false}
                             type={"file"}
                             borderRadius={"5px"}
+                            accept={"video/*"}
                             width={'100%'}
-                            onInputChange={handleImageChange}
-                            margin={'30px auto 0 auto'}
+                            onInputChange={handleVideoChange}
+                            margin={'5px auto 0 auto'}
                             id={"categoryimage"}
                         />
                         <p style={{ color: 'red' }}>{imageError}</p>
-                        <div id="image-preview" style={{ width: '140px', height: '140px', display: image ? 'block' : 'none', marginTop: '20px' }}>
-                            {image ? <img src={image} alt={categoryName} style={{ width: '100%', height: '100%', objectFit: 'contain' }}></img> : null}
+                        <div id="image-preview" style={{ width: '280px', height: '280px', display: image ? 'block' : 'none', marginTop: '20px' }}>
+                            {image ? <video controls style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '10px' }}>
+                                <source src={image} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video> : null}
                         </div>
                         <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                             <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />

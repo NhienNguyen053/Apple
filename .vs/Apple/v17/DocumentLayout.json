@@ -3,6 +3,38 @@
   "WorkspaceRootPath": "D:\\Nhien\\Projects\\Apple\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\models\\category\\dashboardcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\models\\category\\dashboardcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\models\\category\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\models\\category\\category.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\create-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\create-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\components\\input.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\input.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\pages\\category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\pages\\category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
@@ -29,26 +61,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\pages\\otp.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\pages\\otp.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\create-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\create-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\edit-category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,67 +70,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 16,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 5,
               "Title": "edit-category.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
               "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
-              "ViewState": "AQIAAIMAAAAAAAAAAAAlwDEAAAAaAAAA",
+              "ViewState": "AQIAAIoAAAAAAAAAAAAhwJAAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-03-29T06:29:04.609Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "create-product.jsx",
-              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
-              "ViewState": "AQIAAFgBAAAAAAAAAAAAAHMBAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-03-29T09:10:25.556Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "edit-product.jsx",
-              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "ViewState": "AQIAAIEBAAAAAAAAAAAAwHQBAAAeAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-03-29T09:10:24.33Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "Category.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAkAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-01T02:32:18.709Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 10,
               "Title": "Navbar.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Navbar.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Navbar.jsx",
@@ -127,8 +109,33 @@
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-01T02:33:26.259Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "category-view.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ViewState": "AQIAAMEAAAAAAAAAAAAhwMcAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-03-29T07:48:56.718Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "create-category.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\create-category.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\create-category.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\create-category.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\create-category.jsx",
+              "ViewState": "AQIAAIsAAAAAAAAAAAAhwJEAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-01T03:47:05.845Z",
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -141,6 +148,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "DashboardCategory.cs",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Models\\Category\\DashboardCategory.cs",
+              "RelativeDocumentMoniker": "webapi\\Models\\Category\\DashboardCategory.cs",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Models\\Category\\DashboardCategory.cs",
+              "RelativeToolTip": "webapi\\Models\\Category\\DashboardCategory.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAIA3wA8AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-01T04:46:56.485Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CategoryController.cs",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\CategoryController.cs",
+              "RelativeDocumentMoniker": "webapi\\Controllers\\CategoryController.cs",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\CategoryController.cs",
+              "RelativeToolTip": "webapi\\Controllers\\CategoryController.cs",
+              "ViewState": "AQIAAHcAAAAAAAAAAAAYwDkAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-01T04:46:17.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Category.cs",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Models\\Category\\Category.cs",
+              "RelativeDocumentMoniker": "webapi\\Models\\Category\\Category.cs",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Models\\Category\\Category.cs",
+              "RelativeToolTip": "webapi\\Models\\Category\\Category.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAIAzwA8AAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-01T04:40:50.936Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Input.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Input.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Input.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Input.jsx",
+              "RelativeToolTip": "reactapp\\src\\Main Page\\Components\\Input.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-01T03:53:23.989Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "App.js",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\App.js",
               "RelativeDocumentMoniker": "reactapp\\src\\App.js",
@@ -148,12 +203,11 @@
               "RelativeToolTip": "reactapp\\src\\App.js",
               "ViewState": "AQIAABgAAAAAAAAAAAAAACMAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-04-01T02:44:52.828Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T02:44:52.828Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 14,
               "Title": "Otp.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Otp.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Otp.jsx",
@@ -161,12 +215,11 @@
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\Otp.jsx",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-01T02:37:56.392Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T02:37:56.392Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 13,
               "Title": "NotFound.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\NotFound.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\NotFound.jsx",
@@ -174,12 +227,11 @@
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\NotFound.jsx",
               "ViewState": "AQIAAAUAAAAAAAAAAAAAAAUAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-01T02:37:27.055Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T02:37:27.055Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 12,
               "Title": "NewPassword.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\NewPassword.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\NewPassword.jsx",
@@ -187,12 +239,11 @@
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\NewPassword.jsx",
               "ViewState": "AQIAADUAAAAAAAAAAAAAADUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-01T02:36:35.494Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T02:36:35.494Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 11,
               "Title": "MainPage.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\MainPage.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\MainPage.jsx",
@@ -200,33 +251,20 @@
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\MainPage.jsx",
               "ViewState": "AQIAAAQAAAAAAAAAAAAAAAQAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-01T02:35:57.235Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-01T02:35:57.235Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 0,
               "Title": "ProductController.cs",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "webapi\\Controllers\\ProductController.cs",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\ProductController.cs",
               "RelativeToolTip": "webapi\\Controllers\\ProductController.cs",
-              "ViewState": "AQIAAEYAAAAAAAAAAAASwFEAAABBAAAA",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAEwDYAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-29T08:20:41.142Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "category-view.jsx",
-              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
-              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
-              "ViewState": "AQIAAHsAAAAAAAAAAAAAALwAAADmAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-03-29T07:48:56.718Z"
             }
           ]
         }

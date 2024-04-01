@@ -13,7 +13,7 @@ public class DashboardCategory
 
     public string? Description { get; set; }
 
-    public string? ImageURL { get; set; }
+    public string? VideoURL { get; set; }
 
     public List<Category>? ChildCategories { get; set; }
 }

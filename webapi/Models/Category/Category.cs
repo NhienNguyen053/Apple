@@ -13,7 +13,7 @@ public class Category
 
     public string? Description { get; set; }
 
-    public string? ImageURL { get; set; }
+    public string? VideoURL { get; set; }
 
     [BsonRepresentation(BsonType.ObjectId)]
     public string? ParentCategoryId { get; set; }

@@ -54,7 +54,7 @@ public class CategoryController : ControllerBase
         {
             CategoryName = category.CategoryName,
             Description = category.Description,
-            ImageURL = category.ImageURL,
+            VideoURL = category.VideoURL,
             ParentCategoryId = category.ParentCategoryId
         };
         Category newlyAdded = await categoryService.InsertOneAsync(newCategory);
@@ -75,7 +75,7 @@ public class CategoryController : ControllerBase
             Id = category.Id,
             CategoryName = category.CategoryName,
             Description = category.Description,
-            ImageURL = category.ImageURL,
+            VideoURL = category.VideoURL,
             ParentCategoryId = category.ParentCategoryId
         };
         await categoryService.UpdateOneAsync(updateCategory.Id, updateCategory);
@@ -99,7 +99,7 @@ public class CategoryController : ControllerBase
                 return BadRequest("Can't delete category that has subcategory!");
             }
             await categoryService.DeleteOneAsync(id);
-            if (category.ImageURL == null)
+            if (category.VideoURL == null)
             {
                 return Ok("No Image!");
             }
@@ -123,7 +123,7 @@ public class CategoryController : ControllerBase
                 Id = parent.Id,
                 CategoryName = parent.CategoryName,
                 Description = parent.Description,
-                ImageURL = parent.ImageURL,
+                VideoURL = parent.VideoURL,
                 ChildCategories = GetChildCategories(categories, parent.Id)
             };
 
@@ -143,7 +143,7 @@ public class CategoryController : ControllerBase
                 Id = child.Id,
                 CategoryName = child.CategoryName,
                 Description = child.Description,
-                ImageURL = child.ImageURL,
+                VideoURL = child.VideoURL,
                 ParentCategoryId = child.ParentCategoryId
             };
 

@@ -38,10 +38,10 @@ export default function CreateCategory() {
         navigate('/dashboard/categories');
     }
 
-    const handleImageChange = () => {
+    const handleVideoChange = () => {
         const input = document.querySelector('#categoryimage');
         const preview = document.querySelector('#image-preview');
-        const allowedTypes = ['image/png', 'image/svg', 'image/jpeg', 'image/webp'];
+        const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/quicktime'];
 
         const file = input.files[0];
         if (file == null) {
@@ -49,8 +49,8 @@ export default function CreateCategory() {
             preview.innerHTML = "";
             preview.style.display = "none";
         } else {
-            if (!allowedTypes.includes(file.type)) {
-                setImageError('File can only be an image!');
+            if (!allowedVideoTypes.includes(file.type)) {
+                setImageError('File can only be a video!');
                 preview.innerHTML = "";
                 preview.style.display = "none";
                 input.value = '';
@@ -59,7 +59,7 @@ export default function CreateCategory() {
                 const reader = new FileReader();
                 reader.addEventListener('load', () => {
                     preview.style.display = "block";
-                    preview.innerHTML = `<img src="${reader.result}" alt="Image preview" style="width:100%; height: 100%; object-fit: contain" id="preview">`;
+                    preview.innerHTML = `<video controls style="width:100%; height: 100%; object-fit: contain, borderRadius: 10px"><source src="${reader.result}" type="${file.type}">Your browser does not support the video tag.</video>`;
                 });
                 if (file) {
                     reader.readAsDataURL(file);
@@ -67,6 +67,7 @@ export default function CreateCategory() {
             }
         }
     }
+
 
     const handleNewCategory = async () => {
         setLoading(true);
@@ -90,7 +91,7 @@ export default function CreateCategory() {
                     body: JSON.stringify({
                         CategoryName: categoryName,
                         Description: desc,
-                        ImageURL: null,
+                        VideoURL: null,
                         ParentCategoryId: null
                     }),
                 });
@@ -113,12 +114,21 @@ export default function CreateCategory() {
                     body: JSON.stringify({
                         CategoryName: categoryName,
                         Description: desc,
-                        ImageURL: null,
+                        VideoURL: null,
                         ParentCategoryId: null
                     }),
                 });
+                if (response.status === 400) {
+                    const data = await result.text();
+                    setOpenColor('error');
+                    setOpenText(data);
+                }
+                else {
+                    setOpenColor('success');
+                    setOpenText('Created category successfully!');
+                }
                 const data = await response.json();
-                const imageRef = ref(storage, `images/CategoryImages/category_${data.id}`)
+                const imageRef = ref(storage, `videos/CategoryVideos/category_${data.id}`)
                 uploadBytes(imageRef, file).then(() => {
                     return getDownloadURL(imageRef);
                 })
@@ -133,7 +143,7 @@ export default function CreateCategory() {
                             Id: data.id,
                             CategoryName: categoryName,
                             Description: desc,
-                            ImageURL: downloadURL,
+                            VideoURL: downloadURL,
                             ParentCategoryId: null
                         }),
                     });
@@ -183,6 +193,7 @@ export default function CreateCategory() {
                             onInputChange={handleDescChange}
                             margin={'30px auto 0 auto'}
                         />
+                        <p style={{ margin: '15px 0 0 0', color: 'black', fontFamily: 'SF-Pro-Display-Medium' }}>Intro Video:</p>
                         <Input
                             placeholder={""}
                             isVisible={true}
@@ -190,12 +201,13 @@ export default function CreateCategory() {
                             type={"file"}
                             borderRadius={"5px"}
                             width={'100%'}
-                            onInputChange={handleImageChange}
-                            margin={'30px auto 0 auto'}
+                            accept={"video/*"}
+                            onInputChange={handleVideoChange}
+                            margin={'5px auto 0 auto'}
                             id={"categoryimage"}
                         />
                         <p style={{color: 'red'}}>{imageError}</p>
-                        <div id="image-preview" style={{ width: '140px', height: '140px', display: 'none', marginTop: '20px'}}></div>
+                        <div id="image-preview" style={{ width: '280px', height: '280px', display: 'none', marginTop: '20px'}}></div>
                         <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                             <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                             <div style={{width: '15px'}}></div>
