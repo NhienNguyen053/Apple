@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace webapi.Enum
+namespace AppleApi.Enum
 {
     public enum EnumTypeGet
     {

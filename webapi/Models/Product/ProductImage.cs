@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace webapi.Models.Product
+namespace AppleApi.Models.Product
 {
     public class ProductImage
     {

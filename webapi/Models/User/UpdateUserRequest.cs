@@ -1,4 +1,4 @@
-﻿namespace webapi.Models.User
+﻿namespace AppleApi.Models.User
 {
     public class UpdateUserRequest
     {

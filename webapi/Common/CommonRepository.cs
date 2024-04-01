@@ -32,6 +32,11 @@ namespace AppleApi.Common
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<List<T>> FindManyAsync(FilterDefinition<T> filter)
+        {
+            return await _collection.Find(filter).ToListAsync();
+        }
+
         public async Task<T> FindByIdAsync(string id)
         {
             if (!string.IsNullOrWhiteSpace(id))

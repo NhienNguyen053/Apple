@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using AppleApi.Common;
 using AppleApi.Interfaces;
 using System.Collections;
-using webapi.Models.Product;
+using AppleApi.Models.Product;
+using AppleApi.Extensions;
+using AppleApi.Models.Category;
 
 namespace AppleApi.Services
 {
@@ -38,6 +40,20 @@ namespace AppleApi.Services
             return new List<string>();
         }
 
+        public async Task<Product> FindDifferent(string id, string name)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Empty;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                filter = filter & Builders<Product>.Filter.Ne(x => x.Id, id);
+            }
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                filter = filter & Builders<Product>.Filter.Eq(x => x.ProductName, name);
+            }
+            return await FindAsync(filter);
+        }
+
         public async Task DeleteProductImage(string id, string color, string imageUrl)
         {
             var result = await FindByIdAsync(id);
@@ -55,7 +71,7 @@ namespace AppleApi.Services
                 if (productImage != null && productImage.ImageURLs != null)
                 {
                     productImage.ImageURLs.Remove(imageUrl);
-                    await UpdateOneAsync(result.Id, result);
+                    await UpdateOneAsync(result.Id.ToString(), result);
                 }
             }
         }

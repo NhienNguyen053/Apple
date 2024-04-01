@@ -51,6 +51,8 @@ export default function CreateProduct() {
     const [created, setCreated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [openText, setOpenText] = useState('');
+    const [openColor, setOpenColor] = useState('');
     const [open2, setOpen2] = React.useState(false);
     const [imageError, setImageError] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
@@ -359,11 +361,20 @@ export default function CreateProduct() {
                     }
                 }),
             });
-            const newProduct = await product.json();
-            setProductId(newProduct.id);
-            setActiveImages([]);
-            setTitle(`Product #${newProduct.productNumber}`)
-            setCreated(true);
+            if (product.status !== 400) {
+                const newProduct = await product.json();
+                setProductId(newProduct.id);
+                setActiveImages([]);
+                setTitle(`Product #${newProduct.productNumber}`)
+                setCreated(true);
+                setOpenColor('success');
+                setOpenText('Created product successfully. You can now add images to the product!');
+            }
+            else {
+                const data = await product.text();
+                setOpenColor('error');
+                setOpenText(data);
+            }
             setOpen(true);
             setTimeout(() => {
                 setOpen(false);
@@ -540,8 +551,8 @@ export default function CreateProduct() {
             <TabPanel value={value} index={0}>
                 <div className='container7 display' style={{ marginTop: 0 }}>
                     <Collapse in={open} sx={{width: '100%'}}>
-                        <Alert sx={{ mb: 2 }}>
-                            Created product successfully. You can now add images to the product!
+                        <Alert sx={{ mb: 2 }} severity={openColor}>
+                            {openText}
                         </Alert>
                     </Collapse>
                     <div style={{ width: 'fit-content', height: '80%' }}>

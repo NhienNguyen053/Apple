@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 
-namespace webapi.Models.User
+namespace AppleApi.Models.User
 {
     public class User
     {

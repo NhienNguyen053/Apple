@@ -9,7 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AppleApi.Common;
 using AppleApi.Interfaces;
-using webapi.Models.Category;
+using AppleApi.Models.Category;
+using AppleApi.Extensions;
 
 namespace AppleApi.Services
 {
@@ -18,6 +19,20 @@ namespace AppleApi.Services
         public CategoryService(IOptions<AppleDatabaseSettings> settings)
         : base(settings, "Category")
         {
+        }
+
+        public async Task<Category> FindDifferent(string id, string name)
+        {
+            FilterDefinition<Category> filter = Builders<Category>.Filter.Empty;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                filter = filter & Builders<Category>.Filter.Ne(x => x.Id, id);
+            }
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                filter = filter & Builders<Category>.Filter.Eq(x => x.CategoryName, name);
+            }
+            return await FindAsync(filter);
         }
     }
 }

@@ -3,10 +3,10 @@ using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using webapi.Models.Product;
+using AppleApi.Models.Product;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace webapi.Controllers
+namespace AppleApi.Controllers
 {
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
@@ -42,9 +42,14 @@ namespace webapi.Controllers
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
+            Product productExist = await productService.FindByFieldAsync("ProductName", product.ProductName);
+            if (productExist != null)
+            {
+                return BadRequest("Product name already exist!");
+            }
             Product newProduct = new();
             Product newestProduct = await productService.FindNewest("ProductNumber");
-            if(newestProduct != null)
+            if (newestProduct != null)
             {
                 newProduct.ProductNumber = newestProduct.ProductNumber + 1;
             }
@@ -71,6 +76,11 @@ namespace webapi.Controllers
         [HttpPost("updateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
+            Product productExist = await productService.FindDifferent(product.Id, product.ProductName);
+            if (productExist != null)
+            {
+                return BadRequest("Product name already exist!");
+            }
             List<string> urls = new();
             Product updateProduct = await productService.FindByIdAsync(product.Id);
             if (updateProduct.Colors.Count() == 0 && product.Colors.Count() != 0)
@@ -157,7 +167,7 @@ namespace webapi.Controllers
                         product.ProductImages.Add(newProductImage);
                     }
                 }
-                await productService.UpdateOneAsync(product.Id!, product);
+                await productService.UpdateOneAsync(product.Id, product);
             }
             else
             {

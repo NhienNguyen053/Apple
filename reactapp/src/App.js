@@ -6,7 +6,6 @@ import NotFound from './Main Page/Pages/NotFound';
 import ResetPassword from './Main Page/Pages/ResetPassword';
 import Otp from './Main Page/Pages/Otp';
 import NewPassword from './Main Page/Pages/NewPassword';
-import TestUpload from './Main Page/Pages/TestUpload';
 import AppPage from './Admin Page/Pages/app';
 import DashboardLayout from './Admin Page/layouts/dashboard';
 import ProductsPage from './Admin Page/Pages/products';
@@ -23,6 +22,8 @@ import EditCategory from './Admin Page/Pages/editCategory';
 import EditUser from './Admin Page/Pages/editUser';
 import CreateProduct from './Admin Page/sections/products/view/create-product';
 import EditProduct from './Admin Page/sections/products/view/edit-product';
+import Category from './Main Page/Pages/Category';
+import AuthRouteCategories from './Admin Page/routes/AuthRouteCategories';
 
 function App() {
     return (
@@ -30,14 +31,20 @@ function App() {
       <Suspense>
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route
+            path="/:category" 
+            element={
+              <AuthRouteCategories>
+                <Category />
+              </AuthRouteCategories>
+            } 
+            />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/resetpassword" element={<ResetPassword />} />
             <Route path="/otp" element={<Otp />} />
             <Route path="/notfound" element={<NotFound />} />
             <Route path="/newpassword" element={<NewPassword />} />
-            <Route path="/testupload" element={<TestUpload />} />
-            
             <Route
             path="/dashboard/"
             element={

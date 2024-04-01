@@ -1,4 +1,4 @@
-﻿namespace webapi.Models.Product
+﻿namespace AppleApi.Models.Product
 {
     public class DeleteImageRequest
     {

@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 
 
-namespace webapi.Models.Product
+namespace AppleApi.Models.Product
 {
     public class Product
     {

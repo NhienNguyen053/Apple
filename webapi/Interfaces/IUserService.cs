@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AppleApi.Common;
-using webapi.Models.User;
+using AppleApi.Models.User;
 
 namespace AppleApi.Interfaces
 {

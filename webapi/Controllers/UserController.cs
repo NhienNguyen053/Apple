@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
-using webapi.Enum;
+using AppleApi.Enum;
 using System.Net;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,7 +14,7 @@ using AppleApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using AppleApi.Interfaces;
 using System.Text.RegularExpressions;
-using webapi.Models.User;
+using AppleApi.Models.User;
 
 namespace AppleApi.Controllers
 {
@@ -213,7 +213,7 @@ namespace AppleApi.Controllers
             }
             user.VerificationToken = await CreateUniqueRandomTokenAsync();
             user.VerificationTokenExpires = DateTime.Now.AddDays(1);
-            await userService.UpdateOneAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id, user);
             SendEmail(user.VerificationToken, email);
             return Ok("Email sent!");
         }
@@ -256,7 +256,7 @@ namespace AppleApi.Controllers
             user.VerifiedAt = DateTime.Now;
             user.VerificationToken = null;
             user.VerificationTokenExpires = null;
-            await userService.UpdateOneAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id, user);
             return Ok("User verified!");
         }
 
@@ -287,7 +287,7 @@ namespace AppleApi.Controllers
             }
             user.PasswordResetToken = verificationcode;
             user.ResetTokenExpires = DateTime.Now.AddMinutes(10);
-            await userService.UpdateOneAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id, user);
             return Ok();
         }
 
@@ -323,7 +323,7 @@ namespace AppleApi.Controllers
             var code = GenerateCode(6);
             user.PasswordResetToken = code;
             user.ResetTokenExpires = DateTime.Now.AddMinutes(10);
-            await userService.UpdateOneAsync(user.Id!, user);
+            await userService.UpdateOneAsync(user.Id, user);
             var messageBody = "Your password reset code is: " + code;
             twilioSmsService.SendSms(toPhoneNumber, messageBody);
             return Ok("SMS sent");

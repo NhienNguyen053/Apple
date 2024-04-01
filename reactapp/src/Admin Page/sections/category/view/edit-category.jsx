@@ -25,6 +25,8 @@ export default function EditCategory() {
     const [imageError, setImageError] = useState('');
     const jwtToken = Cookies.get('jwtToken');
     const [open, setOpen] = useState(false);
+    const [openText, setOpenText] = useState('');
+    const [openColor, setOpenColor] = useState('');
 
     const handleNameChange = (e) => {
         setCategoryError('');
@@ -100,7 +102,7 @@ export default function EditCategory() {
             const input = document.querySelector('#categoryimage');
             const file = input.files[0];
             if (file == null) {
-                await fetch('https://localhost:7061/api/Category/updateCategory', {
+                const result = await fetch('https://localhost:7061/api/Category/updateCategory', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -114,13 +116,22 @@ export default function EditCategory() {
                         ParentCategoryId: null
                     }),
                 });
+                if (result.status === 400) {
+                    const data = await result.text();
+                    setOpenColor('error');
+                    setOpenText(data);
+                }
+                else {
+                    setOpenColor('success');
+                    setOpenText('Updated category successfully!');
+                }
             } else {
                 const imageRef = ref(storage, `images/CategoryImages/category_${id}`)
                 uploadBytes(imageRef, file).then(() => {
                     return getDownloadURL(imageRef);
                 })
-                .then((downloadURL) => {
-                    fetch('https://localhost:7061/api/Category/updateCategory', {
+                .then(async (downloadURL) => {
+                    const result = await fetch('https://localhost:7061/api/Category/updateCategory', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -134,6 +145,15 @@ export default function EditCategory() {
                             ParentCategoryId: null
                         }),
                     });
+                    if (result.status === 400) {
+                        const data = await result.text();
+                        setOpenColor('error');
+                        setOpenText(data);
+                    }
+                    else {
+                        setOpenColor('success');
+                        setOpenText('Updated category successfully!');
+                    }
                 })
             }
             setTimeout(() => {
@@ -154,8 +174,8 @@ export default function EditCategory() {
             </Stack>
             <div className='container7 display'>
                 <Collapse in={open} sx={{ width: '100%' }}>
-                    <Alert sx={{ mb: 2 }}>
-                        Updated category successfully!
+                    <Alert sx={{ mb: 2 }} severity={openColor}>
+                        {openText}
                     </Alert>
                 </Collapse>
                 <div style={{ width: 'fit-content', height: '80%' }} className="formInputs2">

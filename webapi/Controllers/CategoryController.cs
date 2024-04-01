@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using AppleApi.Interfaces;
-using webapi.Models.Category;
+using AppleApi.Models.Category;
 
 namespace AppleApi.Controllers;
 
@@ -45,6 +45,11 @@ public class CategoryController : ControllerBase
     [HttpPost("createCategory")]
     public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {
+        Category categoryExist = await categoryService.FindByFieldAsync("CategoryName", category.CategoryName);
+        if (categoryExist != null)
+        {
+            return BadRequest("Category name already exist!");
+        }
         var newCategory = new Category
         {
             CategoryName = category.CategoryName,
@@ -60,6 +65,11 @@ public class CategoryController : ControllerBase
     [HttpPost("updateCategory")]
     public async Task<IActionResult> UpdateCategory([FromBody] Category category)
     {
+        Category categoryExist = await categoryService.FindDifferent(category.Id, category.CategoryName);
+        if (categoryExist != null)
+        {
+            return BadRequest("Category name already exist!");
+        }
         var updateCategory = new Category
         {
             Id = category.Id,
@@ -68,7 +78,7 @@ public class CategoryController : ControllerBase
             ImageURL = category.ImageURL,
             ParentCategoryId = category.ParentCategoryId
         };
-        await categoryService.UpdateOneAsync(updateCategory.Id!, updateCategory);
+        await categoryService.UpdateOneAsync(updateCategory.Id, updateCategory);
         return Ok("Updated successfully");
     }
     
@@ -96,7 +106,6 @@ public class CategoryController : ControllerBase
         }
         else
         {
-            // Add check product!
             await categoryService.DeleteOneAsync(id);
             return Ok("Deleted subcategory!");
         }
@@ -115,7 +124,7 @@ public class CategoryController : ControllerBase
                 CategoryName = parent.CategoryName,
                 Description = parent.Description,
                 ImageURL = parent.ImageURL,
-                ChildCategories = GetChildCategories(categories, parent.Id!)
+                ChildCategories = GetChildCategories(categories, parent.Id)
             };
 
             return dashboardCategory;

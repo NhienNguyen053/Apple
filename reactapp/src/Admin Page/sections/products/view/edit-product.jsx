@@ -56,6 +56,8 @@ export default function EditProduct() {
     const [created, setCreated] = useState(true);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [openText, setOpenText] = useState('');
+    const [openColor, setOpenColor] = useState('');
     const [open2, setOpen2] = React.useState(false);
     const [imageError, setImageError] = useState('');
     const [selectedColor, setSelectedColor] = useState('');
@@ -387,7 +389,7 @@ export default function EditProduct() {
             setProductQuantityError('Invalid product quantity')
         }
         if (count === 5) {
-            await fetch('https://localhost:7061/api/Product/updateProduct', {
+            const result = await fetch('https://localhost:7061/api/Product/updateProduct', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -419,8 +421,17 @@ export default function EditProduct() {
                     }
                 }),
             });
-            setActiveImages([]);
-            setCreated(true);
+            if (result.status !== 400) {
+                setCreated(true);
+                setActiveImages([]);
+                setOpenColor('success');
+                setOpenText('Updated product successfully!');
+            }
+            else {
+                const data = await result.text();
+                setOpenColor('error');
+                setOpenText(data);
+            }
             setOpen(true);
             setTimeout(() => {
                 setOpen(false);
@@ -628,9 +639,9 @@ export default function EditProduct() {
             </Box>
             <TabPanel value={value} index={0}>
                 <div className='container7 display' style={{ marginTop: 0 }}>
-                    <Collapse in={open} sx={{ width: '100%' }}>
-                        <Alert sx={{ mb: 2 }}>
-                            Updated product successfully!
+                    <Collapse in={open} sx={{ width: '100%' }} >
+                        <Alert sx={{ mb: 2 }} severity={openColor}>
+                            {openText}
                         </Alert>
                     </Collapse>
                     <div style={{ width: 'fit-content', height: '80%' }}>

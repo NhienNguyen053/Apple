@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using webapi.Enum;
+using AppleApi.Enum;
 
-namespace webapi.Models.User
+namespace AppleApi.Models.User
 {
     public class UserLoginRequest
     {
