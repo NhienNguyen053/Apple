@@ -7,10 +7,6 @@
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\pages\\category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\routes\\authroutecategories.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\routes\\authroutecategories.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
@@ -66,7 +62,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "edit-category.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\edit-category.jsx",
@@ -80,7 +76,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "create-product.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\create-product.jsx",
@@ -94,7 +90,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "edit-product.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
@@ -114,7 +110,7 @@
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAYAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-01T02:32:18.709Z",
               "IsPinned": true,
@@ -122,7 +118,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Navbar.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Navbar.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Navbar.jsx",
@@ -135,8 +131,16 @@
               "EditorCaption": ""
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "App.js",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\App.js",
               "RelativeDocumentMoniker": "reactapp\\src\\App.js",
@@ -149,28 +153,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthRouteCategories.jsx",
-              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRouteCategories.jsx",
-              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\routes\\AuthRouteCategories.jsx",
-              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRouteCategories.jsx",
-              "RelativeToolTip": "reactapp\\src\\Admin Page\\routes\\AuthRouteCategories.jsx",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-01T02:42:41.327Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "Otp.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Otp.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Otp.jsx",
@@ -183,7 +166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "NotFound.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\NotFound.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\NotFound.jsx",
@@ -196,7 +179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "NewPassword.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\NewPassword.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\NewPassword.jsx",
@@ -209,7 +192,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "MainPage.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\MainPage.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\MainPage.jsx",
@@ -222,7 +205,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "ProductController.cs",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "webapi\\Controllers\\ProductController.cs",
@@ -235,7 +218,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "category-view.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
