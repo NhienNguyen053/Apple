@@ -13,7 +13,7 @@ const Input = ({ accept, color, placeholder, inputValue, onInputChange, onKeyPre
           onKeyDown={onKeyPress}
           style={{ borderRadius: borderRadius, borderTop: borderTop, paddingRight: paddingRight, color: color }}
           id={id}
-          accept={accept || "image/png, image/gif, image/jpeg"}
+          accept={accept || "image/png, image/gif, image/jpeg, image/svg+xml"}
           multiple={multiple}
           disabled={disabled}
         />

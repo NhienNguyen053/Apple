@@ -547,6 +547,7 @@ export default function EditProduct() {
             setTimeout(() => {
                 setOpen2(false);
             }, 3000);
+            window.scrollTo(0, 0);
         }, 2000);
     }
 
@@ -585,6 +586,7 @@ export default function EditProduct() {
                 setOpen2(false);
                 setDeleted(false);
             }, 3000);
+            window.scrollTo(0, 0);
         }).catch((error) => {
             console.error(error);
         })

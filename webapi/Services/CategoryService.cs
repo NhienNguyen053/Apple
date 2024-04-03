@@ -11,6 +11,7 @@ using AppleApi.Common;
 using AppleApi.Interfaces;
 using AppleApi.Models.Category;
 using AppleApi.Extensions;
+using System.Text.RegularExpressions;
 
 namespace AppleApi.Services
 {
@@ -31,6 +32,18 @@ namespace AppleApi.Services
             if (!string.IsNullOrWhiteSpace(name))
             {
                 filter = filter & Builders<Category>.Filter.Eq(x => x.CategoryName, name);
+            }
+            return await FindAsync(filter);
+        }
+
+        public async Task<Category> FindCategoryByName(string name)
+        {
+            FilterDefinition<Category> filter = Builders<Category>.Filter.Empty;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var regexPattern = name.Replace("-", "\\s").Replace("\\s\\s", "\\s");
+                var regex = new BsonRegularExpression(regexPattern, "i");
+                filter = filter & Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
             }
             return await FindAsync(filter);
         }

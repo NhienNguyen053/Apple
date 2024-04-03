@@ -490,6 +490,7 @@ export default function CreateProduct() {
             setTimeout(() => {
                 setOpen2(false);
             }, 3000);
+            window.scrollTo(0, 0);
         }, 2000);
     }
 
@@ -527,6 +528,7 @@ export default function CreateProduct() {
                 setOpen2(false);
                 setDeleted(false);
             }, 3000);
+            window.scrollTo(0, 0);
         }).catch((error) => {
             console.error(error);
         })

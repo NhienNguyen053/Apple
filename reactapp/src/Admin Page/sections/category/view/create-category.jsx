@@ -79,54 +79,40 @@ export default function CreateCategory() {
             count++;
         }
         if (count === 1) {
+            const response = await fetch('https://localhost:7061/api/Category/createCategory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    CategoryName: categoryName,
+                    Description: desc,
+                    VideoURL: null,
+                    ParentCategoryId: null
+                }),
+            });
+            if (response.status === 400) {
+                const data = await result.text();
+                setOpenColor('error');
+                setOpenText(data);
+                setTimeout(() => {
+                    setLoading(false);
+                    setOpen(true);
+                    setTimeout(() => {
+                        setOpen(false);
+                    }, 3000);
+                    window.scrollTo(0, 0);
+                }, 2000);
+                return;
+            }
+            else {
+                setOpenColor('success');
+                setOpenText('Created category successfully!');
+            }
             const input = document.querySelector('#categoryimage');
             const file = input.files[0];
-            if (file == null) {
-                const result = await fetch('https://localhost:7061/api/Category/createCategory', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                    body: JSON.stringify({
-                        CategoryName: categoryName,
-                        Description: desc,
-                        VideoURL: null,
-                        ParentCategoryId: null
-                    }),
-                });
-                if (result.status === 400) {
-                    const data = await result.text();
-                    setOpenColor('error');
-                    setOpenText(data);
-                }
-                else {
-                    setOpenColor('success');
-                    setOpenText('Created category successfully!');
-                }
-            } else {
-                const response = await fetch('https://localhost:7061/api/Category/createCategory', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                    body: JSON.stringify({
-                        CategoryName: categoryName,
-                        Description: desc,
-                        VideoURL: null,
-                        ParentCategoryId: null
-                    }),
-                });
-                if (response.status === 400) {
-                    const data = await result.text();
-                    setOpenColor('error');
-                    setOpenText(data);
-                }
-                else {
-                    setOpenColor('success');
-                    setOpenText('Created category successfully!');
-                }
+            if (file != null) {
                 const data = await response.json();
                 const imageRef = ref(storage, `videos/CategoryVideos/category_${data.id}`)
                 uploadBytes(imageRef, file).then(() => {
@@ -155,6 +141,7 @@ export default function CreateCategory() {
                 setTimeout(() => {
                     setOpen(false);
                 }, 3000);
+                window.scrollTo(0, 0);
             }, 2000);
         } else {
             setLoading(false);

@@ -24,6 +24,8 @@ import CreateProduct from './Admin Page/sections/products/view/create-product';
 import EditProduct from './Admin Page/sections/products/view/edit-product';
 import Category from './Main Page/Pages/Category';
 import AuthRouteCategories from './Admin Page/routes/AuthRouteCategories';
+import CreateSubcategory from './Admin Page/sections/category/view/create-subcategory';
+import EditSubcategory from './Admin Page/sections/category/view/edit-subcategory';
 
 function App() {
     return (
@@ -141,6 +143,26 @@ function App() {
                 <AuthRoute>
                   <DashboardLayout>
                     <EditCategory />
+                  </DashboardLayout>
+                </AuthRoute>
+              }
+            />
+             <Route
+              path="/dashboard/categories/createSubcategory"
+              element={
+                <AuthRoute>
+                  <DashboardLayout>
+                    <CreateSubcategory />
+                  </DashboardLayout>
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/dashboard/categories/editSubcategory"
+              element={
+                <AuthRoute>
+                  <DashboardLayout>
+                    <EditSubcategory />
                   </DashboardLayout>
                 </AuthRoute>
               }

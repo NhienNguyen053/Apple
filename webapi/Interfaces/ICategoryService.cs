@@ -9,5 +9,6 @@ namespace AppleApi.Interfaces
     public interface ICategoryService : ICommonRepository<Category>
     {
         Task<Category> FindDifferent(string id, string name);
+        Task<Category> FindCategoryByName(string name);
     }
 }

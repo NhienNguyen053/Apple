@@ -60,6 +60,14 @@ export default function CategoryPage() {
         navigate('/dashboard/categories/editCategory', { state: { id: id } });
     }
 
+    const routeChange3 = (id) => {
+        navigate('/dashboard/categories/createSubcategory', { state: { id: id } });
+    }
+
+    const routeChange4 = (id) => {
+        navigate('/dashboard/categories/editSubcategory', { state: { id: id } });
+    }
+
     const removeCategory = async () => {
         try {
             const response = await fetch(`https://localhost:7061/api/Category/deleteCategory?id=${deleteId}`, {
@@ -102,48 +110,6 @@ export default function CategoryPage() {
         }
     };
 
-    const newSubCategory = async (id) => {
-        const response = await fetch('https://localhost:7061/api/Category/createCategory', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${jwtToken}`
-            },
-            body: JSON.stringify({
-                CategoryName: "New Subcategory",
-                Description: null,
-                VideoURL: null,
-                ParentCategoryId: id
-            }),
-        });
-        const data = await response.json();
-        const categoryIndex = categories.findIndex(category => category.id === id);
-
-        if (categoryIndex !== -1) {
-            setIsActive(true);
-            const updatedCategories = [...categories];
-            updatedCategories[categoryIndex].childCategories.push({
-                id: data.id,
-                categoryName: data.categoryName,
-                description: data.description,
-                VideoURL: data.videoURL,
-                parentCategoryId: data.parentCategoryId
-            });
-            setCategories(updatedCategories);
-        }
-    }
-
-    const updateSubCategory = async (status, error) => {
-        if (status === 400) {
-            setError(error);
-            setModalVisible2(true);
-            setTimeout(() => {
-                setModalVisible2(false);
-            }, 3000);
-            window.scrollTo(0, 0);
-        } 
-    }
-
     const toggleModal = (param, param1, param2) => {
         setName(param2);
         setDeleteCategory(param);
@@ -181,7 +147,7 @@ export default function CategoryPage() {
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
                             <div style={{display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
-                                <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => newSubCategory(category.id)} ></i>
+                                <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => routeChange3(category.id)}></i>
                                 <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id)}></i>
                                 <i className="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
                             </div>
@@ -189,7 +155,7 @@ export default function CategoryPage() {
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <TextField isActive={child.categoryName === "New Subcategory" && isActive === true ? true : false} id={child.id} name={child.categoryName} parentId={child.parentCategoryId} onClick={updateSubCategory} onClick2={toggleModal} key={child.id} role={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']} />
+                                    <p style={{ margin: '5px 0 5px 0', cursor: 'pointer' }} onClick={() => routeChange4(child.id)}>{child.categoryName}</p>
                                 ))}
                             </div>
                             <div style={{ width: '150px', height: '94px' }}>

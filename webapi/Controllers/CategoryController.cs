@@ -29,6 +29,17 @@ public class CategoryController : ControllerBase
         return Ok(dashboardCategories);
     }
 
+    [HttpGet("getCategoryByName")]
+    public async Task<IActionResult> GetCategoryByName(string name)
+    {
+        Category category = await categoryService.FindCategoryByName(name);
+        if (category == null)
+        {
+            return NoContent();
+        }
+        return Ok(category);
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpGet("getCategoryById")]
     public async Task<IActionResult> GetCategoryById(string id)
@@ -70,12 +81,15 @@ public class CategoryController : ControllerBase
         {
             return BadRequest("Category name already exist!");
         }
+        Category oldCategory = await categoryService.FindByIdAsync(category.Id);
         var updateCategory = new Category
         {
             Id = category.Id,
             CategoryName = category.CategoryName,
             Description = category.Description,
             VideoURL = category.VideoURL,
+            ImageURL = category.ImageURL == null ? oldCategory.ImageURL : category.ImageURL,
+            IconURL = category.IconURL == null ? oldCategory.IconURL : category.IconURL,
             ParentCategoryId = category.ParentCategoryId
         };
         await categoryService.UpdateOneAsync(updateCategory.Id, updateCategory);
