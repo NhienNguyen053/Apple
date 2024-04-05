@@ -28,6 +28,11 @@ function NavbarItemSliderContent({ data }) {
         let path = '/dashboard';
         navigate(path);
     }
+    const routeChange4 = (name) => {
+        let formattedName = name.replace(/\s+/g, '-');
+        let path = `/${formattedName.toLowerCase()}`;
+        navigate(path);
+    }
     const jwtToken = Cookies.get('jwtToken');
     var decodedToken;
     if(jwtToken != null){
@@ -101,8 +106,9 @@ function NavbarItemSliderContent({ data }) {
             <div style={{ width: '60%', margin: '10px auto' }}>
                 <div className="slidercontent">
                     <p style={{ margin: '5px 0 10px 0' }}>Explore {product.categoryName}</p>
+                    <p className="p7" onClick={() => routeChange4(product.categoryName)}>Explore All {product.categoryName}</p>
                     {product && product.childCategories && product.childCategories.map((child) => (
-                        <p key={child.id} className="p7">Explore {child.categoryName}</p>
+                        <p key={child.id} className="p7" onClick={() => routeChange4(child.categoryName)}>Explore {child.categoryName}</p>
                     ))}
                 </div>
             </div>

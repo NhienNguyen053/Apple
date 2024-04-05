@@ -37,7 +37,7 @@ function App() {
             path="/:category" 
             element={
               <AuthRouteCategories>
-                <Category />
+                <Category key={window.location.pathname}/>
               </AuthRouteCategories>
             } 
             />

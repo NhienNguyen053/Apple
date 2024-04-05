@@ -25,6 +25,17 @@ namespace AppleApi.Controllers
             return Ok(products);
         }
 
+        [HttpGet("getCategoryProducts")]
+        public async Task<IActionResult> GetCategoryProducts(string id)
+        {
+            List<Product> products = await productService.FindCategoryProducts(id);
+            if(products.Count == 0)
+            {
+                return NoContent();
+            }
+            return Ok(products);
+        }
+
         [Authorize(Roles = "Admin, Employee")]
         [HttpGet("getProductById")]
         public async Task<IActionResult> GetProductById(string id)

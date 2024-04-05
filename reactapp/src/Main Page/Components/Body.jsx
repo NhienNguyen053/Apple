@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import React from 'react';
 import ViewportWidth from './ViewportWidth';
+import Footer from './Footer';
 
 const Body = () => {
     const viewportWidth = ViewportWidth();
@@ -58,7 +59,7 @@ const Body = () => {
                 <ImageContainer className={"media"} height={'580px'} parentWidth={'48.5%'} parentMargin={'0 0 15px 15px'} textColor={'white'} isTop={true} icon={true} firstText={" WATCH"} secondText={"Smarter. Brighter. Mightier"} fourthText={true} imageUrl={"https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FMainPageImages%2F5.1.jpg?alt=media&token=a0ec405a-ec6f-4f93-90bd-354c0454ac88"} />
                 <ImageContainer className={"media"} height={'580px'} parentWidth={'48.5%'} parentMargin={'0 0 15px 15px'} textColor={'black'} isTop={true} firstText={"iPad"} secondText={"Lovable. Drawable. Magical"} imageUrl={"https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FMainPageImages%2F5.2.jpg?alt=media&token=c73a22f3-5424-48af-a42a-ea37266b1091"} />
             </div>
-            <div className="slider-container">
+            <div className="slider-container" style={{ marginBottom: '50px' }}>
                 <Slider {...settings}>
                     <div>
                         <img src="https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FMainPageImages%2F7.1.jpg?alt=media&token=546be67a-a54d-4772-896d-15ddcd2eb159" style={{ width: '99%' }} />
@@ -92,7 +93,7 @@ const Body = () => {
                     </div>
                 </Slider>
             </div>
-            <div style={{ width: '100%', height: '500px', background: '#f5f5f7', marginTop: '30px' }}></div>
+            <Footer />
         </div>
     );
 }

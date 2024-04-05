@@ -12,6 +12,7 @@ using AppleApi.Interfaces;
 using AppleApi.Models.Category;
 using AppleApi.Extensions;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace AppleApi.Services
 {
@@ -46,6 +47,16 @@ namespace AppleApi.Services
                 filter = filter & Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
             }
             return await FindAsync(filter);
+        }
+
+        public async Task<List<Category>> FindSubcategory(string parentId)
+        {
+            FilterDefinition<Category> filter = Builders<Category>.Filter.Empty;
+            if (!string.IsNullOrWhiteSpace(parentId))
+            {
+                filter = filter & Builders<Category>.Filter.Or(Builders<Category>.Filter.Eq(x => x.Id, parentId), Builders<Category>.Filter.Eq(x => x.ParentCategoryId, parentId));
+            }
+            return await FindManyAsync(filter);
         }
     }
 }

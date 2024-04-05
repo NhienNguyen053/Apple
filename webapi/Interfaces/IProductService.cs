@@ -10,6 +10,7 @@ namespace AppleApi.Interfaces
     {
         Task<List<string>> FindImagesByColorAsync(string id, string color);
         Task<Product> FindDifferent(string id, string name);
+        Task<List<Product>> FindCategoryProducts(string categoryId);
         Task DeleteProductImage(string id, string color, string imageUrl);
     }
 }

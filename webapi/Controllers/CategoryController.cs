@@ -10,10 +10,12 @@ namespace AppleApi.Controllers;
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryService categoryService;
+    private readonly IProductService productService;
 
-    public CategoryController(ICategoryService categoryService)
+    public CategoryController(ICategoryService categoryService, IProductService productService)
     {
         this.categoryService = categoryService;
+        this.productService = productService;
     }
 
 
@@ -36,8 +38,17 @@ public class CategoryController : ControllerBase
         if (category == null)
         {
             return NoContent();
+        } 
+        else if (category.ParentCategoryId != null)
+        {
+            return Ok(category);
         }
-        return Ok(category);
+        else
+        {
+            List<Category> categories = await categoryService.FindSubcategory(category.Id);
+            var mappedCategories = ConvertToDashboardCategories(categories);
+            return Ok(mappedCategories[0]);
+        }
     }
 
     [Authorize(Roles = "Admin")]
@@ -120,8 +131,16 @@ public class CategoryController : ControllerBase
         }
         else
         {
-            await categoryService.DeleteOneAsync(id);
-            return Ok("Deleted subcategory!");
+            var productExist = await productService.FindByFieldAsync("SubCategoryId", id);
+            if (productExist != null)
+            {
+                return Ok("Can't delete subcategory that has products!");
+            }
+            else
+            {
+                await categoryService.DeleteOneAsync(id);
+                return Ok("Deleted subcategory!");
+            }
         }
        
         return Ok("Delete successfully!");
@@ -158,7 +177,9 @@ public class CategoryController : ControllerBase
                 CategoryName = child.CategoryName,
                 Description = child.Description,
                 VideoURL = child.VideoURL,
-                ParentCategoryId = child.ParentCategoryId
+                ParentCategoryId = child.ParentCategoryId,
+                IconURL = child.IconURL,
+                ImageURL = child.ImageURL,
             };
 
             return dashboardChildCategory;

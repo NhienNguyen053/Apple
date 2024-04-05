@@ -8,7 +8,6 @@ import Iconify from '../../../Components/iconify';
 import Cookies from 'js-cookie';
 import { ref, deleteObject } from "firebase/storage";
 import { storage } from '../../../../Firebase';
-import TextField from '../../../Components/TextField';
 import Modal from '../../../Components/Modal';
 import jwt_decode from 'jwt-decode';
 
@@ -19,7 +18,6 @@ export default function CategoryPage() {
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const [categories, setCategories] = useState([]);
-    const [isActive, setIsActive] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [isModalVisible2, setModalVisible2] = useState(false);
     const [deleteCategory, setDeleteCategory] = useState('');
@@ -64,8 +62,8 @@ export default function CategoryPage() {
         navigate('/dashboard/categories/createSubcategory', { state: { id: id } });
     }
 
-    const routeChange4 = (id) => {
-        navigate('/dashboard/categories/editSubcategory', { state: { id: id } });
+    const routeChange4 = (id, parentId) => {
+        navigate('/dashboard/categories/editSubcategory', { state: { id: id, parentId: parentId } });
     }
 
     const removeCategory = async () => {
@@ -155,7 +153,7 @@ export default function CategoryPage() {
                         <div style={{display: 'flex'}}>
                             <div style={{width: '80%', marginRight: '20px'}}>
                                 {category.childCategories.map((child) => (
-                                    <p style={{ margin: '5px 0 5px 0', cursor: 'pointer' }} onClick={() => routeChange4(child.id)}>{child.categoryName}</p>
+                                    <p style={{ margin: '5px 0 5px 0', cursor: 'pointer' }} onClick={() => routeChange4(child.id, category.id)}>{child.categoryName}</p>
                                 ))}
                             </div>
                             <div style={{ width: '150px', height: '94px' }}>

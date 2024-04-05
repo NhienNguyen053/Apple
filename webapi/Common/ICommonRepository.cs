@@ -13,6 +13,7 @@ namespace AppleApi.Common
         Task<List<T>> FindManyAsync(FilterDefinition<T> filter);
         Task<T> FindByIdAsync(string id);
         Task<T> FindByFieldAsync(string field, string value);
+        Task<List<T>> FindManyByFieldAsync(string field, string value);
         Task<T> FindNewest(string field);
         Task<T> InsertOneAsync(T model);
         Task UpdateOneAsync(string id, T model);

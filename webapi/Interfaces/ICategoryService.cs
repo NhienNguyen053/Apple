@@ -10,5 +10,6 @@ namespace AppleApi.Interfaces
     {
         Task<Category> FindDifferent(string id, string name);
         Task<Category> FindCategoryByName(string name);
+        Task<List<Category>> FindSubcategory(string parentId);
     }
 }

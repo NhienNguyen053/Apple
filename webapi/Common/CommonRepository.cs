@@ -63,6 +63,14 @@ namespace AppleApi.Common
             return doc;
         }
 
+        public async Task<List<T>> FindManyByFieldAsync(string field, string value)
+        {
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);
+            List<T> docs = await _collection.Find(filter).ToListAsync();
+            return docs;
+
+        }
+
         public async Task<T> InsertOneAsync(T model)
         {
             await _collection.InsertOneAsync(model);

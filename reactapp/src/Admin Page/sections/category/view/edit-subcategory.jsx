@@ -5,11 +5,12 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import Input from '../../../../Main Page/Components/Input';
 import Button from '../../../../Main Page/Components/Button';
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { storage } from "../../../../Firebase";
 import Cookies from 'js-cookie';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
+import Modal from '../../../Components/Modal';
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,7 @@ export default function EditSubcategory() {
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
+    const parentId = location.state?.parentId;
     const [image, setImage] = useState('');
     const [icon, setIcon] = useState('');
     const [categoryName, setCategoryName] = useState('');
@@ -29,6 +31,9 @@ export default function EditSubcategory() {
     const [open, setOpen] = useState(false);
     const [openText, setOpenText] = useState('');
     const [openColor, setOpenColor] = useState('');
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalVisible2, setModalVisible2] = useState(false);
+    const [error, setError] = useState('');
 
     const handleNameChange = (e) => {
         setCategoryError('');
@@ -149,7 +154,7 @@ export default function EditSubcategory() {
                     Description: desc,
                     ImageURL: null,
                     IconURL: null,
-                    ParentCategoryId: id
+                    ParentCategoryId: parentId
                 }),
             });
             setOpenColor('success');
@@ -173,7 +178,7 @@ export default function EditSubcategory() {
                                 Description: desc,
                                 ImageURL: downloadURL,
                                 IconURL: null,
-                                ParentCategoryId: id
+                                ParentCategoryId: parentId
                             }),
                         });
                     })
@@ -196,7 +201,7 @@ export default function EditSubcategory() {
                                 Description: desc,
                                 ImageURL: null,
                                 IconURL: downloadURL,
-                                ParentCategoryId: id
+                                ParentCategoryId: parentId
                             }),
                         });
                     })
@@ -213,12 +218,55 @@ export default function EditSubcategory() {
             setLoading(false);
         }
     };
+
+    const deleteCategory = async () => {
+        const response = await fetch(`https://localhost:7061/api/Category/deleteCategory?id=${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${jwtToken}`
+            },
+        });
+        const data = await response.text();
+        if (data === "Deleted subcategory!") {
+            const existingImage = ref(storage, `images/SubcategoryImages/subcategoryIcon_${id}`);
+            deleteObject(existingImage);
+            const existingIcon = ref(storage, `images/SubcategoryImages/subcategoryImage_${id}`);
+            deleteObject(existingIcon);
+            setModalVisible(!isModalVisible);
+            navigate('/dashboard/categories/');
+        } else if (data === "Can't delete subcategory that has products!") {
+            setModalVisible(!isModalVisible);
+            setError("Can't delete subcategory that has products!");
+            setModalVisible2(true);
+            setTimeout(() => {
+                setModalVisible2(false);
+            }, 3000);
+            window.scrollTo(0, 0);
+        }
+    }
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    }
+
+    const toggleModal2 = () => {
+        setModalVisible2(!isModalVisible2);
+    }
+
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4" style={{ marginLeft: '3%' }}>Edit Subcategory</Typography>
+                <Button text={'Delete'} background={'red'} textColor={'white'} margin={0} onclick={toggleModal} />
             </Stack>
             <div className='container7 display'>
+                {isModalVisible2 && (
+                    <div style={{ width: '95%', backgroundColor: 'rgb(255, 192, 203)', padding: '15px', borderRadius: '10px', margin: '0 auto 20px auto' }}>
+                        <span style={{ fontFamily: 'SF-Pro-Display-Medium', color: 'black' }}>{error}</span>
+                        <button style={{ background: 'transparent', border: 'none', fontSize: '18px', float: 'right', lineHeight: '1', cursor: 'pointer' }} onClick={toggleModal2}>x</button>
+                    </div>
+                )}
                 <Collapse in={open} sx={{ width: '100%' }}>
                     <Alert sx={{ mb: 2 }} severity={openColor}>
                         {openText}
@@ -295,6 +343,7 @@ export default function EditSubcategory() {
                     </div>
                 </div>
             </div>
+            <Modal name3={"subcategory"} name={" " + categoryName} isVisible={isModalVisible} toggleModal={toggleModal} func={deleteCategory} />
         </Container>
     );
 }
