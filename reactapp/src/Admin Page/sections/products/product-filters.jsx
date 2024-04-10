@@ -22,12 +22,13 @@ export const PRICE_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, categories, inputCategoryId, inputSubCategoryId, inputSelectedPrice, inputProductName, inputProductStatus }) {
+export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter, categories, inputCategoryId, inputSubCategoryId, inputSelectedPrice, inputProductName, inputProductStatus, inputPageSize }) {
   const [categoryId, setCategoryId] = useState(inputCategoryId);
   const [subCategoryId, setSubCategoryId] = useState(inputSubCategoryId);
   const [productStatus, setProductStatus] = useState(inputProductStatus);
   const [selectedPrice, setSelectedPrice] = useState(inputSelectedPrice);
   const [productName, setProductName] = useState(inputProductName);
+  const [pageSize, setPageSize] = useState(inputPageSize);
 
   const handleProductNameChange = (event) => {
     setProductName(event.target.value);
@@ -47,6 +48,10 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
 
   const handleProductStatus = (e) => {
     setProductStatus(e.target.value);
+  }
+
+  const handlePageSize = (e) => {
+      setPageSize(e.target.value);
   }
 
   const renderCategory = (
@@ -79,6 +84,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
       setProductName('');
       setProductStatus('');
       setSelectedPrice('');
+      setPageSize(8);
   }
 
   const renderName = (
@@ -90,6 +96,13 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
   const renderStatus = (
     <Stack spacing={1}>
       <Select type={"status2"} width={'100%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} selectedValue={productStatus}/>
+    </Stack>
+  );
+
+  const renderRows = (
+    <Stack spacing={1}>
+      <p style={{color: 'black', marginBottom: '5px', fontSize: '14px', fontFamily: 'SF-Pro-Display-Regular'}}>Page size:</p>
+      <Select type={"rows"} width={'100%'} borderRadius={'5px'} margin={'0'} onInputChange={handlePageSize} selectedValue={pageSize}/>
     </Stack>
   );
 
@@ -107,7 +120,7 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
       <Drawer
         anchor="right"
         open={openFilter}
-        onClose={() => onCloseFilter(categoryId, subCategoryId, selectedPrice, productStatus, productName)}
+        onClose={() => onCloseFilter(categoryId, subCategoryId, selectedPrice, productStatus, productName, pageSize)}
         PaperProps={{
           sx: { width: 280, border: 'none', overflow: 'hidden' },
         }}
@@ -139,6 +152,8 @@ export default function ProductFilters({ openFilter, onOpenFilter, onCloseFilter
             {renderName}
 
             {renderStatus}
+
+            {renderRows}
           </Stack>
         </Scrollbar>
 

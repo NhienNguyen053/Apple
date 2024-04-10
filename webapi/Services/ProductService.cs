@@ -14,6 +14,7 @@ using AppleApi.Models.Product;
 using AppleApi.Extensions;
 using AppleApi.Models.Category;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace AppleApi.Services
 {
@@ -78,6 +79,40 @@ namespace AppleApi.Services
                 filter = filter & Builders<Product>.Filter.Eq(x => x.ProductStatus, "Active");
                 return await FindManyAsync(filter);
             }
+        }
+
+        public async Task<(List<Product>, long)> FindProductsByFilter(string categoryId, string subcategoryId, string price, string status, string name, int pageIndex, int pageSize)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Empty;
+            long totalCount;
+            List<Product> products = new List<Product>();
+
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                filter = filter & Builders<Product>.Filter.Eq(p => p.CategoryId, categoryId);
+            }
+            if (!string.IsNullOrEmpty(subcategoryId))
+            {
+                filter = filter & Builders<Product>.Filter.Eq(p => p.SubCategoryId, subcategoryId);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                filter = filter & Builders<Product>.Filter.Eq(p => p.ProductStatus, status);
+            }
+            if (!string.IsNullOrEmpty(price))
+            {
+                if (decimal.TryParse(price, out decimal parsedPrice))
+                {
+                    filter = filter & Builders<Product>.Filter.Lt(p => decimal.Parse(p.ProductPrice), parsedPrice);
+                }
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                var regexPattern = new BsonRegularExpression(new Regex(name, RegexOptions.IgnoreCase));
+                filter = filter & Builders<Product>.Filter.Regex(p => p.ProductName, regexPattern);
+            }
+            (products, totalCount) = await FindManyWithPaging(filter, pageSize, pageIndex);
+            return (products, totalCount);
         }
 
         public async Task DeleteProductImage(string id, string color, string imageUrl)

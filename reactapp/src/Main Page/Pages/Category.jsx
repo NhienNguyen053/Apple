@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import Navbar from '../Components/Navbar';
 import Video from '../Components/Video';
 import Button from '../Components/Button';
+import Footer from '../Components/Footer';
 
 const Category = ({ categories }) => {
     const [products, setProducts] = useState([]);
+    let navigate = useNavigate(); 
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -21,6 +24,12 @@ const Category = ({ categories }) => {
         fetchProducts();
     }, []);
 
+    const routeChange = (name) => {
+        let formattedName = name.replace(/\s+/g, '-');
+        let path = `/${formattedName.toLowerCase()}`;
+        navigate(path);
+    }
+
     return (
         <>
             <Navbar darkmode={true} />
@@ -28,7 +37,7 @@ const Category = ({ categories }) => {
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '75px 0 0 0', cursor: 'pointer' }}>
                     {categories.childCategories.map((child) => {
                         return (
-                            <div>
+                            <div onClick={() => routeChange(child.categoryName)}>
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                                     <img src={child.iconURL} />
                                 </div>
@@ -49,7 +58,7 @@ const Category = ({ categories }) => {
                 {products.length === 0 ? null : null}
             </div>
             <div style={{ width: '100%', height: '30px', background: 'white' }}></div>
-            <div style={{ width: '100%', height: '500px', background: '#f5f5f7' }}></div>
+            <Footer />
         </>
     );
 };

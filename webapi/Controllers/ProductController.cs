@@ -29,11 +29,27 @@ namespace AppleApi.Controllers
         public async Task<IActionResult> GetCategoryProducts(string id)
         {
             List<Product> products = await productService.FindCategoryProducts(id);
-            if(products.Count == 0)
+            if (products.Count == 0)
             {
                 return NoContent();
             }
             return Ok(products);
+        }
+
+        [HttpGet("getProducts")]
+        public async Task<IActionResult> GetProducts(string categoryId, string subcategoryId, string price, string status, string name, int pageIndex, int pageSize)
+        {
+            (List<Product> products, long totalCount) = await productService.FindProductsByFilter(categoryId, subcategoryId, price, status, name, pageIndex, pageSize);
+            if (products.Count == 0)
+            {
+                return NoContent();
+            }
+            ProductsWithPaging response = new ProductsWithPaging
+            {
+                products = products,
+                totalCount = totalCount,
+            };
+            return Ok(response);
         }
 
         [Authorize(Roles = "Admin, Employee")]

@@ -68,7 +68,13 @@ namespace AppleApi.Common
             FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);
             List<T> docs = await _collection.Find(filter).ToListAsync();
             return docs;
+        }
 
+        public async Task<(List<T> documents, long totalCount)> FindManyWithPaging(FilterDefinition<T> filter, int pageSize, int pageIndex)
+        {
+            List<T> docs = await _collection.Find(filter).Skip((pageIndex - 1) * pageSize).Limit(pageSize).ToListAsync();
+            long totalCount = await _collection.CountDocumentsAsync(filter);
+            return (docs, totalCount);
         }
 
         public async Task<T> InsertOneAsync(T model)

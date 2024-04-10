@@ -20,7 +20,9 @@ export default function ProductsView() {
   const jwtToken = Cookies.get('jwtToken');
   const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [pageSize, setPageSize] = useState(8);
+  const [pageIndex, setPageIndex] = useState(1);
+  const [totalPage, setTotalPage] = useState([]);
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState('');
   const [subCategoryId, setSubCategoryId] = useState('');
@@ -28,17 +30,23 @@ export default function ProductsView() {
   const [selectedPrice, setSelectedPrice] = useState('');
   const [productName, setProductName] = useState('');
 
-  useEffect(() => {
-    fetchProducts();
+    useEffect(() => {
+    fetchProducts(categoryId, subCategoryId, selectedPrice, productStatus, productName, pageIndex, pageSize);
     fetchCategories();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (category, subCategory, price, status, name, index, size) => {
       try {
-          const response = await fetch("https://localhost:7061/api/Product/getAllProducts");
+          const response = await fetch(`https://localhost:7061/api/Product/getProducts?categoryId=${category}&subcategoryId=${subCategory}&price=${price}&status=${status}&name=${name}&pageIndex=${index}&pageSize=${size}`);
           const data = await response.json();
-          setProducts(data);
-          setFilteredProducts(data);
+          const { products, totalCount } = data;
+          var array = [];
+          var i;
+          for (i = 0; i < totalCount / pageSize; i++) {
+              array.push(i + 1);
+          };
+          setTotalPage(array);
+          setProducts(products);
       } catch (error) {
           console.error('Error fetching categories:', error);
       }
@@ -58,41 +66,24 @@ export default function ProductsView() {
     setOpenFilter(true);
   };
 
-    const handleCloseFilter = (categoryId, subCategoryId, selectedPrice, productStatus, productName) => {
+  const handleCloseFilter = (categoryId, subCategoryId, selectedPrice, productStatus, productName, pageSize) => {
       setCategoryId(categoryId);
       setSubCategoryId(subCategoryId);
       setSelectedPrice(selectedPrice);
       setProductStatus(productStatus);
       setProductName(productName);
-      setFilteredProducts(products);
-      if (categoryId != "") {
-          setFilteredProducts(products.filter(x => x.categoryId == categoryId));
-      }
-      if (subCategoryId != "") {
-          setFilteredProducts(products.filter(x => x.subCategoryId == subCategoryId));
-      }
-      if (selectedPrice != "") {
-          if (selectedPrice == "below") {
-              setFilteredProducts(products.filter(x => x.productPrice < 100));
-          }
-          if (selectedPrice == "between") {
-              setFilteredProducts(products.filter(x => x.productPrice > 100 && x.productPrice < 500));
-          }
-          if (selectedPrice == "above") {
-              setFilteredProducts(products.filter(x => x.productPrice > 500));
-          }
-      }
-      if (productStatus != "") {
-          setFilteredProducts(products.filter(x => x.productStatus == productStatus));
-      }
-      if (productName != "") {
-          setFilteredProducts(products.filter(product => product.productName.toLowerCase().includes(productName.toLowerCase())));
-      }
+      setPageIndex(1);
+      fetchProducts(categoryId, subCategoryId, selectedPrice, productStatus, productName, 1, pageSize);
       setOpenFilter(false);
   };
 
   const routeChange = () => {
     navigate('/dashboard/products/createProduct');
+  }
+
+  const changePage = (index) => {
+      setPageIndex(index);
+      fetchProducts(categoryId, subCategoryId, selectedPrice, productStatus, productName, index, pageSize);
   }
 
   return (
@@ -123,17 +114,22 @@ export default function ProductsView() {
             inputSelectedPrice={selectedPrice}
             inputProductStatus={productStatus}
             inputProductName={productName}
+            inputPageSize={pageSize}
           />
-
         </Stack>
       </Stack>
 
       <Grid container spacing={3}>
-        {filteredProducts.map((product) => (
+        {products.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
             <ProductCard product={product} />
           </Grid>
         ))}
+        <div style={{width: '100%'}}>
+            {totalPage.map((index) => (
+                <Button variant={index == pageIndex ? 'contained' : 'outline'} sx={{ minWidth: '32px', borderRadius: '0' }} onClick={() => changePage(index)}>{index}</Button>
+            ))}
+        </div>
       </Grid>
 
       <ProductCartWidget />

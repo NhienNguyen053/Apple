@@ -34,6 +34,14 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                         <option>Active</option>
                     </>
                 )
+            case 'rows':
+                return (
+                    <>
+                        <option>8</option>
+                        <option>16</option>
+                        <option>24</option>
+                    </>
+                )
             case 'category':
                 return (
                     <>
