@@ -33,11 +33,23 @@ namespace AppleApi.Services
 
             if (result != null && result.ProductImages != null)
             {
-                var productImage = result.ProductImages.FirstOrDefault(x => x.Color == color);
-
-                if (productImage != null)
+                if (color != null)
                 {
-                    return productImage.ImageURLs;
+                    var productImage = result.ProductImages.FirstOrDefault(x => x.Color == color);
+
+                    if (productImage != null)
+                    {
+                        return productImage.ImageURLs;
+                    }
+                }
+                else
+                {
+                    var productImage = result.ProductImages.FirstOrDefault();
+
+                    if (productImage != null)
+                    {
+                        return productImage.ImageURLs;
+                    }
                 }
             }
 

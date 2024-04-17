@@ -57,6 +57,7 @@ span{
 .slick-slide div div {
     display: flex !important;
     justify-content: center !important;
+    flex-wrap: wrap;
 }
 .slick-prev:before, .slick-next:before {
     display: none;
@@ -127,6 +128,19 @@ span{
 }
 .hoverable-div:hover .fa-solid{
     color: var(--logo-color);
+}
+.description p{
+    color: black;
+    margin: 0;
+}
+.price {
+    color: black;
+    font-family: SF-Pro-Display-Semibold;
+    width: 95%;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .header{
     z-index: 1000;

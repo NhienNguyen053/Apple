@@ -35,6 +35,7 @@ export default function EditProduct() {
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
+    const [personName, setPersonName] = React.useState([]);
     const [product, setProduct] = useState();
     const [title, setTitle] = useState();
     const [productId, setProductId] = useState();
@@ -209,6 +210,12 @@ export default function EditProduct() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        if (personName.length === 0 && productId) {
+            getProductImagesByColor(null);
+        }
+    }, [productId, personName])
+
     const getProduct = async () => {
         const response = await fetch(`https://localhost:7061/api/Product/getProductById?id=${id}`, {
             method: 'GET',
@@ -239,9 +246,6 @@ export default function EditProduct() {
         setPersonName(product.colors);
         setProductMemory(product.options.memory);
         setProductStorage(product.options.storage);
-        if (product.colors.length === 0) {
-            getProductImagesByColor(null);
-        }
     }
 
     const fetchData = async () => {
@@ -317,7 +321,6 @@ export default function EditProduct() {
         setValue(newValue);
     };
     const theme = useTheme();
-    const [personName, setPersonName] = React.useState([]);
     const [productMemory, setProductMemory] = React.useState([]);
     const [productStorage, setProductStorage] = React.useState([]);
     const handleChange2 = (event) => {

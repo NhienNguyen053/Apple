@@ -30,7 +30,7 @@ export default function ProductsView() {
   const [selectedPrice, setSelectedPrice] = useState('');
   const [productName, setProductName] = useState('');
 
-    useEffect(() => {
+  useEffect(() => {
     fetchProducts(categoryId, subCategoryId, selectedPrice, productStatus, productName, pageIndex, pageSize);
     fetchCategories();
   }, []);
@@ -73,6 +73,7 @@ export default function ProductsView() {
       setProductStatus(productStatus);
       setProductName(productName);
       setPageIndex(1);
+      setPageSize(pageSize);
       fetchProducts(categoryId, subCategoryId, selectedPrice, productStatus, productName, 1, pageSize);
       setOpenFilter(false);
   };

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 
-export default function ColorPreview({ colors, limit = 3, onClick, sx }) {
+export default function ColorPreview({ colors, limit = 3, onClick, sx, hover }) {
     const renderColors = colors.slice(0, limit);
     const remainingColor = colors.length - limit;
 
@@ -28,9 +28,9 @@ export default function ColorPreview({ colors, limit = 3, onClick, sx }) {
                         borderRadius: '50%',
                         border: (theme) => `solid 2px ${theme.palette.background.paper}`,
                         boxShadow: (theme) => `inset -1px 1px 2px ${alpha(theme.palette.common.black, 0.24)}`,
-                        cursor: 'pointer',
+                        cursor: hover ? 'default' : 'pointer',
                         '&:hover': {
-                            border: 'solid 0.5px black'
+                            border: hover ? 'solid 2px ${theme.palette.background.paper}' : 'solid 0.5px black' 
                         },
                     }}
                 />
