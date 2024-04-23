@@ -26,6 +26,8 @@ import Category from './Main Page/Pages/Category';
 import AuthRouteCategories from './Admin Page/routes/AuthRouteCategories';
 import CreateSubcategory from './Admin Page/sections/category/view/create-subcategory';
 import EditSubcategory from './Admin Page/sections/category/view/edit-subcategory';
+import Product from './Main Page/Pages/Product';
+import AuthRouteProducts from './Admin Page/routes/AuthRouteProducts';
 
 function App() {
     return (
@@ -39,6 +41,14 @@ function App() {
               <AuthRouteCategories>
                 <Category key={window.location.pathname}/>
               </AuthRouteCategories>
+            } 
+            />
+            <Route
+            path="/:category/:product" 
+            element={
+              <AuthRouteProducts>
+                <Product key={window.location.pathname}/>
+              </AuthRouteProducts>
             } 
             />
             <Route path="/signin" element={<SignIn />} />

@@ -40,11 +40,14 @@ namespace AppleApi.Services
         public async Task<Category> FindCategoryByName(string name)
         {
             FilterDefinition<Category> filter = Builders<Category>.Filter.Empty;
+
             if (!string.IsNullOrWhiteSpace(name))
             {
-                var regexPattern = name.Replace("-", "\\s").Replace("\\s\\s", "\\s");
+                var escapedName = Regex.Escape(name);
+                var normalizedPattern = escapedName.Replace("-", "\\s");
+                var regexPattern = $"^{normalizedPattern}$";
                 var regex = new BsonRegularExpression(regexPattern, "i");
-                filter = filter & Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
+                filter = Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
             }
             return await FindAsync(filter);
         }

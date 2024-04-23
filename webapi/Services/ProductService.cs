@@ -93,6 +93,37 @@ namespace AppleApi.Services
             }
         }
 
+        public async Task<Product> FindProductByName(string categoryName, string productName)
+        {
+            FilterDefinition<Category> categoryFilter = Builders<Category>.Filter.Empty;
+            FilterDefinition<Product> productFilter = Builders<Product>.Filter.Empty;
+            Category category = new Category();
+
+            if (!string.IsNullOrWhiteSpace(categoryName))
+            {
+                var escapedName = Regex.Escape(categoryName);
+                var normalizedPattern = escapedName.Replace("-", "\\s");
+                var regexPattern = $"^{normalizedPattern}$";
+                var regex = new BsonRegularExpression(regexPattern, "i");
+                categoryFilter = Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
+            }
+            category = await categoryService.FindAsync(categoryFilter);
+            if (category != null)
+            {
+                if (!string.IsNullOrWhiteSpace(productName))
+                {
+                    var escapedName = Regex.Escape(productName);
+                    var normalizedPattern = escapedName.Replace("-", "\\s");
+                    var regexPattern = $"^{normalizedPattern}$";
+                    var regex = new BsonRegularExpression(regexPattern, "i");
+                    productFilter = Builders<Product>.Filter.Regex(x => x.ProductName, regex);
+                    productFilter = productFilter & Builders<Product>.Filter.Eq(p => p.SubCategoryId, category.Id);
+                    productFilter = productFilter & Builders<Product>.Filter.Eq(p => p.ProductStatus, "Active");
+                }
+            }
+            return await FindAsync(productFilter);
+        }
+
         public async Task<(List<Product>, long)> FindProductsByFilter(string categoryId, string subcategoryId, string price, string status, string name, int pageIndex, int pageSize)
         {
             FilterDefinition<Product> filter = Builders<Product>.Filter.Empty;

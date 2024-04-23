@@ -64,6 +64,16 @@ namespace AppleApi.Controllers
             return Ok(product);
         }
 
+        [HttpGet("getProductByName")]
+        public async Task<IActionResult> GetProductByName(string category, string name)
+        {
+            Product product = await productService.FindProductByName(category, name);
+            if (product == null)
+            {
+                return NoContent();
+            }
+            return Ok(product);
+        }
 
         [Authorize(Roles = "Admin")]
         [HttpPost("createProduct")]

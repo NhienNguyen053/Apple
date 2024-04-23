@@ -35,6 +35,13 @@ const Category = ({ categories }) => {
         navigate(`/${formattedName}`);
     };
 
+    const routeChange2 = (category, name) => {
+        const filteredCategory = categories.childCategories.find(x => x.id === category);
+        const formattedCategory = filteredCategory.categoryName.replace(/\s+/g, '-').toLowerCase();
+        const formattedName = name.replace(/\s+/g, '-').toLowerCase();
+        navigate(`/${formattedCategory}/${formattedName}`)
+    }
+
     const renderSpecs = (name, value) => {
         return (<Specification spec={name} text={value} />);
     }
@@ -46,9 +53,9 @@ const Category = ({ categories }) => {
             <Slider {...settings}>
                 {products.map((product) => (
                     <div key={product.id}>
-                        <div style={{ cursor: 'pointer' }}>
+                        <div style={{ cursor: 'pointer' }} onClick={() => routeChange2(product.subCategoryId, product.productName)} >
                             {product.productImages.length > 0 ? (
-                                <div style={{ width: '90%', height: 'auto', display: 'flex' }}>
+                                <div style={{ width: '90%', height: '288px', display: 'flex' }}>
                                     <img src={product.productImages[0].imageURLs[0]} alt={product.productName} style={{ maxWidth: '90%', height: 'auto', objectFit: 'cover' }} />
                                 </div>
                             ) : (
