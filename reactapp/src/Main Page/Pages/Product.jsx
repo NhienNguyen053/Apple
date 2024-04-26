@@ -4,11 +4,13 @@ import Slider from 'react-slick';
 import Footer from '../Components/Footer';
 import { ColorPreview } from '../../Admin Page/Components/color-utils';
 import SelectButton from '../Components/SelectButton';
+import Specification from '../Components/Specification';
 
 const Product = ({ categories, products }) => {
     const [product, setProduct] = useState(products);
     const [images, setImages] = useState([]);
     const [activeButton, setActiveButton] = useState(null);
+    const [activeButton2, setActiveButton2] = useState(null);
     const [activeColor, setActiveColor] = useState(null);
 
     const handleToggle = (buttonId) => {
@@ -84,6 +86,10 @@ const Product = ({ categories, products }) => {
         );
     }
 
+    const renderSpecs = (name, value) => {
+        return (<Specification spec={name} text={value} />);
+    }
+
     return (
         <>
             <Navbar darkmode={false} />
@@ -105,27 +111,37 @@ const Product = ({ categories, products }) => {
                                 <p>No images available</p>
                             </div>
                         )}
+                        <div>
+                            {Object.entries(product.specifications).map(([specName, specValue]) => {
+                                if (specValue && specValue.trim() !== '') {
+                                    return renderSpecs(specName, specValue);
+                                }
+                                return null;
+                            })}
+                        </div>
                     </div>
                     <div style={{ width: '25%', margin: '0 auto 0 auto' }}>
-                        <div style={{ marginBottom: '181px' }}>
-                            <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>Finish. <span style={{ color: '#86868b' }}>Pick your favorite.</span></p>
-                            <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '16px' }}>Color</p>
-                            <ColorPreview
-                                onClick={handleColorClick}
-                                colors={product.colors}
-                                sx={{ gap: '16px', justifyContent: 'flex-start', marginLeft: '10px' }}
-                                hover={false}
-                                width={25}
-                                height={25}
-                                isActive={activeColor}
-                            />
-                        </div>
+                        {product.colors.length > 0 ? (
+                            <div style={{ marginBottom: '181px' }}>
+                                <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>Finish. <span style={{ color: '#86868b' }}>Pick your favorite.</span></p>
+                                <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '16px' }}>Color</p>
+                                <ColorPreview
+                                    onClick={handleColorClick}
+                                    colors={product.colors}
+                                    sx={{ gap: '16px', justifyContent: 'flex-start', marginLeft: '10px' }}
+                                    hover={false}
+                                    width={25}
+                                    height={25}
+                                    isActive={activeColor}
+                                />
+                            </div>
+                        ) : null}
                         {product.options.memory.length > 0 ? (
                             <div>
                                 {product.options.memory.length > 0 && (
                                     <div>
                                         <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>
-                                            Storage. <span style={{ color: '#86868b' }}>How much space do you need.</span>
+                                            Memory. <span style={{ color: '#86868b' }}>How much memory do you need.</span>
                                         </p>
                                         {product.options.memory.map((memory) => (
                                             <SelectButton
@@ -139,9 +155,26 @@ const Product = ({ categories, products }) => {
                                 )}
                             </div>
                         ) : null}
+                        {product.options.storage.length > 0 ? (
+                            <div>
+                                {product.options.storage.length > 0 && (
+                                    <div>
+                                        <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>
+                                            Storage. <span style={{ color: '#86868b' }}>How much space do you need.</span>
+                                        </p>
+                                        {product.options.storage.map((storage) => (
+                                            <SelectButton
+                                                buttonId={storage}
+                                                buttonText={storage}
+                                                isActive={activeButton2 === storage}
+                                                onToggle={handleToggle}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : null}
                     </div>
-                    
-
                 </div>
             </div>
             <Footer />

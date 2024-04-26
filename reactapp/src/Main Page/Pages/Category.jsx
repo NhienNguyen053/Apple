@@ -36,8 +36,16 @@ const Category = ({ categories }) => {
     };
 
     const routeChange2 = (category, name) => {
-        const filteredCategory = categories.childCategories.find(x => x.id === category);
-        const formattedCategory = filteredCategory.categoryName.replace(/\s+/g, '-').toLowerCase();
+        var filteredCategory;
+        var formattedCategory
+        if (categories.childCategories != null) {
+            filteredCategory = categories.childCategories.find(x => x.id === category);
+            formattedCategory = filteredCategory.categoryName.replace(/\s+/g, '-').toLowerCase();
+        }
+        else {
+            console.log(categories.categoryName);
+            formattedCategory = categories.categoryName.replace(/\s+/g, '-').toLowerCase();
+        }
         const formattedName = name.replace(/\s+/g, '-').toLowerCase();
         navigate(`/${formattedCategory}/${formattedName}`)
     }

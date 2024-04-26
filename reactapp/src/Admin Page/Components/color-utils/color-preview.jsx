@@ -27,9 +27,9 @@ const ColorPreview = ({ colors, limit = 3, onClick, sx, hover, width, height, is
                         borderRadius: '50%',
                         border: isActive === color ? 'solid 2px black' : (theme) => `solid 2px ${theme.palette.background.paper}`,
                         boxShadow: (theme) => `inset -1px 1px 2px ${alpha(theme.palette.common.black, 0.24)}`,
-                        cursor: hover ? 'default' : 'pointer',
+                        cursor: 'pointer',
                         '&:hover': {
-                            border: hover ? 'solid 2px black' : `solid 0.5px black`,
+                            border: hover ? null : `solid 0.5px black`,
                         },
                     }}
                 />

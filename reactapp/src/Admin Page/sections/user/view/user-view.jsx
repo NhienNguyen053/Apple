@@ -161,7 +161,7 @@ export default function UserPage() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' : null}}>
           {color}New User
         </Button>
       </Stack>
@@ -193,7 +193,7 @@ export default function UserPage() {
                   { id: 'phone', label: 'Phone Number' },
                   { id: 'role', label: 'Role' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
-                  decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? { id: '', label: '' } : null,
+                  decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? { id: '', label: '' } : null : null,
                 ].filter(Boolean)}
               />
               <TableBody>
@@ -209,7 +209,7 @@ export default function UserPage() {
                       isVerified={row.isVerified}
                       edit={() => {editUser(row.id)}}
                       remove={() => toggleModal(row.name, row.id)}
-                      userRole={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']}
+                      userRole={decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null}
                     />
                   ))}
 

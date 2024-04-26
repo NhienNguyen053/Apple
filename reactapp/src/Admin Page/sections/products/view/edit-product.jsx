@@ -35,6 +35,7 @@ export default function EditProduct() {
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
+    const [colorSelect, setColorSelect] = useState("");
     const [personName, setPersonName] = React.useState([]);
     const [product, setProduct] = useState();
     const [title, setTitle] = useState();
@@ -77,7 +78,7 @@ export default function EditProduct() {
     const [deleted, setDeleted] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-    const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+    const [role] = useState(decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null);
 
     const names = [
         'Red',
@@ -424,11 +425,28 @@ export default function EditProduct() {
                     }
                 }),
             });
-            if (result.status !== 400) {
+            if (result.status === 200) {
                 setCreated(true);
+                const data = await result.json();
+                data.forEach(item => {
+                    const decodedUrl = decodeURIComponent(item);
+                    const urlObject = new URL(decodedUrl);
+                    const path = urlObject.pathname;
+                    const pathSegments = path.split('/');
+                    const extractedPath = pathSegments.slice(5).join('/');
+                    const storage = getStorage();
+                    const desertRef = ref(storage, extractedPath);
+                    deleteObject(desertRef);
+                })
                 setActiveImages([]);
+                setSelectedColor("");
                 setOpenColor('success');
                 setOpenText('Updated product successfully!');
+            }
+            else if (result.status === 401) {
+                const data = "Credentials expired. Please log in again!";
+                setOpenColor('error');
+                setOpenText(data);
             }
             else {
                 const data = await result.text();
@@ -984,11 +1002,11 @@ export default function EditProduct() {
                             inputProps={{
                                 id: 'select-multiple-native',
                             }}
-                            sx={{ color: selectedColor, background: selectedColor === 'White' ? '#e6e2da' : 'white',  }}
+                            sx={{ color: selectedColor === 'White' ? 'black' : selectedColor }}
                         >
-                            <option value="" style={{ display: 'none' }}></option>
+                            <option value={colorSelect} style={{ display: 'none' }}></option>
                             {personName.map((name) => (
-                                <option key={name} value={name} style={{ color: name, background: name === 'White' ? '#e6e2da' : 'white' }}>
+                                <option key={name} value={name} style={{ color: name === 'White' ? 'black' : name }}>
                                     {name}
                                 </option>
                             ))}

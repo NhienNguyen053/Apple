@@ -128,7 +128,7 @@ export default function CategoryPage() {
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4">Categories</Typography>
 
-                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' }}>
+                <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={routeChange} sx={{ display: decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' : null}}>
                     New Category
                 </Button>
             </Stack>
@@ -144,7 +144,7 @@ export default function CategoryPage() {
                     <div className="container7" style={{ width: '41%', margin: '10px 15px', padding: '0 25px 10px 25px' }}>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
                             <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Bold' }}>{category.categoryName}</p>
-                            <div style={{display: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none'}}>
+                            <div style={{display: decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? 'flex' : 'none' : null}}>
                                 <i className="fa-solid fa-plus " title='New' style={{ alignSelf: 'center', fontSize: '16px', color: '#b8b8b8', cursor: 'pointer' }} onClick={() => routeChange3(category.id)}></i>
                                 <i className="fa-solid fa-pen " title='Edit' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: '#5b5b5b', cursor: 'pointer' }} onClick={() => routeChange2(category.id)}></i>
                                 <i className="fa-solid fa-trash" title='Delete' style={{ alignSelf: 'center', marginLeft: '10px', fontSize: '14px', color: 'black', cursor: 'pointer' }} onClick={() => toggleModal(category.categoryName, category.id, "category")}></i>
