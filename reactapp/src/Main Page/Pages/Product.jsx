@@ -5,9 +5,12 @@ import Footer from '../Components/Footer';
 import { ColorPreview } from '../../Admin Page/Components/color-utils';
 import SelectButton from '../Components/SelectButton';
 import Specification from '../Components/Specification';
+import { useNavigate } from 'react-router-dom';
 
 const Product = ({ categories, products }) => {
+    const navigate = useNavigate();
     const [product, setProduct] = useState(products);
+    const [relatedProducts, setRelatedProducts] = useState([]);
     const [images, setImages] = useState([]);
     const [activeButton, setActiveButton] = useState(null);
     const [activeButton2, setActiveButton2] = useState(null);
@@ -17,6 +20,16 @@ const Product = ({ categories, products }) => {
         setActiveButton(buttonId);
     };
 
+    const handleToggle2 = (buttonId) => {
+        setActiveButton2(buttonId);
+    }
+
+    const nonEmptySpecsCount = Object.values(product.specifications).filter(specValue => specValue && specValue.trim() !== '').length;
+
+    useEffect(() => {
+        setProduct(products);
+    }, [products]);
+
     useEffect(() => {
         if (product.colors.length > 0) {
             const colorToFilter = product.colors[0];
@@ -25,14 +38,31 @@ const Product = ({ categories, products }) => {
                 setImages(filteredImages[0].imageURLs);
             }
         } else {
-            setImages(product.productImages[0].imageURLs);
+            setImages(product.productImages.length == 0 ? [] : product.productImages[0].imageURLs);
         }
+    }, [product]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const response = await fetch(`https://localhost:7061/api/Product/getRelatedProducts?subcategoryId=${product.subCategoryId}&id=${product.id}`);
+            if (response.status !== 204) {
+                const data = await response.json();
+                setRelatedProducts(data);
+            }
+        }
+        fetchProducts();
     }, [product]);
 
     const handleColorClick = (color) => {
         const matchingImage = product.productImages.find((img) => img.color === color);
         if (matchingImage) {
-            setImages(matchingImage.imageURLs);
+            if (matchingImage.imageURLs) {
+                setImages(matchingImage.imageURLs);
+            } else {
+                setImages([]);
+            }
+        } else {
+            setImages([]);
         }
         setActiveColor(color);
     };
@@ -87,8 +117,101 @@ const Product = ({ categories, products }) => {
     }
 
     const renderSpecs = (name, value) => {
+        return (<Specification spec={name} text={value} width={"25%"} />);
+    }
+
+    const renderSpecs2 = (name, value) => {
         return (<Specification spec={name} text={value} />);
     }
+
+    const sliderSettings = {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: false,
+        swipe: true,
+        height: '1000px',
+    };
+
+    const renderProductSlider = () => {
+        if (products.length === 0) return null;
+
+        return (
+            <Slider {...sliderSettings}>
+                {relatedProducts.map((product) => (
+                    <div key={product.id}>
+                        <div style={{ cursor: 'pointer' }} onClick={() => routeChange2(product.subCategoryId, product.productName)} >
+                            {product.productImages.length > 0 ? (
+                                <div style={{ width: '90%', height: '288px', display: 'flex' }}>
+                                    <img src={product.productImages[0].imageURLs[0]} alt={product.productName} style={{ maxWidth: '90%', height: 'auto', objectFit: 'cover' }} />
+                                </div>
+                            ) : (
+                                <div style={{ width: '100%', height: '288px' }}></div>
+                            )}
+                            <div className="color" style={{ display: 'flex', justifyContent: 'center', width: '95%', height: '49.2px' }}>
+                                <ColorPreview colors={product.colors} sx={{ gap: '8px' }} hover={true} />
+                            </div>
+                            <p style={{ width: '90%', color: 'black', fontFamily: 'SF-Pro-Display-SemiBold', textAlign: 'center', fontSize: '22px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{product.productName}</p>
+                            {product.productDescription ? <div className="description" style={{ width: '90%' }} dangerouslySetInnerHTML={{ __html: product.productDescription }} /> : <div style={{ width: '90%', height: '19.2px' }}></div>}
+                            {product.productPrice ? <p className="price">For ${product.productPrice}</p> : null}
+                            <div style={{ fontSize: '19px', alignItems: 'center', width: '95%' }}>
+                                <a href="">Buy</a>
+                                <i class="fa-solid fa-chevron-right" style={{ color: '#0071e3', marginLeft: '3px', marginTop: '2px', fontSize: '14px' }}></i>
+                            </div>
+                        </div>
+                        <div style={{ border: '0.1px solid #e4e4e8', width: '100%', margin: '20px 0' }}></div>
+                        {Object.entries(product.specifications).map(([specName, specValue]) => {
+                            if (specValue && specValue.trim() !== '') {
+                                return renderSpecs2(specName, specValue);
+                            }
+                            return null;
+                        }).filter((specComponent, index) => index < 3)}
+                    </div>
+                ))}
+            </Slider>
+        );
+    };
+
+    const routeChange2 = (category, name) => {
+        var filteredCategory;
+        var formattedCategory;
+        if (categories.childCategories != null) {
+            filteredCategory = categories.childCategories.find(x => x.id === category);
+            formattedCategory = filteredCategory.categoryName.replace(/\s+/g, '-').toLowerCase();
+        }
+        else {
+            formattedCategory = categories.categoryName.replace(/\s+/g, '-').toLowerCase();
+        }
+        const formattedName = name.replace(/\s+/g, '-').toLowerCase();
+        navigate(`/${formattedCategory}/${formattedName}`);
+
+        const smoothScroll = (targetPosition, duration) => {
+            const startPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+            const distance = targetPosition - startPosition;
+            const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+            const easeInOutQuad = (t, b, c, d) => {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            };
+
+            const scroll = () => {
+                const currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+                const timeElapsed = currentTime - startTime;
+                const nextPosition = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, nextPosition);
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(scroll);
+                } else {
+                    window.scrollTo(0, targetPosition);
+                }
+            };
+            scroll();
+        };
+        smoothScroll(0, 250);
+    };
+
 
     return (
         <>
@@ -98,7 +221,7 @@ const Product = ({ categories, products }) => {
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '50px', margin: '0' }}>Buy {product.productName}</p>
                     <p style={{ color: 'black' }}>For ${product.productPrice}</p>
                 </div>
-                <div style={{ width: '100%', display: 'flex' }}>
+                <div style={{ width: '100%', display: 'flex', marginBottom: nonEmptySpecsCount <= 4 ? '110px' : '220px' }}>
                     <div style={sliderContainerStyle}>
                         {images.length > 0 ? (
                             <Slider {...settings} className="productSlider">
@@ -111,18 +234,18 @@ const Product = ({ categories, products }) => {
                                 <p>No images available</p>
                             </div>
                         )}
-                        <div>
-                            {Object.entries(product.specifications).map(([specName, specValue]) => {
-                                if (specValue && specValue.trim() !== '') {
-                                    return renderSpecs(specName, specValue);
-                                }
-                                return null;
-                            })}
-                        </div>
+                    </div>
+                    <div style={{ position: 'absolute', display: 'flex', bottom: nonEmptySpecsCount <= 4 ? '-110px' : '-220px', justifyContent: 'center', width: '60%', flexWrap: 'wrap', height: '140px' }}>
+                        {Object.entries(product.specifications).map(([specName, specValue]) => {
+                            if (specValue && specValue.trim() !== '') {
+                                return renderSpecs(specName, specValue);
+                            }
+                            return null;
+                        })}
                     </div>
                     <div style={{ width: '25%', margin: '0 auto 0 auto' }}>
                         {product.colors.length > 0 ? (
-                            <div style={{ marginBottom: '181px' }}>
+                            <div style={{ marginBottom: '40px' }}>
                                 <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>Finish. <span style={{ color: '#86868b' }}>Pick your favorite.</span></p>
                                 <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '16px' }}>Color</p>
                                 <ColorPreview
@@ -167,14 +290,24 @@ const Product = ({ categories, products }) => {
                                                 buttonId={storage}
                                                 buttonText={storage}
                                                 isActive={activeButton2 === storage}
-                                                onToggle={handleToggle}
+                                                onToggle={handleToggle2}
                                             />
                                         ))}
                                     </div>
                                 )}
                             </div>
                         ) : null}
+                        <div style={{ width: '95%', display: 'flex' }}>
+                            <button className="btn3" disabled={activeButton == null || activeButton2 == null || activeColor == null ? true : false}>Add to bag</button>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div style={{ height: '1px', width: '85%', background: '#86868b', margin: 'auto' }}></div>
+            <div style={{ width: '100%', background: 'white', paddingTop: '50px', minHeight: '500px', marginBottom: '50px' }}>
+                <p style={{ fontSize: '50px', color: 'black', fontFamily: 'SF-Pro-Display-Regular', width: '85%', margin: '0 auto 50px auto', textAlign: 'center' }}>You might also like</p>
+                <div style={{ width: '85%', margin: 'auto' }}>
+                    {renderProductSlider()}
                 </div>
             </div>
             <Footer />

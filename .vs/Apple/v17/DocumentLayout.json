@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "D:\\Nhien\\Projects\\Apple\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\routes\\authroute2.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\routes\\authroute2.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|solutionrelative:webapi\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D2126B29-4168-451F-9E08-3803DB524778}|webapi\\webapi.csproj|d:\\nhien\\projects\\apple\\webapi\\controllers\\productcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,6 +19,54 @@
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\pages\\category.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\components\\specification.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\specification.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\components\\button.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\button.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\components\\footer.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\footer.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\edit-product.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\user\\view\\user-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\user\\view\\user-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\category\\view\\category-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\routes\\authroute.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\routes\\authroute.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\layouts\\dashboard\\common\\account-popover.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\layouts\\dashboard\\common\\account-popover.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\routes\\authroute2.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\routes\\authroute2.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\app.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\routes\\authrouteproducts.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\routes\\authrouteproducts.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
@@ -39,20 +79,12 @@
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\selectbutton.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\main page\\components\\body.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\main page\\components\\body.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\product-card.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\product-card.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|d:\\nhien\\projects\\apple\\reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{62EBB40B-85C8-4FBF-BF11-C0C0264C88D5}|reactapp\\reactapp.esproj|solutionrelative:reactapp\\src\\admin page\\sections\\products\\view\\products-view.jsx||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -62,37 +94,39 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Category.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Category.jsx",
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\Category.jsx",
-              "ViewState": "AQIAADYAAAAAAAAAAAAAAAcAAAA4AAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-01T02:32:18.709Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Product.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Product.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Pages\\Product.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Pages\\Product.jsx",
               "RelativeToolTip": "reactapp\\src\\Main Page\\Pages\\Product.jsx",
-              "ViewState": "AQIAAGQAAAAAAAAAAAAQwIEAAAA7AAAA",
+              "ViewState": "AQIAACEAAAAAAAAAAAAYwCgAAAB8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-17T03:52:42.23Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 19,
               "Title": "Body.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Body.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Body.jsx",
@@ -105,13 +139,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 4,
               "Title": "style.css",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\style.css",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\style.css",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\style.css",
               "RelativeToolTip": "reactapp\\src\\Main Page\\style.css",
-              "ViewState": "AQIAAHgAAAAAAAAAAAAAAJ8AAAAuAAAA",
+              "ViewState": "AQIAAAABAAAAAAAAAAAAABUBAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2024-04-19T04:05:43.456Z",
               "IsPinned": true
@@ -130,7 +164,104 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
+              "Title": "ProductService.cs",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Services\\ProductService.cs",
+              "RelativeDocumentMoniker": "webapi\\Services\\ProductService.cs",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Services\\ProductService.cs",
+              "RelativeToolTip": "webapi\\Services\\ProductService.cs",
+              "ViewState": "AQIAAJ4AAAAAAAAAAAAswK4AAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-06T06:40:20.645Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Specification.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Specification.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Specification.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Specification.jsx",
+              "RelativeToolTip": "reactapp\\src\\Main Page\\Components\\Specification.jsx",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAEQAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-05-04T07:10:16.552Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Button.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Button.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Button.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Button.jsx",
+              "RelativeToolTip": "reactapp\\src\\Main Page\\Components\\Button.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-05-04T03:45:32.474Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Footer.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Footer.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\Footer.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\Footer.jsx",
+              "RelativeToolTip": "reactapp\\src\\Main Page\\Components\\Footer.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAA9AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-05-04T03:42:04.047Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "user-view.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\user\\view\\user-view.jsx",
+              "ViewState": "AQIAAMoAAAAAAAAAAAAhwNYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-26T07:30:51.062Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "category-view.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\category\\view\\category-view.jsx",
+              "ViewState": "AQIAAIgAAAAAAAAAAAAqwJIAAACyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-26T07:28:45.104Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AuthRoute.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRoute.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\routes\\AuthRoute.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRoute.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\routes\\AuthRoute.jsx",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-26T07:28:37.69Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "account-popover.jsx",
+              "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\layouts\\dashboard\\common\\account-popover.jsx",
+              "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\layouts\\dashboard\\common\\account-popover.jsx",
+              "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\layouts\\dashboard\\common\\account-popover.jsx",
+              "RelativeToolTip": "reactapp\\src\\Admin Page\\layouts\\dashboard\\common\\account-popover.jsx",
+              "ViewState": "AQIAABYAAAAAAAAAAAAqwCAAAAAGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
+              "WhenOpened": "2024-04-26T07:28:31.812Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "App.js",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\App.js",
               "RelativeDocumentMoniker": "reactapp\\src\\App.js",
@@ -142,7 +273,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 14,
               "Title": "AuthRoute2.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRoute2.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\routes\\AuthRoute2.jsx",
@@ -154,32 +285,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "ProductController.cs",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\ProductController.cs",
               "RelativeDocumentMoniker": "webapi\\Controllers\\ProductController.cs",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\webapi\\Controllers\\ProductController.cs",
               "RelativeToolTip": "webapi\\Controllers\\ProductController.cs",
-              "ViewState": "AQIAAHwAAAAAAAAAAADwv5sAAAAMAAAA",
+              "ViewState": "AQIAADwAAAAAAAAAAAAQwE0AAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-25T09:22:45.838Z"
+              "WhenOpened": "2024-04-25T09:22:45.838Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 8,
               "Title": "edit-product.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
               "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\edit-product.jsx",
-              "ViewState": "AQIAAD4AAAAAAAAAAAAAwEkAAAA+AAAA",
+              "ViewState": "AQIAAEkBAAAAAAAAAAAIwGYBAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
-              "WhenOpened": "2024-04-25T09:18:10.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-25T09:18:10.319Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 16,
               "Title": "AuthRouteProducts.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\routes\\AuthRouteProducts.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\routes\\AuthRouteProducts.jsx",
@@ -191,7 +322,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 18,
               "Title": "SelectButton.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Main Page\\Components\\SelectButton.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Main Page\\Components\\SelectButton.jsx",
@@ -203,7 +334,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 20,
               "Title": "product-card.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\product-card.jsx",
@@ -215,19 +346,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
               "Title": "products-view.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
               "ToolTip": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
               "RelativeToolTip": "reactapp\\src\\Admin Page\\sections\\products\\view\\products-view.jsx",
-              "ViewState": "AQIAAGAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAFQAAAAAAAAAAAAqwGUAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003663|",
               "WhenOpened": "2024-04-22T08:51:40.583Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 17,
               "Title": "color-preview.jsx",
               "DocumentMoniker": "D:\\Nhien\\Projects\\Apple\\reactapp\\src\\Admin Page\\Components\\color-utils\\color-preview.jsx",
               "RelativeDocumentMoniker": "reactapp\\src\\Admin Page\\Components\\color-utils\\color-preview.jsx",

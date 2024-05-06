@@ -158,6 +158,23 @@ namespace AppleApi.Services
             return (products, totalCount);
         }
 
+        public async Task<List<Product>> FindRelatedProducts(string subcategoryId, string id)
+        {
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Empty;
+            List<Product> products = new List<Product>();
+            if (!string.IsNullOrEmpty(subcategoryId))
+            {
+                filter = filter & Builders<Product>.Filter.Eq(p => p.SubCategoryId, subcategoryId);
+            }
+            if (!string.IsNullOrEmpty(id))
+            {
+                filter = filter & Builders<Product>.Filter.Ne(p => p.Id, id);
+            }
+            filter = filter & Builders<Product>.Filter.Eq(p => p.ProductStatus, "Active");
+            products = await FindManyAsync(filter);
+            return products;
+        }
+
         public async Task DeleteProductImage(string id, string color, string imageUrl)
         {
             var result = await FindByIdAsync(id);

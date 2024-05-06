@@ -13,6 +13,7 @@ namespace AppleApi.Interfaces
         Task<List<Product>> FindCategoryProducts(string categoryId);
         Task<Product> FindProductByName(string category, string name);
         Task<(List<Product>, long)> FindProductsByFilter(string categoryId, string subcategoryId, string price, string status, string name, int pageIndex, int pageSize);
+        Task<List<Product>> FindRelatedProducts(string subcategoryId, string id);
         Task DeleteProductImage(string id, string color, string imageUrl);
     }
 }

@@ -75,6 +75,17 @@ namespace AppleApi.Controllers
             return Ok(product);
         }
 
+        [HttpGet("getRelatedProducts")]
+        public async Task<IActionResult> GetRelatedProducts(string subcategoryId, string id)
+        {
+            List<Product> products = await productService.FindRelatedProducts(subcategoryId, id);
+            if (products == null)
+            {
+                return NoContent();
+            }
+            return Ok(products);
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)

@@ -43,7 +43,6 @@ const Category = ({ categories }) => {
             formattedCategory = filteredCategory.categoryName.replace(/\s+/g, '-').toLowerCase();
         }
         else {
-            console.log(categories.categoryName);
             formattedCategory = categories.categoryName.replace(/\s+/g, '-').toLowerCase();
         }
         const formattedName = name.replace(/\s+/g, '-').toLowerCase();

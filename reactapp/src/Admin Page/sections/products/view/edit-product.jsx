@@ -350,8 +350,12 @@ export default function EditProduct() {
     };
 
     const handleUpdateProduct = async (e) => {
+        const sortedArr1 = product.colors.slice().sort();
+        const sortedArr2 = personName.slice().sort();
+        var isSame = sortedArr1.every((value, index) => value === sortedArr2[index]);
+        var isSame2 = sortedArr2.every((value, index) => value === sortedArr1[index]);
         if (e === 0) {
-            if ((product.colors.length !== personName.length)) {
+            if (isSame === false || isSame2 === false) {
                 toggleModal3();
                 return;
             } else { }
@@ -632,7 +636,9 @@ export default function EditProduct() {
             const desertRef = ref(storage, extractedPath);
             deleteObject(desertRef);
         });
-        navigate('/dashboard/products/');
+        setTimeout(() => {
+            navigate('/dashboard/products/');
+        }, 3000);
     }
 
     const toggleModal = (e) => {
