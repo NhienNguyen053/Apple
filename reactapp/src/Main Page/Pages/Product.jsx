@@ -6,15 +6,19 @@ import { ColorPreview } from '../../Admin Page/Components/color-utils';
 import SelectButton from '../Components/SelectButton';
 import Specification from '../Components/Specification';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import jwt_decode from 'jwt-decode';
 
 const Product = ({ categories, products }) => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [product, setProduct] = useState(products);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [images, setImages] = useState([]);
     const [activeButton, setActiveButton] = useState(null);
     const [activeButton2, setActiveButton2] = useState(null);
     const [activeColor, setActiveColor] = useState(null);
+    const [cartChange, setCartChange] = useState(false);
 
     const handleToggle = (buttonId) => {
         setActiveButton(buttonId);
@@ -171,6 +175,32 @@ const Product = ({ categories, products }) => {
         );
     };
 
+    const smoothScroll = (targetPosition, duration) => {
+        const startPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const distance = targetPosition - startPosition;
+        const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+        const easeInOutQuad = (t, b, c, d) => {
+            t /= d / 2;
+            if (t < 1) return c / 2 * t * t + b;
+            t--;
+            return -c / 2 * (t * (t - 2) - 1) + b;
+        };
+
+        const scroll = () => {
+            const currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+            const timeElapsed = currentTime - startTime;
+            const nextPosition = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+            window.scrollTo(0, nextPosition);
+            if (timeElapsed < duration) {
+                requestAnimationFrame(scroll);
+            } else {
+                window.scrollTo(0, targetPosition);
+            }
+        };
+        scroll();
+    };
+
     const routeChange2 = (category, name) => {
         var filteredCategory;
         var formattedCategory;
@@ -183,39 +213,65 @@ const Product = ({ categories, products }) => {
         }
         const formattedName = name.replace(/\s+/g, '-').toLowerCase();
         navigate(`/${formattedCategory}/${formattedName}`);
-
-        const smoothScroll = (targetPosition, duration) => {
-            const startPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-            const distance = targetPosition - startPosition;
-            const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
-
-            const easeInOutQuad = (t, b, c, d) => {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t + b;
-                t--;
-                return -c / 2 * (t * (t - 2) - 1) + b;
-            };
-
-            const scroll = () => {
-                const currentTime = 'now' in window.performance ? performance.now() : new Date().getTime();
-                const timeElapsed = currentTime - startTime;
-                const nextPosition = easeInOutQuad(timeElapsed, startPosition, distance, duration);
-                window.scrollTo(0, nextPosition);
-                if (timeElapsed < duration) {
-                    requestAnimationFrame(scroll);
-                } else {
-                    window.scrollTo(0, targetPosition);
-                }
-            };
-            scroll();
-        };
         smoothScroll(0, 250);
     };
 
+    const addToCart = async () => {
+        setLoading(true);
+        const jwtToken = Cookies.get('jwtToken');
+        const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+        if (decodedToken == null) {
+            const cartItem = {
+                id: product.id,
+                name: product.productName,
+                image: product.productImages.find(x => x.color === activeColor) ? product.productImages.find(x => x.color === activeColor).imageURLs[0] : null,
+                price: product.productPrice,
+                color: activeColor,
+                memory: activeButton,
+                storage: activeButton2,
+                quantity: 1
+            };
+            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItemIndex = existingCart.findIndex(item =>
+                item.id === cartItem.id &&
+                item.color === cartItem.color &&
+                item.memory === cartItem.memory &&
+                item.storage === cartItem.storage
+            );
+            if (existingItemIndex !== -1) {
+                existingCart[existingItemIndex].quantity += 1;
+            } else {
+                existingCart.push(cartItem);
+            }
+            localStorage.setItem('cart', JSON.stringify(existingCart));
+        } else {
+            await fetch('https://localhost:7061/api/ShoppingCart/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    productId: product.id,
+                    name: product.productName,
+                    image: product.productImages.find(x => x.color === activeColor) ? product.productImages.find(x => x.color === activeColor).imageURLs[0] : null,
+                    price: product.productPrice,
+                    color: activeColor,
+                    memory: activeButton,
+                    storage: activeButton2,
+                    quantity: 1,
+                    userId: decodedToken['Id']
+                }),
+            });
+        }
+        setCartChange(!cartChange);
+        setLoading(false);
+        smoothScroll(0, 250);
+    };
 
     return (
         <>
-            <Navbar darkmode={false} />
+            <Navbar darkmode={false} onCartChange={cartChange} />
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 0 auto' }}>
                 <div style={{ width: '100%', margin: 'auto' }}>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '50px', margin: '0' }}>Buy {product.productName}</p>
@@ -298,7 +354,15 @@ const Product = ({ categories, products }) => {
                             </div>
                         ) : null}
                         <div style={{ width: '95%', display: 'flex' }}>
-                            <button className="btn3" disabled={activeButton == null || activeButton2 == null || activeColor == null ? true : false}>Add to bag</button>
+                            {loading ? (
+                                <div className="lds-spinner">
+                                    <div></div><div></div><div></div><div></div>
+                                    <div></div><div></div><div></div><div></div>
+                                    <div></div><div></div><div></div><div></div>
+                                </div>
+                            ) : (
+                                <button className="btn3" onClick={addToCart} disabled={product.colors.length > 0 && activeColor == null || product.options.memory.length > 0 && activeButton == null || product.options.storage.length > 0 && activeButton2 == null}>Add to bag</button>
+                            )}
                         </div>
                     </div>
                 </div>

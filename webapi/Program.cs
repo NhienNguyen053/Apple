@@ -30,6 +30,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

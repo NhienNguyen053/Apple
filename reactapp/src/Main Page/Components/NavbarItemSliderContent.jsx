@@ -3,15 +3,42 @@ import '../style.css';
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
-
+import Button from './Button';
 
 function NavbarItemSliderContent({ data }) {
     const [product, setProduct] = useState({});
+    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         if (data) {
             setProduct(data);
         }
+    }, [data]);
+
+    useEffect(() => {
+        const updateCart = async () => {
+            const jwtToken = Cookies.get('jwtToken');
+            const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (decodedToken == null) {
+                setCartItems(existingCart);
+            } else {
+                const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${jwtToken}`
+                    },
+                });
+                if (response.status !== 204) {
+                    const data = await response.json();
+                    setCartItems(data);
+                } else {
+                    setCartItems([]);
+                }
+            }
+        }
+        updateCart();
     }, [data]);
 
     let navigate = useNavigate(); 
@@ -23,6 +50,7 @@ function NavbarItemSliderContent({ data }) {
         Cookies.remove('jwtToken');
         let path = `/`; 
         navigate(path);
+        window.location.reload();
     }
     const routeChange3 = () => {
         let path = '/dashboard';
@@ -42,20 +70,35 @@ function NavbarItemSliderContent({ data }) {
         return (
             <div className="container">
                 <div className="slidercontent">
-                    <h1 style={{ marginBottom: '35px', marginLeft: '5px' }}>Your Bag is empty</h1>
-                    {jwtToken ? (
-                        <p style={{ fontSize: '13px', marginBottom: '35px' }}>
-                        <Link to="/signin" style={{ color: '#2372bd' }} className="a1">
-                            Shop Now
-                        </Link>
-                        </p>
+                    {cartItems.length === 0 ? (
+                        <>
+                            <h1 style={{ marginBottom: '35px', marginLeft: '5px' }}>Your Bag is empty</h1>
+                            {jwtToken ? null : (
+                                <p style={{ fontSize: '13px', marginBottom: '35px' }}>
+                                    <Link to="/signin" style={{ color: '#2372bd' }} className="a1">
+                                        Sign In
+                                    </Link>
+                                    <span> to see if you have any saved items</span>
+                                </p>
+                            )}
+                        </>
                     ) : (
-                        <p style={{ fontSize: '13px', marginBottom: '35px' }}>
-                        <Link to="/signin" style={{ color: '#2372bd' }} className="a1">
-                            Sign In
-                        </Link>
-                        <span> to see if you have any saved items</span>
-                        </p>
+                        <>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <h1>Bag</h1>
+                                <Button background={'#0071e3'} text={"Review Bag"} radius={'20px'} fontSize={'16px'} margin={'auto 0'}/>
+                            </div>
+                            {cartItems.map((item) => (
+                                <div style={{ width: '90%', display: 'flex', marginBottom: '20px' }}>
+                                    {item.image ? <div style={{ width: '75px', height: '75px' }}>
+                                        <img src={item.image} style={{ borderRadius: '10px', width: '100%', height: '100%', objectFit: 'cover', maxWidth: '100%', maxHeight: '100%' }} />
+                                    </div> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '75px', width: '75px', background: '#f6f5f8', borderRadius: '10px' }}>
+                                        <p style={{ textAlign: 'center' }}>No images available</p>
+                                    </div>}
+                                    <p style={{ margin: 'auto 0 auto 20px', fontSize: '16px' }}>{item.name}</p>
+                                </div>
+                            ))}
+                        </>
                     )}
                     <p style={{ fontSize: '13px', marginBottom: '10px' }}>My Profile</p>
                     {decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? (

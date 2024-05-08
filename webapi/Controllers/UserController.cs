@@ -412,6 +412,7 @@ namespace AppleApi.Controllers
         {
             List<Claim> claims = new()
             {
+                new Claim("Id", user.Id),
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
                 new Claim("Email", user.Email),

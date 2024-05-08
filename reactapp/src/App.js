@@ -31,155 +31,155 @@ import AuthRouteProducts from './Admin Page/routes/AuthRouteProducts';
 
 function App() {
     return (
-      <HelmetProvider>
-      <Suspense>
-          <Routes>
-            <Route path="/" element={<MainPage />} />
-            <Route
-            path="/:category" 
-            element={
-              <AuthRouteCategories>
-                <Category key={window.location.pathname}/>
-              </AuthRouteCategories>
-            } 
-            />
-            <Route
-            path="/:category/:product" 
-            element={
-              <AuthRouteProducts>
-                <Product key={window.location.pathname}/>
-              </AuthRouteProducts>
-            } 
-            />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/resetpassword" element={<ResetPassword />} />
-            <Route path="/otp" element={<Otp />} />
-            <Route path="/notfound" element={<NotFound />} />
-            <Route path="/newpassword" element={<NewPassword />} />
-            <Route
-            path="/dashboard/"
-            element={
-              <AuthRoute2>
-                <DashboardLayout>
-                  <AppPage />
-                </DashboardLayout>
-              </AuthRoute2>
-            }
-            />
-            <Route
-            path="/dashboard/products"
-            element={
-              <AuthRoute2>
-                <DashboardLayout>
-                  <ProductsPage />
-                </DashboardLayout>
-              </AuthRoute2>
-            }
-            />
-            <Route
-            path="/dashboard/products/createProduct"
-            element={
-              <AuthRoute>
-                <DashboardLayout>
-                  <CreateProduct />
-                </DashboardLayout>
-              </AuthRoute>
-            }
-            />
-            <Route
-              path="/dashboard/products/editProduct"
-              element={
-                <AuthRoute2>
-                  <DashboardLayout>
-                    <EditProduct />
-                  </DashboardLayout>
-                </AuthRoute2>
-              }
-            />
-            <Route
-            path="/dashboard/users"
-            element={
-              <AuthRoute2>
-                <DashboardLayout>
-                  <UserPage />
-                </DashboardLayout>
-              </AuthRoute2>
-            }
-            />
-            <Route
-              path="/dashboard/users/createUser"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <CreateUser />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-            <Route
-              path="/dashboard/users/editUser"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <EditUser />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-            <Route
-              path="/dashboard/categories"
-              element={
-                <AuthRoute2>
-                  <DashboardLayout>
-                    <CategoryPage />
-                  </DashboardLayout>
-                </AuthRoute2>
-              }
-            />
-            <Route
-              path="/dashboard/categories/createCategory"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <CreateCategory />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-            <Route
-              path="/dashboard/categories/editCategory"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <EditCategory />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-             <Route
-              path="/dashboard/categories/createSubcategory"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <CreateSubcategory />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-            <Route
-              path="/dashboard/categories/editSubcategory"
-              element={
-                <AuthRoute>
-                  <DashboardLayout>
-                    <EditSubcategory />
-                  </DashboardLayout>
-                </AuthRoute>
-              }
-            />
-          </Routes>
-      </Suspense>
-    </HelmetProvider>
+            <HelmetProvider>
+                <Suspense>
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
+                        <Route
+                            path="/:category"
+                            element={
+                                <AuthRouteCategories>
+                                    <Category key={window.location.pathname} />
+                                </AuthRouteCategories>
+                            }
+                        />
+                        <Route
+                            path="/:category/:product"
+                            element={
+                                <AuthRouteProducts>
+                                    <Product key={window.location.pathname} />
+                                </AuthRouteProducts>
+                            }
+                        />
+                        <Route path="/signin" element={<SignIn />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/resetpassword" element={<ResetPassword />} />
+                        <Route path="/otp" element={<Otp />} />
+                        <Route path="/notfound" element={<NotFound />} />
+                        <Route path="/newpassword" element={<NewPassword />} />
+                        <Route
+                            path="/dashboard/"
+                            element={
+                                <AuthRoute2>
+                                    <DashboardLayout>
+                                        <AppPage />
+                                    </DashboardLayout>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/products"
+                            element={
+                                <AuthRoute2>
+                                    <DashboardLayout>
+                                        <ProductsPage />
+                                    </DashboardLayout>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/products/createProduct"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <CreateProduct />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/products/editProduct"
+                            element={
+                                <AuthRoute2>
+                                    <DashboardLayout>
+                                        <EditProduct />
+                                    </DashboardLayout>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/users"
+                            element={
+                                <AuthRoute2>
+                                    <DashboardLayout>
+                                        <UserPage />
+                                    </DashboardLayout>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/users/createUser"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <CreateUser />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/users/editUser"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <EditUser />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/categories"
+                            element={
+                                <AuthRoute2>
+                                    <DashboardLayout>
+                                        <CategoryPage />
+                                    </DashboardLayout>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/categories/createCategory"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <CreateCategory />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/categories/editCategory"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <EditCategory />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/categories/createSubcategory"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <CreateSubcategory />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/categories/editSubcategory"
+                            element={
+                                <AuthRoute>
+                                    <DashboardLayout>
+                                        <EditSubcategory />
+                                    </DashboardLayout>
+                                </AuthRoute>
+                            }
+                        />
+                    </Routes>
+                </Suspense>
+            </HelmetProvider>
     );
   }
   
