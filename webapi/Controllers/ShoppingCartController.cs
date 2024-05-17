@@ -6,6 +6,7 @@ using AppleApi.Models.Category;
 using AppleApi.Models.Product;
 using AppleApi.Services;
 using AppleApi.Models.ShoppingCart;
+using MongoDB.Driver;
 
 namespace AppleApi.Controllers;
 
@@ -13,12 +14,15 @@ namespace AppleApi.Controllers;
 public class ShoppingCartController : ControllerBase
 {
     private readonly IShoppingCartService shoppingCartService;
+    private readonly IProductService productService;
 
-    public ShoppingCartController(IShoppingCartService shoppingCartService)
+    public ShoppingCartController(IShoppingCartService shoppingCartService, IProductService productService)
     {
         this.shoppingCartService = shoppingCartService;
+        this.productService = productService;
     }
 
+    [Authorize]
     [HttpGet("get-cart-count")]
     public async Task<IActionResult> GetCartCount(string userId)
     {
@@ -35,28 +39,89 @@ public class ShoppingCartController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("get-cart-anonymous")]
+    public async Task<IActionResult> GetCartCountAnonymous([FromBody] List<ShoppingCart> carts)
+    {
+        List<RequestShoppingCart> requestShoppingCarts = new();
+        List<string> productIds = carts.Select(cart => cart.ProductId).ToList();
+        FilterDefinition<Product> filter = Builders<Product>.Filter.In(x => x.Id, productIds);
+        List<Product> products = await productService.FindManyAsync(filter);
+        foreach (ShoppingCart cart in carts)
+        {
+            var matchingProduct = products.FirstOrDefault(p => p.Id == cart.ProductId);
+            if (matchingProduct != null)
+            {
+                var isColorMatch = cart.Color == null || matchingProduct.Colors.Contains(cart.Color);
+                var isMemoryMatch = cart.Memory == null || matchingProduct.Options.Memory.Contains(cart.Memory);
+                var isStorageMatch = cart.Storage == null || matchingProduct.Options.Storage.Contains(cart.Storage);
+                if (isColorMatch && isMemoryMatch && isStorageMatch)
+                {
+                    RequestShoppingCart requestShoppingCart = new()
+                    {
+                        Name = matchingProduct.ProductName,
+                        Image = matchingProduct.ProductImages.Find(x => x.Color == cart.Color)?.ImageURLs[0],
+                        Price = matchingProduct.ProductPrice,
+                        Color = cart.Color,
+                        Memory = cart.Memory,
+                        Storage = cart.Storage,
+                        Quantity = cart.Quantity,
+                        ProductId = matchingProduct.Id,
+                    };
+                    requestShoppingCarts.Add(requestShoppingCart);
+                }
+            }
+        }
+        return Ok(requestShoppingCarts);
+    }
+
+    [Authorize]
     [HttpGet("get-cart")]
     public async Task<IActionResult> GetCart(string userId)
     {
+        List<RequestShoppingCart> requestShoppingCarts = new();
         List<ShoppingCart> carts = await shoppingCartService.FindManyByFieldAsync("UserId", userId);
         if (carts != null)
         {
-            return Ok(carts);
+            HashSet<string> uniqueIds = new HashSet<string>();
+
+            foreach (var cart in carts)
+            {
+                uniqueIds.Add(cart.ProductId);
+            }
+
+            List<string> ids = uniqueIds.ToList();
+            List<Product> products = await productService.FindManyByListId(ids);
+            foreach (var cart in carts)
+            {
+                RequestShoppingCart requestShoppingCart = new()
+                {
+                    Id = cart.Id,
+                    Name = products.FirstOrDefault(x => x.Id == cart.ProductId)?.ProductName,
+                    Image = products.FirstOrDefault(x => x.Id == cart.ProductId)?.ProductImages.Find(x => x.Color == cart.Color)?.ImageURLs[0],
+                    Price = products.FirstOrDefault(x => x.Id == cart.ProductId)?.ProductPrice,
+                    Color = cart.Color,
+                    Memory = cart.Memory,
+                    Storage = cart.Storage,
+                    Quantity = cart.Quantity,
+                    UserId = cart.UserId,
+                    ProductId = cart.ProductId,
+                };
+                requestShoppingCarts.Add(requestShoppingCart);
+            }
+            return Ok(requestShoppingCarts);
         }
         return NoContent();
     }
 
+    [Authorize]
     [HttpPost("add-to-cart")]
     public async Task<IActionResult> AddToCart([FromBody] ShoppingCart shoppingCart)
     {
-        ShoppingCart cart = await shoppingCartService.FindCartByFilter(shoppingCart.UserId, shoppingCart.Id, shoppingCart.Color, shoppingCart.Memory, shoppingCart.Storage);
+        ShoppingCart cart = await shoppingCartService.FindCartByFilter(shoppingCart.UserId, shoppingCart.ProductId, shoppingCart.Color, shoppingCart.Memory, shoppingCart.Storage);
         if (cart == null)
         {
             ShoppingCart newCart = new()
             {
-                Name = shoppingCart.Name,
-                Image = shoppingCart.Image,
-                Price = shoppingCart.Price,
                 Color = shoppingCart.Color,
                 Memory = shoppingCart.Memory,
                 Storage = shoppingCart.Storage,

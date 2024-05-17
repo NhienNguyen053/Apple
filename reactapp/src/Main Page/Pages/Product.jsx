@@ -222,10 +222,7 @@ const Product = ({ categories, products }) => {
         const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
         if (decodedToken == null) {
             const cartItem = {
-                id: product.id,
-                name: product.productName,
-                image: product.productImages.find(x => x.color === activeColor) ? product.productImages.find(x => x.color === activeColor).imageURLs[0] : null,
-                price: product.productPrice,
+                productId: product.id,
                 color: activeColor,
                 memory: activeButton,
                 storage: activeButton2,
@@ -253,9 +250,6 @@ const Product = ({ categories, products }) => {
                 },
                 body: JSON.stringify({
                     productId: product.id,
-                    name: product.productName,
-                    image: product.productImages.find(x => x.color === activeColor) ? product.productImages.find(x => x.color === activeColor).imageURLs[0] : null,
-                    price: product.productPrice,
                     color: activeColor,
                     memory: activeButton,
                     storage: activeButton2,

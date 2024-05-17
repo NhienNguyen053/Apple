@@ -5,40 +5,13 @@ import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import Button from './Button';
 
-function NavbarItemSliderContent({ data }) {
+function NavbarItemSliderContent({ data, cartItems }) {
     const [product, setProduct] = useState({});
-    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         if (data) {
             setProduct(data);
         }
-    }, [data]);
-
-    useEffect(() => {
-        const updateCart = async () => {
-            const jwtToken = Cookies.get('jwtToken');
-            const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-            const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-            if (decodedToken == null) {
-                setCartItems(existingCart);
-            } else {
-                const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                });
-                if (response.status !== 204) {
-                    const data = await response.json();
-                    setCartItems(data);
-                } else {
-                    setCartItems([]);
-                }
-            }
-        }
-        updateCart();
     }, [data]);
 
     let navigate = useNavigate(); 
@@ -59,6 +32,10 @@ function NavbarItemSliderContent({ data }) {
     const routeChange4 = (name) => {
         let formattedName = name.replace(/\s+/g, '-');
         let path = `/${formattedName.toLowerCase()}`;
+        navigate(path);
+    }
+    const routeChange5 = () => {
+        let path = `/cart`;
         navigate(path);
     }
     const jwtToken = Cookies.get('jwtToken');
@@ -84,9 +61,9 @@ function NavbarItemSliderContent({ data }) {
                         </>
                     ) : (
                         <>
-                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', cursor: 'default'}}>
                                 <h1>Bag</h1>
-                                <Button background={'#0071e3'} text={"Review Bag"} radius={'20px'} fontSize={'16px'} margin={'auto 0'}/>
+                                <Button background={'#0071e3'} text={"Review Cart"} radius={'20px'} fontSize={'16px'} margin={'auto 0'} onclick={routeChange5}/>
                             </div>
                             {cartItems.map((item) => (
                                 <div style={{ width: '90%', display: 'flex', marginBottom: '20px' }}>

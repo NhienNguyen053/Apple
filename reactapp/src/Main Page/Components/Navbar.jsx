@@ -25,8 +25,63 @@ const Navbar = ({ darkmode, onCartChange}) => {
   }
   const [categories, setCategories] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
   const [isElementClicked, setIsElementClicked] = useState(false);
   const [clickedElement, setClickedElement] = useState(null);
+
+  const updateCart = async () => {
+      try {
+          const jwtToken = Cookies.get('jwtToken');
+          const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+          const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+          let count = 0;
+          if (decodedToken == null) {
+              if (existingCart.length > 0) {
+                  const response = await fetch('https://localhost:7061/api/ShoppingCart/get-cart-anonymous', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(existingCart),
+                  })
+                  if (response.ok) {
+                      const data = await response.json();
+                      setCartItems(data);
+                      data.forEach(item => {
+                          count = count + item.quantity;
+                      });
+                      setCartCount(count);
+                  } else {
+                      setCartItems([]);
+                      setCartCount(0);
+                  }
+              } else {
+                  setCartCount(0);
+              }
+          } else {
+              const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${jwtToken}`
+                  },
+              });
+              if (response.ok) {
+                  const data = await response.json();
+                  setCartItems(data);
+                  data.forEach(item => {
+                      count = count + item.quantity;
+                  });
+                  setCartCount(count);
+              } else {
+                  setCartItems([]);
+                  setCartCount(0);
+              }
+          }
+      } catch (error) {
+          console.error('Failed to fetch cart count:', error);
+      }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -42,36 +97,6 @@ const Navbar = ({ darkmode, onCartChange}) => {
   }, []);
 
   useEffect(() => {
-      const updateCart = async () => {
-          const jwtToken = Cookies.get('jwtToken');
-          const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-          const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-          var count = 0;
-          if (decodedToken == null) {
-              if (existingCart.length > 0) {
-                  existingCart.forEach(item => {
-                      count = count + item.quantity;
-                  });
-                  setCartCount(count);
-              } else {
-                  setCartCount(0);
-              }
-          } else {
-              const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart-count?userId=${decodedToken['Id']}`, {
-                  method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${jwtToken}`
-                  },
-              });
-              if (response.status !== 204) {
-                  const data = await response.json();
-                  setCartCount(data);
-              } else {
-                  setCartCount(0);
-              }
-          }
-      }
       updateCart();
   }, [onCartChange]);
 
@@ -98,6 +123,9 @@ const Navbar = ({ darkmode, onCartChange}) => {
   };
 
   const handleShoppingBagClick = () => {
+    if (isElementClicked === false){
+      updateCart();
+    }
     setIsElementClicked(!isElementClicked);
     setClickedElement('shopping-bag');
   };
@@ -108,7 +136,7 @@ const Navbar = ({ darkmode, onCartChange}) => {
 
   return (
     <>
-      <div className='header' /*onMouseLeave={handleMouseOut}*/>
+      <div className='header' onMouseLeave={handleMouseOut}>
         <ul className='header2'>
           <li className='li1'>
             <Link to='/'><i className='fa-brands fa-apple'></i></Link>
@@ -130,7 +158,7 @@ const Navbar = ({ darkmode, onCartChange}) => {
           </li>
         </ul>
         <div className={`slider ${isElementClicked ? 'visible' : ''}`}>
-          <NavbarItemSlider clickedElement={clickedElement}/>
+          <NavbarItemSlider clickedElement={clickedElement} cartItems={cartItems}/>
         </div>
       </div>
     </>

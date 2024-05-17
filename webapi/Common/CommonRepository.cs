@@ -70,6 +70,14 @@ namespace AppleApi.Common
             return docs;
         }
 
+        public async Task<List<T>> FindManyByListId(List<string> ids)
+        {
+            var objectIdList = ids.Select(id => new ObjectId(id)).ToList();
+            FilterDefinition<T> filter = Builders<T>.Filter.In("_id", objectIdList);
+            List<T> docs = await _collection.Find(filter).ToListAsync();
+            return docs;
+        }
+
         public async Task<(List<T> documents, long totalCount)> FindManyWithPaging(FilterDefinition<T> filter, int pageSize, int pageIndex)
         {
             List<T> docs = await _collection.Find(filter).Skip((pageIndex - 1) * pageSize).Limit(pageSize).ToListAsync();
@@ -95,6 +103,19 @@ namespace AppleApi.Common
             FilterDefinition<T> filter = FilterById(id);
             T result = await _collection.FindOneAndDeleteAsync(filter);
             return result;
+        }
+
+        public async Task DeleteManyAsync(string id)
+        {
+            ObjectId.TryParse(id, out var objectId);
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq("ProductId", objectId);
+            await _collection.DeleteManyAsync(filter);
+        }
+
+        public async Task DeleteByFieldAsync(string field, string value)
+        {
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);
+            await _collection.DeleteManyAsync(filter);
         }
 
         private FilterDefinition<T> FilterById(string id)

@@ -28,6 +28,7 @@ import CreateSubcategory from './Admin Page/sections/category/view/create-subcat
 import EditSubcategory from './Admin Page/sections/category/view/edit-subcategory';
 import Product from './Main Page/Pages/Product';
 import AuthRouteProducts from './Admin Page/routes/AuthRouteProducts';
+import ShoppingCart from './Main Page/Pages/ShoppingCart';
 
 function App() {
     return (
@@ -57,6 +58,7 @@ function App() {
                         <Route path="/otp" element={<Otp />} />
                         <Route path="/notfound" element={<NotFound />} />
                         <Route path="/newpassword" element={<NewPassword />} />
+                        <Route path="/cart" element={<ShoppingCart />} />
                         <Route
                             path="/dashboard/"
                             element={

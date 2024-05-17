@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using AppleApi.Models.Product;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Drawing;
 
 namespace AppleApi.Controllers
 {
@@ -12,10 +13,12 @@ namespace AppleApi.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
+        private readonly IShoppingCartService shoppingCartService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IShoppingCartService shoppingCartService)
         {
             this.productService = productService;
+            this.shoppingCartService = shoppingCartService;
         }
 
         [HttpGet("getAllProducts")]
@@ -124,6 +127,9 @@ namespace AppleApi.Controllers
         [HttpPost("updateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
+            List<string> removedColors = new List<string>();
+            List<string> removedMemory = new List<string>();
+            List<string> removedStorage = new List<string>();
             Product productExist = await productService.FindDifferent(product.Id, product.ProductName);
             if (productExist != null)
             {
@@ -153,6 +159,54 @@ namespace AppleApi.Controllers
                     }
                 }
             }
+
+            foreach (var color in updateProduct.Colors)
+            {
+                if (!product.Colors.Contains(color))
+                {
+                    removedColors.Add(color);
+                }
+            }
+
+            foreach (var memory in updateProduct.Options.Memory)
+            {
+                if (!product.Options.Memory.Contains(memory))
+                {
+                    removedMemory.Add(memory);
+                }
+            }
+
+            foreach (var storage in updateProduct.Options.Storage)
+            {
+                if (!product.Options.Storage.Contains(storage))
+                {
+                    removedStorage.Add(storage);
+                }
+            }
+            
+            if (removedColors.Count > 0)
+            {
+                foreach (var color in removedColors)
+                {
+                    await shoppingCartService.DeleteByFieldAsync("Color", color);
+                }
+            }
+
+            if (removedMemory.Count > 0)
+            {
+                foreach (var memory in removedMemory)
+                {
+                    await shoppingCartService.DeleteByFieldAsync("Memory", memory);
+                }
+            }
+
+            if (removedStorage.Count > 0)
+            {
+                foreach (var storage in removedStorage)
+                {
+                    await shoppingCartService.DeleteByFieldAsync("Storage", storage);
+                }
+            }
             updateProduct.ProductName = product.ProductName;
             updateProduct.ProductPrice = product.ProductPrice;
             updateProduct.ProductQuantity = product.ProductQuantity;
@@ -178,6 +232,7 @@ namespace AppleApi.Controllers
                 allImageURLs.AddRange(productImages.ImageURLs);
             }
             await productService.DeleteOneAsync(id);
+            await shoppingCartService.DeleteManyAsync(id);
             return Ok(allImageURLs);
         }
 
