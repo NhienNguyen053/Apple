@@ -57,6 +57,7 @@ const Navbar = ({ darkmode, onCartChange}) => {
                   }
               } else {
                   setCartCount(0);
+                  setCartItems([]);
               }
           } else {
               const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
