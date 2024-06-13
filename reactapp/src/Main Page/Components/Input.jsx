@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = ({ accept, color, placeholder, inputValue, onInputChange, onKeyPress, isVisible, error, borderRadius, borderTop, buttonClick, type, icon, width, margin, paddingRight, id, errorMargin, multiple, disabled }) => {
+const Input = ({ accept, color, placeholder, inputValue, onInputChange, onBlur, onKeyPress, isVisible, error, borderRadius, borderTop, buttonClick, type, icon, width, margin, paddingRight, id, errorMargin, multiple, disabled }) => {
   return (
     <>
       <div className="input-container" style={{display: isVisible ? 'block' : 'none', width: width, margin: margin}}>
@@ -10,6 +10,7 @@ const Input = ({ accept, color, placeholder, inputValue, onInputChange, onKeyPre
           placeholder=" "
           value={inputValue}
           onChange={onInputChange}
+          onBlur={onBlur}
           onKeyDown={onKeyPress}
           style={{ borderRadius: borderRadius, borderTop: borderTop, paddingRight: paddingRight, color: color }}
           id={id}

@@ -133,6 +133,11 @@ span{
     color: black;
     margin: 0;
 }
+.shoppingCart {
+    font-family: SF-Pro-Display-Light;
+    color: black;
+    font-size: 16px;
+}
 .price {
     color: black;
     font-family: SF-Pro-Display-Semibold;

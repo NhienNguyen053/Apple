@@ -14,7 +14,7 @@ function NavbarItemSliderContent({ data, cartItems }) {
         }
     }, [data]);
 
-    let navigate = useNavigate(); 
+    let navigate = useNavigate();
     const routeChange = () => {
         let path = `/signin`; 
         navigate(path);
@@ -83,11 +83,13 @@ function NavbarItemSliderContent({ data, cartItems }) {
                             <i className="fa-solid fa-chart-simple"></i>
                             <p>Dashboard</p>
                         </div>
-                    ) : (
-                        <>
-                            {/* Empty block */}
-                        </>
-                    )}
+                    ) : null}
+                    {decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Employee' ? (
+                        <div className="hoverable-div" onClick={routeChange3}>
+                            <i className="fa-solid fa-chart-simple"></i>
+                            <p>Dashboard</p>
+                        </div>
+                    ) : null}
                     <div className="hoverable-div">
                         <i className="fa-solid fa-box-open"></i>
                         <p>Orders</p>

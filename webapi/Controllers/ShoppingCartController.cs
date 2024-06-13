@@ -140,12 +140,24 @@ public class ShoppingCartController : ControllerBase
         }
     }
 
-    /*[HttpPost("change-cart")]
+    [HttpPost("change-cart")]
     public async Task<IActionResult> ChangeCart([FromBody] ChangeCart changeCart)
     {
-        return Ok();
+        ShoppingCart cart = await shoppingCartService.FindByIdAsync(changeCart.Id);
+        if (cart == null)
+        {
+            return BadRequest();
+        }
+        else
+        {
+            Product product = await productService.FindByIdAsync(cart.ProductId);
+            cart.Quantity = changeCart.Quantity;
+            await shoppingCartService.UpdateOneAsync(changeCart.Id, cart);
+            return Ok(product);
+        }
     }
 
+    /*
     [HttpPost("remove-from-cart")]
     public async Task<IActionResult> RemoveFromCart([FromBody] RemoveCart removeCart)
     {

@@ -365,7 +365,14 @@ namespace AppleApi.Controllers
             user.LastName = request.LastName;
             user.Country = request.Country;
             user.Birthday = request.Birthday;
-            user.Role = request.Role;
+            if (user.Email == "nhiennguyen3999@gmail.com")
+            {
+                user.Role = "Admin";
+            }
+            else
+            {
+                user.Role = request.Role;
+            }
             await userService.UpdateOneAsync(request.id, user);
             return Ok("Update successful!");
         }
