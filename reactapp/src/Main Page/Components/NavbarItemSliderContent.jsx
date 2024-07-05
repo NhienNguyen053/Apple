@@ -23,7 +23,6 @@ function NavbarItemSliderContent({ data, cartItems }) {
         Cookies.remove('jwtToken');
         let path = `/`; 
         navigate(path);
-        window.location.reload();
     }
     const routeChange3 = () => {
         let path = '/dashboard';
@@ -93,10 +92,6 @@ function NavbarItemSliderContent({ data, cartItems }) {
                     <div className="hoverable-div">
                         <i className="fa-solid fa-box-open"></i>
                         <p>Orders</p>
-                    </div>
-                    <div className="hoverable-div">
-                        <i className="fa-solid fa-tag"></i>
-                        <p>Your Saves</p>
                     </div>
                     <div className="hoverable-div">
                         <i className="fa-solid fa-gear"></i>

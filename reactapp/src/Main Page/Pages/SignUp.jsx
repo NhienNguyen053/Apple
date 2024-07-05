@@ -156,7 +156,7 @@ const SignUp = () => {
         }),
       });
       setLoading(false);
-      navigate('/signin');
+      navigate('/signin', { state: { email: email } });
     }else{
       setLoading(false);
     }

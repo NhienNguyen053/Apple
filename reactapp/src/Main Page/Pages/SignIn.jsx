@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/Navbar';
 import '../style.css';
 import Input from '../Components/Input';
 import Footer from '../Components/Footer';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
 
 const SignIn = () => {
+  const location = useLocation();
   const [inputValue, setInputValue] = useState('');
   const [user, setUser] = useState(false);
   const [error, setError] = useState('');
@@ -13,11 +16,28 @@ const SignIn = () => {
   const [verify, setVerify] = useState(false);
   const [password, setPassword] = useState('');
   const [isChecked, setChecked] = useState(false);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
     setChecked(!isChecked);
   };
+
+    useEffect(() => {
+        const isRegister = async () => {
+            window.scrollTo(0, 0);
+            const email = location.state?.email;
+            if (email) {
+                setOpen(true);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 3000);
+                setInputValue(email);
+                setUser(true);
+            }
+        };
+        isRegister();
+    }, []);
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -147,6 +167,11 @@ const SignIn = () => {
   return (
     <>
       <Navbar darkmode={false} />
+      <Collapse in={open} sx={{ right: '10px', top: '10px', zIndex: 1000, position: 'absolute' }}>
+          <Alert sx={{ mb: 2 }} severity="success">
+              Verification link has been sent. Please check your email!
+          </Alert>
+      </Collapse>
       <div className='container display'>
         <h1 className='h1'>Sign in for faster checkout</h1>
         <p className='p1'>Sign in to Apple Store</p>

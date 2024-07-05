@@ -45,6 +45,7 @@ public class ShoppingCartController : ControllerBase
         List<RequestShoppingCart> requestShoppingCarts = new();
         List<string> productIds = carts.Select(cart => cart.ProductId).ToList();
         FilterDefinition<Product> filter = Builders<Product>.Filter.In(x => x.Id, productIds);
+        filter = filter & Builders<Product>.Filter.Eq(p => p.ProductStatus, "Active");
         List<Product> products = await productService.FindManyAsync(filter);
         foreach (ShoppingCart cart in carts)
         {
@@ -65,7 +66,7 @@ public class ShoppingCartController : ControllerBase
                         Memory = cart.Memory,
                         Storage = cart.Storage,
                         Quantity = cart.Quantity,
-                        ProductId = matchingProduct.Id,
+                        Id = matchingProduct.Id,
                     };
                     requestShoppingCarts.Add(requestShoppingCart);
                 }
@@ -143,17 +144,28 @@ public class ShoppingCartController : ControllerBase
     [HttpPost("change-cart")]
     public async Task<IActionResult> ChangeCart([FromBody] ChangeCart changeCart)
     {
-        ShoppingCart cart = await shoppingCartService.FindByIdAsync(changeCart.Id);
-        if (cart == null)
+        var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("bearer ", "");
+        if (token == "undefined")
         {
-            return BadRequest();
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Eq(x => x.Id, changeCart.Id);
+            filter = filter & Builders<Product>.Filter.Eq(p => p.ProductStatus, "Active");
+            Product product = await productService.FindAsync(filter);
+            return Ok(product);
         }
         else
         {
-            Product product = await productService.FindByIdAsync(cart.ProductId);
-            cart.Quantity = changeCart.Quantity;
-            await shoppingCartService.UpdateOneAsync(changeCart.Id, cart);
-            return Ok(product);
+            ShoppingCart cart = await shoppingCartService.FindByIdAsync(changeCart.Id);
+            if (cart == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                Product product = await productService.FindByIdAsync(cart.ProductId);
+                cart.Quantity = changeCart.Quantity;
+                await shoppingCartService.UpdateOneAsync(changeCart.Id, cart);
+                return Ok(product);
+            }
         }
     }
 

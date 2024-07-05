@@ -6,6 +6,9 @@ import jwt_decode from 'jwt-decode';
 import Button from '../Components/Button';
 import Input from '../Components/Input';
 import { Link, useNavigate } from "react-router-dom";
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import getStripe from '../Components/Stripe';
 
 const ShoppingCart = () => {
     let navigate = useNavigate();
@@ -14,6 +17,7 @@ const ShoppingCart = () => {
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const [open, setOpen] = useState(false);
 
     const handleKeyDown = async (id, productId, e) => {
         if (e.key === 'Enter') {
@@ -29,18 +33,17 @@ const ShoppingCart = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `bearer ${jwtToken}`
                     },
                     body: JSON.stringify(changeCart),
                 })
-                if (response.status !== 204) {
+                if (response.status !== 204 && response.status !== 400) {
                     const data = await response.json();
                     setCartItems((prevItems) =>
                         prevItems.map(item =>
                             item.id === id ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
                         )
                     );
-                    const foundCart = existingCart.find(item => item.productId == productId);
-                    foundCart.price = data.productPrice;
                     localStorage.setItem('cart', JSON.stringify(existingCart));
                 } else if (response.status == 400) {
                     setCartItems((prevItems) =>
@@ -48,6 +51,10 @@ const ShoppingCart = () => {
                     );
                     existingCart.filter(item => item.id !== id);
                     localStorage.setItem('cart', JSON.stringify(existingCart));
+                    setOpen(true);
+                    setTimeout(() => {
+                        setOpen(false);
+                    }, 3000);
                 }
                 var total = 0;
                 cartItems.forEach((item) => {
@@ -72,25 +79,35 @@ const ShoppingCart = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `bearer ${jwtToken}`
                 },
                 body: JSON.stringify(changeCart),
             })
-            if (response.status !== 204) {
+            if (response.status !== 204 && response.status !== 400) {
                 const data = await response.json();
                 setCartItems((prevItems) =>
                     prevItems.map(item =>
                         item.id === id ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
                     )
                 );
-                const foundCart = existingCart.find(item => item.productId == productId);
-                foundCart.price = data.productPrice;
-                localStorage.setItem('cart', JSON.stringify(existingCart));
+                if (!jwtToken) {
+                    const updatedCart = existingCart.map(item =>
+                        item.productId === id ? { ...item, quantity: parseInt(value), name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
+                    );
+                    localStorage.setItem('cart', JSON.stringify(updatedCart));
+                }
             } else if (response.status == 400) {
                 setCartItems((prevItems) =>
                     prevItems.filter(item => item.id !== id)
                 );
-                existingCart.filter(item => item.id !== id);
-                localStorage.setItem('cart', JSON.stringify(existingCart));
+                if (!jwtToken) {
+                    existingCart.filter(item => item.id !== id);
+                    localStorage.setItem('cart', JSON.stringify(existingCart));
+                }
+                setOpen(true);
+                setTimeout(() => {
+                    setOpen(false);
+                }, 3000);
             }
             var total = 0;
             cartItems.forEach((item) => {
@@ -136,10 +153,20 @@ const ShoppingCart = () => {
                     if (response.ok) {
                         const data = await response.json();
                         var total = 0;
+                        var cart = [];
                         data.forEach((item) => {
+                            const cartItem = {
+                                productId: item.id,
+                                color: item.color,
+                                memory: item.memory,
+                                storage: item.storage,
+                                quantity: item.quantity
+                            }
+                            cart.push(cartItem);
                             total = total + parseFloat(item.price) * item.quantity;
                             item.total = (parseFloat(item.price) * item.quantity).toFixed(2);
                         });
+                        localStorage.setItem('cart', JSON.stringify(cart));
                         setTotalPrice(total.toFixed(2));
                         setCartItems(data);
                     } else {
@@ -178,17 +205,52 @@ const ShoppingCart = () => {
         navigate(path);
     }
 
-    const routeChange2 = () => {
-        let path = `/`;
-        navigate(path);
+    const routeChange2 = async () => {
+        try {
+            const product = {
+                ProductName: "test",
+                ProductPrice: "1000",
+                ProductDescription: "test",
+                ProductImage: "https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FProductImages%2F660f9f7d3c5ef2abd08a7c6e%2F5ab15477-57af-4c39-8d7e-e46ee94110d9?alt=media&token=50c421fd-3211-4ac0-a12d-c8212c4ea89b"
+            }
+            const response = await fetch('https://localhost:7061/api/Stripe/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(product),
+            })
+            if (response.status === 200) {
+                const data = await response.json();
+
+                // Opens up Stripe
+                const stripe = await getStripe(data.pubKey);
+                const { error } = await stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+
+                if (error) {
+                    console.error('Stripe checkout error:', error);
+                }
+            } else {
+                console.error('HTTP request failed with status:', response.status);
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 
     return (
         <>
             <Navbar darkmode={false} />
+            <Collapse in={open} sx={{ right: '10px', top: '10px', zIndex: 1000, position: 'absolute' }}>
+                <Alert sx={{ mb: 2 }} severity="error">
+                    Some product has been removed due to being unavailable!
+                </Alert>
+            </Collapse>
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 100px auto', justifyContent: 'center' }}>
-                <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is ${totalPrice}` : 'Your cart is empty'}</p>
-                <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange : routeChange2} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} />
+                <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is $${totalPrice}` : 'Your cart is empty'}</p>
+                <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} />
                 {cartItems.map((item, index) => (
                     <div key={item.id} style={{ display: 'flex', gap: '25px', width: '80%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
                         {item.image ? <div style={{ width: '30%' }}>

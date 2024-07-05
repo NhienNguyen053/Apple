@@ -47,9 +47,19 @@ const Navbar = ({ darkmode, onCartChange}) => {
                   if (response.ok) {
                       const data = await response.json();
                       setCartItems(data);
+                      var cart = [];
                       data.forEach(item => {
+                          const cartItem = {
+                              productId: item.id,
+                              color: item.color,
+                              memory: item.memory,
+                              storage: item.storage,
+                              quantity: item.quantity
+                          }
+                          cart.push(cartItem);
                           count = count + item.quantity;
                       });
+                      localStorage.setItem('cart', JSON.stringify(cart));
                       setCartCount(count);
                   } else {
                       setCartItems([]);

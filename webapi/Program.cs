@@ -5,9 +5,11 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AppleApi.Interfaces;
+using Stripe;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
+StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
 builder.Services.Configure<AppleDatabaseSettings>(
     builder.Configuration.GetSection("AppleDatabase"));
 builder.Services.AddCors(options =>
@@ -29,7 +31,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, AppleApi.Services.ProductService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddControllers();
 

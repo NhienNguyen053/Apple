@@ -382,13 +382,13 @@ namespace AppleApi.Controllers
         public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await userService.FindByIdAsync(id);
-            if(user == null)
+            if (user == null)
             {
                 return NoContent();
             }
-            if(user.Role == "Admin")
+            if (user.Email == "nhiennguyen3999@gmail.com")
             {
-                return BadRequest("Can't delete admin account");
+                return BadRequest("Can't delete this admin account");
             }
             await userService.DeleteOneAsync(id);
             return Ok("Delete successful");

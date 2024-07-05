@@ -207,6 +207,11 @@ namespace AppleApi.Controllers
                     await shoppingCartService.DeleteByFieldAsync("Storage", storage);
                 }
             }
+
+            if (updateProduct.ProductStatus != product.ProductStatus && product.ProductStatus == "Inactive")
+            {
+                await shoppingCartService.DeleteByFieldAsync("ProductId", product.Id);
+            }
             updateProduct.ProductName = product.ProductName;
             updateProduct.ProductPrice = product.ProductPrice;
             updateProduct.ProductQuantity = product.ProductQuantity;

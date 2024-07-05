@@ -114,7 +114,17 @@ namespace AppleApi.Common
 
         public async Task DeleteByFieldAsync(string field, string value)
         {
-            FilterDefinition<T> filter = Builders<T>.Filter.Eq(field, value);
+            FilterDefinition<T> filter;
+
+            if (ObjectId.TryParse(value, out ObjectId objectId))
+            {
+                filter = Builders<T>.Filter.Eq(field, objectId);
+            }
+            else
+            {
+                filter = Builders<T>.Filter.Eq(field, value);
+            }
+
             await _collection.DeleteManyAsync(filter);
         }
 
