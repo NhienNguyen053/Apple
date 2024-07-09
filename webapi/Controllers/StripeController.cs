@@ -2,8 +2,11 @@
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using webapi.Models.Stripe;
-using webapi.Models.Product;
 using Microsoft.AspNetCore.Hosting.Server;
+using AppleApi.Models.Category;
+using AppleApi.Interfaces;
+using AppleApi.Models.Product;
+using AppleApi.Models.ShoppingCart;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -11,20 +14,121 @@ using Microsoft.AspNetCore.Hosting.Server;
 public class StripeController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly IShoppingCartService shoppingCartService;
+    private readonly IProductService productService;
 
-    public StripeController(IConfiguration configuration)
+    public StripeController(IConfiguration configuration, IShoppingCartService shoppingCartService, IProductService productService)
     {
         _configuration = configuration;
+        this.shoppingCartService = shoppingCartService;
+        this.productService = productService;
     }
 
     [HttpPost]
-    public async Task<ActionResult> CheckoutOrder([FromBody] CheckoutProduct product)
+    public async Task<ActionResult> CheckoutOrder([FromBody] CheckoutRequest request)
     {
         string? thisApiUrl = _configuration["BaseURL:BackEnd"];
+        string? thisReactUrl = _configuration["BaseURL:FrontEnd"]; 
 
         if (thisApiUrl is not null)
         {
-            var sessionId = await CheckOut(product, thisApiUrl);
+            List<Product> products = new();
+            if (!string.IsNullOrEmpty(request.UserId))
+            {
+                List<ShoppingCart> carts = await shoppingCartService.FindManyByFieldAsync("UserId", request.UserId);
+                List<string> ids = new();
+                foreach (var cart in carts)
+                {
+                    ids.Add(cart.ProductId);
+                }
+                products = await productService.FindManyByListId(ids);
+                foreach (var product in products)
+                {
+                    List<ProductImage> newProductImages = new List<ProductImage>();
+                    foreach (var cart in carts)
+                    {
+                        if (cart.ProductId != product.Id) continue;
+                        product.ProductName = product.ProductName + (cart.Color != null ? " - " + cart.Color : "") + (cart.Memory != null ? " - " + cart.Memory + " Memory" : "") + (cart.Storage != null ? " - " + cart.Storage + " Storage" : "");
+
+                        product.ProductQuantity = cart.Quantity.ToString();
+                        ProductImage image = new();
+                        if (product.Colors != null && product.Colors.Any())
+                        {
+                            if (thisReactUrl != null)
+                            {
+                                if (product.ProductImages != null && product.ProductImages.Any())
+                                {
+                                    var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == cart.Color);
+                                    if (matchingImage != null)
+                                    {
+                                        image = matchingImage;
+                                    }
+                                    else
+                                    {
+                                        image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
+                                    }
+                                }
+                                else
+                                {
+                                    image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
+                                }
+                            }
+                        }
+                        newProductImages.Add(image);
+                    }
+                    product.ProductImages = newProductImages;
+                }
+
+            }
+            else if (request.Products != null && request.Products.Any())
+            {
+                List<string> ids = new();
+                foreach (var item in request.Products)
+                {
+                    ids.Add(item.productId);
+                }
+                products = await productService.FindManyByListId(ids);
+                foreach (var product in products)
+                {
+                    List<ProductImage> newProductImages = new List<ProductImage>();
+                    foreach (var item in request.Products)
+                    {
+                        if (item.productId != product.Id) continue;
+                        product.ProductName = product.ProductName + (item.color != null ? " - " + item.color : "") + (item.memory != null ? " - " + item.memory + " Memory" : "") + (item.storage != null ? " - " + item.storage + " Storage" : "");
+                        product.ProductQuantity = item.quantity.ToString();
+                        ProductImage image = new();
+                        if (product.Colors != null && product.Colors.Any())
+                        {
+                            if (thisReactUrl != null)
+                            {
+                                if (product.ProductImages != null && product.ProductImages.Any())
+                                {
+                                    var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color);
+                                    if (matchingImage != null)
+                                    {
+                                        image = matchingImage;
+                                    }
+                                    else
+                                    {
+                                        image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
+                                    }
+                                }
+                                else
+                                {
+                                    image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
+                                }
+                            }
+                        }
+                        newProductImages.Add(image);
+                    }
+                    product.ProductImages = newProductImages;
+                }
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+            var sessionId = await CheckOut(products, thisApiUrl);
             var pubKey = _configuration["Stripe:PubKey"];
 
             var checkoutOrderResponse = new CheckoutOrderResponse()
@@ -42,34 +146,42 @@ public class StripeController : ControllerBase
     }
 
     [NonAction]
-    public async Task<string> CheckOut(CheckoutProduct product, string thisApiUrl)
+    public async Task<string> CheckOut(List<Product> products, string thisApiUrl)
     {
+        var lineItems = new List<SessionLineItemOptions>();
+
+        foreach (var product in products)
+        {
+            decimal unitPrice = decimal.Parse(product.ProductPrice);
+            long quantity = long.Parse(product.ProductQuantity);
+            long totalAmountCents = (long)(unitPrice * quantity * 100);
+            var lineItem = new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    UnitAmount = totalAmountCents,
+                    Currency = "USD",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = product.ProductName,
+                        Images = new List<string> { product.ProductImages[0].ImageURLs[0] }
+                    },
+                },
+                Quantity = quantity,
+            };
+
+            lineItems.Add(lineItem);
+        }
+
         var options = new SessionCreateOptions
         {
             SuccessUrl = $"{thisApiUrl}/checkout/success?sessionId=" + "{CHECKOUT_SESSION_ID}",
             CancelUrl = _configuration["BaseURL:FrontEnd"] + "failed",
             PaymentMethodTypes = new List<string>
-            {
-                "card"
-            },
-            LineItems = new List<SessionLineItemOptions>
-            {
-                new()
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = long.Parse(product.ProductPrice),
-                        Currency = "USD",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = product.ProductName,
-                            Description = product.ProductDescription,
-                            Images = new List<string> { product.ProductName }
-                        },
-                    },
-                    Quantity = 1,
-                },
-            },
+        {
+            "card"
+        },
+            LineItems = lineItems,
             Mode = "payment"
         };
 
@@ -78,6 +190,7 @@ public class StripeController : ControllerBase
 
         return session.Id;
     }
+
 
     [HttpGet("success")]
     public ActionResult CheckoutSuccess(string sessionId)

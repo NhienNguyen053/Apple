@@ -207,23 +207,20 @@ const ShoppingCart = () => {
 
     const routeChange2 = async () => {
         try {
-            const product = {
-                ProductName: "test",
-                ProductPrice: "1000",
-                ProductDescription: "test",
-                ProductImage: "https://firebasestorage.googleapis.com/v0/b/apple-12071.appspot.com/o/images%2FProductImages%2F660f9f7d3c5ef2abd08a7c6e%2F5ab15477-57af-4c39-8d7e-e46ee94110d9?alt=media&token=50c421fd-3211-4ac0-a12d-c8212c4ea89b"
-            }
+            const checkoutRequest = {
+                UserId: decodedToken ? decodedToken["Id"] : null,
+                Products: decodedToken ? null : existingCart
+            };
             const response = await fetch('https://localhost:7061/api/Stripe/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(product),
+                body: JSON.stringify(checkoutRequest),
             })
             if (response.status === 200) {
                 const data = await response.json();
 
-                // Opens up Stripe
                 const stripe = await getStripe(data.pubKey);
                 const { error } = await stripe.redirectToCheckout({
                     sessionId: data.sessionId

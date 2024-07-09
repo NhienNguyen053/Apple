@@ -8,6 +8,7 @@ import Specification from '../Components/Specification';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
+import domtoimage from 'dom-to-image';
 
 const Product = ({ categories, products }) => {
     const navigate = useNavigate();
