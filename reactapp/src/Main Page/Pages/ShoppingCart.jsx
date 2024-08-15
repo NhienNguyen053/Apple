@@ -18,8 +18,9 @@ const ShoppingCart = () => {
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const handleKeyDown = async (id, productId, e) => {
+    const handleKeyDown = async (id, color, memory, storage, e) => {
         if (e.key === 'Enter') {
             const value = e.target.value;
             if (!isPositiveNumber(value)) {
@@ -41,10 +42,15 @@ const ShoppingCart = () => {
                     const data = await response.json();
                     setCartItems((prevItems) =>
                         prevItems.map(item =>
-                            item.id === id ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
+                            item.id === id && item.color === color && item.memory === memory && item.storage === storage ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
                         )
                     );
-                    localStorage.setItem('cart', JSON.stringify(existingCart));
+                    if (!jwtToken) {
+                        const updatedCart = existingCart.map(item =>
+                            item.productId === id && item.color === color && item.memory === memory && item.storage === storage ? { ...item, quantity: parseInt(value), name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
+                        );
+                        localStorage.setItem('cart', JSON.stringify(updatedCart));
+                    }
                 } else if (response.status == 400) {
                     setCartItems((prevItems) =>
                         prevItems.filter(item => item.id !== id)
@@ -66,7 +72,7 @@ const ShoppingCart = () => {
         }
     }
 
-    const handleBlur = async (id, productId, e) => {
+    const handleBlur = async (id, color, memory, storage, e) => {
         const value = e.target.value;
         if (!isPositiveNumber(value)) {
             handleInvalidInput(id);
@@ -87,12 +93,12 @@ const ShoppingCart = () => {
                 const data = await response.json();
                 setCartItems((prevItems) =>
                     prevItems.map(item =>
-                        item.id === id ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
+                        item.id === id && item.color === color && item.memory === memory && item.storage === storage ? { ...item, quantity: value, name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
                     )
                 );
                 if (!jwtToken) {
                     const updatedCart = existingCart.map(item =>
-                        item.productId === id ? { ...item, quantity: parseInt(value), name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
+                        item.productId === id && item.color === color && item.memory === memory && item.storage === storage ? { ...item, quantity: parseInt(value), name: data.productName, price: data.productPrice, total: (data.productPrice * value).toFixed(2) } : item
                     );
                     localStorage.setItem('cart', JSON.stringify(updatedCart));
                 }
@@ -131,10 +137,10 @@ const ShoppingCart = () => {
         return number > 0 && number < 1000 && !isNaN(number);
     };
 
-    const handleChange = (id, value) => {
+    const handleChange = (id, color, memory, storage, value) => {
         setCartItems((prevItems) =>
             prevItems.map(item =>
-                item.id === id ? { ...item, quantity: value } : item
+                item.id === id && item.color === color && item.memory === memory && item.storage === storage ? { ...item, quantity: value } : item
             )
         );
     };
@@ -207,6 +213,7 @@ const ShoppingCart = () => {
 
     const routeChange2 = async () => {
         try {
+            setLoading(true);
             const checkoutRequest = {
                 UserId: decodedToken ? decodedToken["Id"] : null,
                 Products: decodedToken ? null : existingCart
@@ -220,17 +227,17 @@ const ShoppingCart = () => {
             })
             if (response.status === 200) {
                 const data = await response.json();
-
                 const stripe = await getStripe(data.pubKey);
                 const { error } = await stripe.redirectToCheckout({
                     sessionId: data.sessionId
                 });
-
+                setLoading(true);
                 if (error) {
                     console.error('Stripe checkout error:', error);
                 }
             } else {
                 console.error('HTTP request failed with status:', response.status);
+                setLoading(false);
             }
         } catch (error) {
             console.error('An error occurred:', error);
@@ -247,7 +254,17 @@ const ShoppingCart = () => {
             </Collapse>
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 100px auto', justifyContent: 'center' }}>
                 <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is $${totalPrice}` : 'Your cart is empty'}</p>
-                <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} />
+                {loading ? (
+                    <div style={{ width: '300px', marginBottom: '55px' }}>
+                        <div className="lds-spinner">
+                            <div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div>
+                            <div></div><div></div><div></div><div></div>
+                        </div>
+                    </div>
+                ) : (
+                    <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} />
+                )}
                 {cartItems.map((item, index) => (
                     <div key={item.id} style={{ display: 'flex', gap: '25px', width: '80%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
                         {item.image ? <div style={{ width: '30%' }}>
@@ -270,9 +287,9 @@ const ShoppingCart = () => {
                                 width={'95%'}
                                 margin={'0 auto 0 auto'}
                                 inputValue={item.quantity}
-                                onInputChange={(e) => handleChange(item.id, e.target.value)}
-                                onKeyPress={(e) => handleKeyDown(item.id, item.productId, e)}
-                                onBlur={(e) => handleBlur(item.id, item.productId, e)}
+                                onInputChange={(e) => handleChange(item.id, item.color, item.memory, item.storage, e.target.value)}
+                                onKeyPress={(e) => handleKeyDown(item.id, item.color, item.memory, item.storage, e)}
+                                onBlur={(e) => handleBlur(item.id, item.color, item.memory, item.storage, e)}
                             />
                         </div>
                         <div style={{ width: '20%' }}>

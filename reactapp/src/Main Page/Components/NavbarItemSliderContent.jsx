@@ -23,6 +23,7 @@ function NavbarItemSliderContent({ data, cartItems }) {
         Cookies.remove('jwtToken');
         let path = `/`; 
         navigate(path);
+        window.location.reload();
     }
     const routeChange3 = () => {
         let path = '/dashboard';

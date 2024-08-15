@@ -27,122 +27,99 @@ public class StripeController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CheckoutOrder([FromBody] CheckoutRequest request)
     {
-        string? thisApiUrl = _configuration["BaseURL:BackEnd"];
-        string? thisReactUrl = _configuration["BaseURL:FrontEnd"]; 
+        string thisApiUrl = _configuration["BaseURL:BackEnd"]!;
+        string thisReactUrl = _configuration["BaseURL:FrontEnd"]!;
+        string noImage = _configuration["StaticFileLinks:NoImage"]!;
 
-        if (thisApiUrl is not null)
+        List<Product> products = new();
+        if (!string.IsNullOrEmpty(request.UserId))
         {
-            List<Product> products = new();
-            if (!string.IsNullOrEmpty(request.UserId))
+            List<ShoppingCart> carts = await shoppingCartService.FindManyByFieldAsync("UserId", request.UserId);
+            foreach (var cart in carts)
             {
-                List<ShoppingCart> carts = await shoppingCartService.FindManyByFieldAsync("UserId", request.UserId);
-                List<string> ids = new();
-                foreach (var cart in carts)
+                List<ProductImage> newProductImages = new List<ProductImage>();
+                Product product = await productService.FindByIdAsync(cart.ProductId);
+                if (cart.ProductId != product.Id) continue;
+                product.ProductName = product.ProductName + (cart.Color != null ? " - " + cart.Color : "") + (cart.Memory != null ? " - " + cart.Memory + " Memory" : "") + (cart.Storage != null ? " - " + cart.Storage + " Storage" : "");
+
+                product.ProductQuantity = cart.Quantity.ToString();
+                ProductImage image = new();
+                if (product.Colors != null && product.Colors.Any())
                 {
-                    ids.Add(cart.ProductId);
-                }
-                products = await productService.FindManyByListId(ids);
-                foreach (var product in products)
-                {
-                    List<ProductImage> newProductImages = new List<ProductImage>();
-                    foreach (var cart in carts)
+                    if (product.ProductImages != null && product.ProductImages.Any())
                     {
-                        if (cart.ProductId != product.Id) continue;
-                        product.ProductName = product.ProductName + (cart.Color != null ? " - " + cart.Color : "") + (cart.Memory != null ? " - " + cart.Memory + " Memory" : "") + (cart.Storage != null ? " - " + cart.Storage + " Storage" : "");
-
-                        product.ProductQuantity = cart.Quantity.ToString();
-                        ProductImage image = new();
-                        if (product.Colors != null && product.Colors.Any())
+                        var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == cart.Color);
+                        if (matchingImage != null)
                         {
-                            if (thisReactUrl != null)
-                            {
-                                if (product.ProductImages != null && product.ProductImages.Any())
-                                {
-                                    var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == cart.Color);
-                                    if (matchingImage != null)
-                                    {
-                                        image = matchingImage;
-                                    }
-                                    else
-                                    {
-                                        image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
-                                    }
-                                }
-                                else
-                                {
-                                    image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
-                                }
-                            }
+                            image = matchingImage;
                         }
-                        newProductImages.Add(image);
+                        else
+                        {
+                            image.ImageURLs ??= new List<string>();
+                            image.ImageURLs.Add(noImage);
+                        }
                     }
-                    product.ProductImages = newProductImages;
-                }
-
-            }
-            else if (request.Products != null && request.Products.Any())
-            {
-                List<string> ids = new();
-                foreach (var item in request.Products)
-                {
-                    ids.Add(item.productId);
-                }
-                products = await productService.FindManyByListId(ids);
-                foreach (var product in products)
-                {
-                    List<ProductImage> newProductImages = new List<ProductImage>();
-                    foreach (var item in request.Products)
+                    else
                     {
-                        if (item.productId != product.Id) continue;
-                        product.ProductName = product.ProductName + (item.color != null ? " - " + item.color : "") + (item.memory != null ? " - " + item.memory + " Memory" : "") + (item.storage != null ? " - " + item.storage + " Storage" : "");
-                        product.ProductQuantity = item.quantity.ToString();
-                        ProductImage image = new();
-                        if (product.Colors != null && product.Colors.Any())
-                        {
-                            if (thisReactUrl != null)
-                            {
-                                if (product.ProductImages != null && product.ProductImages.Any())
-                                {
-                                    var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color);
-                                    if (matchingImage != null)
-                                    {
-                                        image = matchingImage;
-                                    }
-                                    else
-                                    {
-                                        image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
-                                    }
-                                }
-                                else
-                                {
-                                    image.ImageURLs.Add(thisReactUrl + "no-image.jpeg");
-                                }
-                            }
-                        }
-                        newProductImages.Add(image);
+                        image.ImageURLs ??= new List<string>();
+                        image.ImageURLs.Add(noImage);
                     }
-                    product.ProductImages = newProductImages;
                 }
+                newProductImages.Add(image);
+                product.ProductImages = newProductImages;
+                products.Add(product);
             }
-            else
+
+        }
+        else if (request.Products != null && request.Products.Any())
+        {
+            foreach (var item in request.Products)
             {
-                return StatusCode(500);
+                List<ProductImage> newProductImages = new List<ProductImage>();
+                Product product = await productService.FindByIdAsync(item.productId);
+                product.ProductName = product.ProductName + (item.color != null ? " - " + item.color : "") + (item.memory != null ? " - " + item.memory + " Memory" : "") + (item.storage != null ? " - " + item.storage + " Storage" : "");
+                product.ProductQuantity = item.quantity.ToString();
+                ProductImage image = new();
+                if (product.Colors != null && product.Colors.Any())
+                {
+                    if (product.ProductImages != null && product.ProductImages.Any())
+                    {
+                        var matchingImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color);
+                        if (matchingImage != null)
+                        {
+                            image = matchingImage;
+                        }
+                        else
+                        {
+                            image.ImageURLs ??= new List<string>();
+                            image.ImageURLs.Add(noImage);
+                        }
+                    }
+                    else
+                    {
+                        image.ImageURLs ??= new List<string>();
+                        image.ImageURLs.Add(noImage);
+                    }
+                }
+                newProductImages.Add(image);
+                product.ProductImages = newProductImages;
+                products.Add(product);
             }
-            var sessionId = await CheckOut(products, thisApiUrl);
-            var pubKey = _configuration["Stripe:PubKey"];
-
-            var checkoutOrderResponse = new CheckoutOrderResponse()
-            {
-                SessionId = sessionId,
-                PubKey = pubKey
-            };
-
-            return Ok(checkoutOrderResponse);
         }
         else
         {
             return StatusCode(500);
         }
+        var sessionId = await CheckOut(products, thisApiUrl);
+        var pubKey = _configuration["Stripe:PubKey"];
+
+        var checkoutOrderResponse = new CheckoutOrderResponse()
+        {
+            SessionId = sessionId,
+            PubKey = pubKey
+        };
+
+        return Ok(checkoutOrderResponse);
     }
 
     [NonAction]
@@ -154,7 +131,7 @@ public class StripeController : ControllerBase
         {
             decimal unitPrice = decimal.Parse(product.ProductPrice);
             long quantity = long.Parse(product.ProductQuantity);
-            long totalAmountCents = (long)(unitPrice * quantity * 100);
+            long totalAmountCents = (long)(unitPrice * 100);
             var lineItem = new SessionLineItemOptions
             {
                 PriceData = new SessionLineItemPriceDataOptions
