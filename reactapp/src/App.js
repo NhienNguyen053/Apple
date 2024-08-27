@@ -29,6 +29,7 @@ import EditSubcategory from './Admin Page/sections/category/view/edit-subcategor
 import Product from './Main Page/Pages/Product';
 import AuthRouteProducts from './Admin Page/routes/AuthRouteProducts';
 import ShoppingCart from './Main Page/Pages/ShoppingCart';
+import Failed from './Main Page/Pages/Failed';
 
 function App() {
     return (
@@ -59,6 +60,7 @@ function App() {
                         <Route path="/notfound" element={<NotFound />} />
                         <Route path="/newpassword" element={<NewPassword />} />
                         <Route path="/cart" element={<ShoppingCart />} />
+                        <Route path="/failed" element={<Failed />} />
                         <Route
                             path="/dashboard/"
                             element={

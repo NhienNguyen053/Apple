@@ -141,6 +141,7 @@ public class ShoppingCartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("change-cart")]
     public async Task<IActionResult> ChangeCart([FromBody] ChangeCart changeCart)
     {
@@ -169,10 +170,15 @@ public class ShoppingCartController : ControllerBase
         }
     }
 
-    /*
+    [Authorize]
     [HttpPost("remove-from-cart")]
-    public async Task<IActionResult> RemoveFromCart([FromBody] RemoveCart removeCart)
+    public async Task<IActionResult> RemoveFromCart(string id)
     {
+        var result = await shoppingCartService.DeleteOneAsync(id);
+        if (result == null)
+        {
+            return NotFound();
+        }
         return Ok();
-    }*/
+    }
 }

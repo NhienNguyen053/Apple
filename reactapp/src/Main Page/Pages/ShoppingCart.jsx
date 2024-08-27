@@ -145,6 +145,42 @@ const ShoppingCart = () => {
         );
     };
 
+    const removeItem = async (id, color, memory, storage) => {
+        if (decodedToken == null) {
+            var total = 0;
+            var cart = [];
+            const newCart = cartItems.filter(a => a.id !== id || a.color !== color || a.memory !== memory || a.storage !== storage);
+            newCart.forEach((item) => {
+                const cartItem = {
+                    productId: item.id,
+                    color: item.color,
+                    memory: item.memory,
+                    storage: item.storage,
+                    quantity: item.quantity
+                };
+                cart.push(cartItem);
+                total = total + parseFloat(item.price) * item.quantity;
+                item.total = (parseFloat(item.price) * item.quantity).toFixed(2);
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            setCartItems(newCart);
+            setTotalPrice(total.toFixed(2));
+        } else {
+            const response = await fetch(`https://localhost:7061/api/ShoppingCart/remove-from-cart?id=${id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const newCart = cartItems.filter(a => a.id !== id || a.color !== color || a.memory !== memory || a.storage !== storage);
+                setCartItems(newCart);
+            }
+            else { }
+        }
+    }
+
     useEffect(() => {
         const updateCart = async () => {
             if (decodedToken == null) {
@@ -252,7 +288,7 @@ const ShoppingCart = () => {
                     Some product has been removed due to being unavailable!
                 </Alert>
             </Collapse>
-            <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 100px auto', justifyContent: 'center' }}>
+            <div style={{ height: '60vh', display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 100px auto', justifyContent: 'center' }}>
                 <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is $${totalPrice}` : 'Your cart is empty'}</p>
                 {loading ? (
                     <div style={{ width: '300px', marginBottom: '55px' }}>
@@ -263,7 +299,7 @@ const ShoppingCart = () => {
                         </div>
                     </div>
                 ) : (
-                    <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} />
+                    <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} height={'34px'} />
                 )}
                 {cartItems.map((item, index) => (
                     <div key={item.id} style={{ display: 'flex', gap: '25px', width: '80%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
@@ -295,7 +331,7 @@ const ShoppingCart = () => {
                         <div style={{ width: '20%' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                                 <p style={{ textAlign: 'end', width: '100%', marginTop: 0, color: 'black', fontSize: '24px', fontFamily: 'SF-Pro-Display-Semibold' }}>${(item.total)}</p>
-                                <a href="" style={{ fontSize: '18px', fontFamily: 'SF-Pro-Display-Light' }}>Remove</a>
+                                <a href="#" onClick={() => removeItem(item.id, item.color, item.memory, item.storage)} style={{ fontSize: '18px', fontFamily: 'SF-Pro-Display-Light' }}>Remove</a>
                             </div>
                         </div>
                     </div>
