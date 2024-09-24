@@ -237,7 +237,7 @@ namespace AppleApi.Controllers
                 allImageURLs.AddRange(productImages.ImageURLs);
             }
             await productService.DeleteOneAsync(id);
-            await shoppingCartService.DeleteManyAsync(id);
+            await shoppingCartService.DeleteByFieldAsync("ProductId", id);
             return Ok(allImageURLs);
         }
 

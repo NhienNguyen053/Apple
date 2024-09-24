@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 
-const Navbar = ({ darkmode, onCartChange}) => {
+const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
   const root = document.documentElement;
   if(darkmode == true){
     root.style.setProperty('--background-color', '#121212');
@@ -31,9 +31,13 @@ const Navbar = ({ darkmode, onCartChange}) => {
 
   const updateCart = async () => {
       try {
+          if (removeCart === true) {
+              localStorage.removeItem('cart');
+          }
           const jwtToken = Cookies.get('jwtToken');
           const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
           const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+          const delayTime = delay ? 1000 : 0;
           let count = 0;
           if (decodedToken == null) {
               if (existingCart.length > 0) {
@@ -70,24 +74,26 @@ const Navbar = ({ darkmode, onCartChange}) => {
                   setCartItems([]);
               }
           } else {
-              const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
-                  method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${jwtToken}`
-                  },
-              });
-              if (response.ok) {
-                  const data = await response.json();
-                  setCartItems(data);
-                  data.forEach(item => {
-                      count = count + item.quantity;
+              setTimeout(async () => {
+                  const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
+                      method: 'GET',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': `Bearer ${jwtToken}`
+                      },
                   });
-                  setCartCount(count);
-              } else {
-                  setCartItems([]);
-                  setCartCount(0);
-              }
+                  if (response.ok) {
+                      const data = await response.json();
+                      setCartItems(data);
+                      data.forEach(item => {
+                          count = count + item.quantity;
+                      });
+                      setCartCount(count);
+                  } else {
+                      setCartItems([]);
+                      setCartCount(0);
+                  }
+              }, delayTime);
           }
       } catch (error) {
           console.error('Failed to fetch cart count:', error);

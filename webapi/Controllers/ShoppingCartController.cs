@@ -141,7 +141,6 @@ public class ShoppingCartController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpPost("change-cart")]
     public async Task<IActionResult> ChangeCart([FromBody] ChangeCart changeCart)
     {

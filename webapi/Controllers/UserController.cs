@@ -218,8 +218,7 @@ namespace AppleApi.Controllers
             return Ok("Email sent!");
         }
 
-
-        [HttpPost("sendEmail")]
+        [NonAction]
         public IActionResult SendEmail(string token, string receiveEmail)
         {
             string senderEmail = "nhiennguyen3999@gmail.com";

@@ -30,6 +30,9 @@ import Product from './Main Page/Pages/Product';
 import AuthRouteProducts from './Admin Page/routes/AuthRouteProducts';
 import ShoppingCart from './Main Page/Pages/ShoppingCart';
 import Failed from './Main Page/Pages/Failed';
+import Success from './Main Page/Pages/Success';
+import Order from './Main Page/Pages/Order';
+import Checkout from './Main Page/Pages/Checkout';
 
 function App() {
     return (
@@ -61,6 +64,9 @@ function App() {
                         <Route path="/newpassword" element={<NewPassword />} />
                         <Route path="/cart" element={<ShoppingCart />} />
                         <Route path="/failed" element={<Failed />} />
+                        <Route path="/success" element={<Success />} />
+                        <Route path="/order" element={<Order />} />
+                        <Route path="/checkout" element={<Checkout />} />
                         <Route
                             path="/dashboard/"
                             element={

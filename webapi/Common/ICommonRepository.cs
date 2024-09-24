@@ -19,7 +19,6 @@ namespace AppleApi.Common
         Task<T> InsertOneAsync(T model);
         Task UpdateOneAsync(string id, T model);
         Task<T> DeleteOneAsync(string id);
-        Task DeleteManyAsync(string id);
         Task DeleteByFieldAsync(string field, string value);
     }
 }

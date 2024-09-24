@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = ({ accept, color, placeholder, inputValue, onInputChange, onBlur, onKeyPress, isVisible, error, borderRadius, borderTop, buttonClick, type, icon, width, margin, paddingRight, id, errorMargin, multiple, disabled }) => {
+const Input = ({ warning, borderLeft, accept, color, placeholder, inputValue, onInputChange, onBlur, onKeyPress, isVisible, error, borderRadius, borderTop, buttonClick, type, icon, width, margin, paddingRight, id, errorMargin, multiple, disabled }) => {
   return (
     <>
       <div className="input-container" style={{display: isVisible ? 'block' : 'none', width: width, margin: margin}}>
@@ -12,7 +12,7 @@ const Input = ({ accept, color, placeholder, inputValue, onInputChange, onBlur, 
           onChange={onInputChange}
           onBlur={onBlur}
           onKeyDown={onKeyPress}
-          style={{ borderRadius: borderRadius, borderTop: borderTop, paddingRight: paddingRight, color: color }}
+          style={{ border: warning == true ? "0.2px solid red" : "", borderRadius: borderRadius, borderTop: borderTop, paddingRight: paddingRight, color: color, borderLeft: borderLeft }}
           id={id}
           accept={accept || "image/png, image/gif, image/jpeg, image/svg+xml"}
           multiple={multiple}

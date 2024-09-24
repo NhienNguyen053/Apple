@@ -14,10 +14,10 @@ namespace AppleApi.Services
         {
             TwilioClient.Init(AccountSid, AuthToken);
             var message = MessageResource.Create(
-            body: $"{code}",
-            from: new Twilio.Types.PhoneNumber(TwilioPhoneNumber),
-            to: new Twilio.Types.PhoneNumber(toPhoneNumber)
-        );
+                body: $"{code}",
+                from: new Twilio.Types.PhoneNumber(TwilioPhoneNumber),
+                to: new Twilio.Types.PhoneNumber(toPhoneNumber)
+            );
         }
     }
 }

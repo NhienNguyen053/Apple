@@ -248,36 +248,8 @@ const ShoppingCart = () => {
     }
 
     const routeChange2 = async () => {
-        try {
-            setLoading(true);
-            const checkoutRequest = {
-                UserId: decodedToken ? decodedToken["Id"] : null,
-                Products: decodedToken ? null : existingCart
-            };
-            const response = await fetch('https://localhost:7061/api/Stripe/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(checkoutRequest),
-            })
-            if (response.status === 200) {
-                const data = await response.json();
-                const stripe = await getStripe(data.pubKey);
-                const { error } = await stripe.redirectToCheckout({
-                    sessionId: data.sessionId
-                });
-                setLoading(true);
-                if (error) {
-                    console.error('Stripe checkout error:', error);
-                }
-            } else {
-                console.error('HTTP request failed with status:', response.status);
-                setLoading(false);
-            }
-        } catch (error) {
-            console.error('An error occurred:', error);
-        }
+        let path = `/checkout`;
+        navigate(path, { state: { total: totalPrice } });
     }
 
     return (
@@ -288,7 +260,7 @@ const ShoppingCart = () => {
                     Some product has been removed due to being unavailable!
                 </Alert>
             </Collapse>
-            <div style={{ height: '60vh', display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 100px auto', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: cartItems.length > 0 ? '100px auto 100px auto' : '100px auto 300px auto', justifyContent: 'center' }}>
                 <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is $${totalPrice}` : 'Your cart is empty'}</p>
                 {loading ? (
                     <div style={{ width: '300px', marginBottom: '55px' }}>

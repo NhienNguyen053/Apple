@@ -105,13 +105,6 @@ namespace AppleApi.Common
             return result;
         }
 
-        public async Task DeleteManyAsync(string id)
-        {
-            ObjectId.TryParse(id, out var objectId);
-            FilterDefinition<T> filter = Builders<T>.Filter.Eq("ProductId", objectId);
-            await _collection.DeleteManyAsync(filter);
-        }
-
         public async Task DeleteByFieldAsync(string field, string value)
         {
             FilterDefinition<T> filter;

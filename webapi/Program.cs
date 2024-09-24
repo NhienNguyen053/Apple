@@ -5,11 +5,12 @@ using Swashbuckle.AspNetCore.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AppleApi.Interfaces;
-using Stripe;
+using Hangfire;
+using Hangfire.MemoryStorage;
+using Microsoft.Extensions.DependencyInjection;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
-StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Stripe:SecretKey");
 builder.Services.Configure<AppleDatabaseSettings>(
     builder.Configuration.GetSection("AppleDatabase"));
 builder.Services.AddCors(options =>
@@ -31,9 +32,13 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProductService, AppleApi.Services.ProductService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddControllers();
+
+builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage());
+builder.Services.AddHangfireServer();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
@@ -73,11 +78,19 @@ app.UseSession();
 
 app.MapControllers();
 
+app.UseHangfireDashboard();
+
 using (var scope = app.Services.CreateScope())
 {
     var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
     await SeedData.SeedDatabaseIfEmpty(scope.ServiceProvider, userService);
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+    recurringJobManager.AddOrUpdate("ScanAndCancelUnpaidOrders", () => orderService.ScanAndCancelOrders(), Cron.Hourly);
+}
 
 app.Run();
