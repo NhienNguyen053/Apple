@@ -78,13 +78,7 @@ function NavbarItemSliderContent({ data, cartItems }) {
                         </>
                     )}
                     <p style={{ fontSize: '13px', marginBottom: '10px' }}>My Profile</p>
-                    {decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin' ? (
-                        <div className="hoverable-div" onClick={routeChange3}>
-                            <i className="fa-solid fa-chart-simple"></i>
-                            <p>Dashboard</p>
-                        </div>
-                    ) : null}
-                    {decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Employee' ? (
+                    {decodedToken && (decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'User Manager' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Product Manager' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Order Manager') ? (
                         <div className="hoverable-div" onClick={routeChange3}>
                             <i className="fa-solid fa-chart-simple"></i>
                             <p>Dashboard</p>

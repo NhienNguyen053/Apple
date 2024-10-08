@@ -51,7 +51,7 @@ public class CategoryController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Product Manager")]
     [HttpGet("getCategoryById")]
     public async Task<IActionResult> GetCategoryById(string id)
     {
@@ -63,7 +63,7 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Product Manager")]
     [HttpPost("createCategory")]
     public async Task<IActionResult> CreateCategory([FromBody] Category category)
     {
@@ -83,7 +83,7 @@ public class CategoryController : ControllerBase
         return Ok(newlyAdded);
     }
     
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Product Manager")]
     [HttpPost("updateCategory")]
     public async Task<IActionResult> UpdateCategory([FromBody] Category category)
     {
@@ -107,7 +107,7 @@ public class CategoryController : ControllerBase
         return Ok("Updated successfully");
     }
     
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Product Manager")]
     [HttpDelete("deleteCategory")]
     public async Task<IActionResult> DeleteCategory(string id)
     {

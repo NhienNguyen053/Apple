@@ -55,7 +55,7 @@ namespace AppleApi.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = "Admin, Employee")]
+        [Authorize(Roles = "Product Manager")]
         [HttpGet("getProductById")]
         public async Task<IActionResult> GetProductById(string id)
         {
@@ -89,7 +89,7 @@ namespace AppleApi.Controllers
             return Ok(products);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
@@ -110,7 +110,6 @@ namespace AppleApi.Controllers
             }
             newProduct.ProductName = product.ProductName;
             newProduct.ProductPrice = product.ProductPrice;
-            newProduct.ProductQuantity = product.ProductQuantity;
             newProduct.ProductStatus = product.ProductStatus;
             newProduct.CategoryId = product.CategoryId;
             newProduct.SubCategoryId = product.SubCategoryId;
@@ -123,7 +122,7 @@ namespace AppleApi.Controllers
             return Ok(newlyAdded);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpPost("updateProduct")]
         public async Task<IActionResult> UpdateProduct([FromBody] Product product)
         {
@@ -214,7 +213,6 @@ namespace AppleApi.Controllers
             }
             updateProduct.ProductName = product.ProductName;
             updateProduct.ProductPrice = product.ProductPrice;
-            updateProduct.ProductQuantity = product.ProductQuantity;
             updateProduct.ProductStatus = product.ProductStatus;
             updateProduct.CategoryId = product.CategoryId;
             updateProduct.SubCategoryId = product.SubCategoryId;
@@ -226,7 +224,7 @@ namespace AppleApi.Controllers
             return Ok(urls);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpDelete("deleteProduct")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
@@ -241,7 +239,7 @@ namespace AppleApi.Controllers
             return Ok(allImageURLs);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpPost("updateProductImages")]
         public async Task<IActionResult> UpdateProductImages([FromBody] UpdateProductImages data)
         {
@@ -284,7 +282,7 @@ namespace AppleApi.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpPost("getProductImagesByColor")]
         public async Task<IActionResult> GetProductImagesByColor([FromBody] GetImagesRequest request)
         {
@@ -292,7 +290,7 @@ namespace AppleApi.Controllers
             return Ok(imageURLs);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Product Manager")]
         [HttpPost("deleteProductImage")]
         public async Task<IActionResult> DeleteProductImage([FromBody] DeleteImageRequest request)
         {

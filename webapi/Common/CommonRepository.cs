@@ -85,6 +85,12 @@ namespace AppleApi.Common
             return (docs, totalCount);
         }
 
+        public async Task<List<T>> GetPagedAsync(int page, int pageSize, FilterDefinition<T>? filter = null)
+        {
+            filter ??= Builders<T>.Filter.Empty; 
+            return await _collection.Find(filter).Skip(page * pageSize).Limit(pageSize).ToListAsync();
+        }
+
         public async Task<T> InsertOneAsync(T model)
         {
             await _collection.InsertOneAsync(model);

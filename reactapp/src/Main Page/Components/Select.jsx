@@ -15,8 +15,9 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                 return (
                     <>
                         <option>Customer</option>
-                        <option>Employee</option>
-                        <option>Admin</option>
+                        <option>User Manager</option>
+                        <option>Product Manager</option>
+                        <option>Order Manager</option>
                     </>
                 );
             case 'status':
@@ -60,6 +61,33 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                         ))}
                     </>
                 )
+            case 'status3':
+                const statusOptions = [
+                    { value: 'Canceled', label: 'Canceled' },
+                    { value: 'Paid', label: 'Paid' },
+                    { value: 'Processing', label: 'Processing' },
+                    { value: 'Shipping', label: 'Shipping' },
+                    { value: 'Delivered', label: 'Delivered' }
+                ];
+
+                const filteredStatusOptions = statusOptions.filter(option => {
+                    if (selectedValue === 'Paid') {
+                        return option.value !== 'Canceled';
+                    } else if (selectedValue === 'Processing') {
+                        return option.value !== 'Canceled' && option.value !== 'Paid';
+                    } else if (selectedValue === 'Shipping') {
+                        return option.value !== 'Canceled' && option.value !== 'Paid' && option.value !== 'Processing';
+                    }
+                    return true;
+                });
+
+                return (
+                    <>
+                        {filteredStatusOptions.map((status, index) => (
+                            <option key={index} value={status.value}>{status.label}</option>
+                        ))}
+                    </>
+                );
             default:
                 return null;
         }

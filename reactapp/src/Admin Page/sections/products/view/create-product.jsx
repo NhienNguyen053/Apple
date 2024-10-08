@@ -1,4 +1,4 @@
-/* eslint-disable no-loop-func */
+﻿/* eslint-disable no-loop-func */
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
@@ -42,8 +42,6 @@ export default function CreateProduct() {
     const [productNameError, setProductNameError] = useState('');
     const [productPrice, setProductPrice] = useState('');
     const [productPriceError, setProductPriceError] = useState(false);
-    const [productQuantity, setProductQuantity] = useState('');
-    const [productQuantityError, setProductQuantityError] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [productStatus, setProductStatus] = useState('Inactive');
     const [productImages, setProductImages] = useState([]);
@@ -164,11 +162,6 @@ export default function CreateProduct() {
     const handleProductPrice = (e) => {
         setProductPrice(e.target.value);
         setProductPriceError(false);
-    }
-
-    const handleProductQuantity = (e) => {
-        setProductQuantity(e.target.value);
-        setProductQuantityError('');
     }
 
     const handleProductStatus = (e) => {
@@ -323,13 +316,7 @@ export default function CreateProduct() {
         else {
             setProductPriceError(true)
         }
-        if (quantityRegex.test(productQuantity)) {
-            count++;
-        }
-        else {
-            setProductQuantityError('Invalid product quantity')
-        }
-        if (count === 5) {
+        if (count === 4) {
             const product = await fetch('https://localhost:7061/api/Product/createProduct', {
                 method: 'POST',
                 headers: {
@@ -339,7 +326,6 @@ export default function CreateProduct() {
                 body: JSON.stringify({
                     ProductName: productName,
                     ProductPrice: productPrice,
-                    ProductQuantity: productQuantity,
                     ProductStatus: productStatus,
                     CategoryId: categoryId,
                     SubCategoryId: subCategoryId,
@@ -435,6 +421,7 @@ export default function CreateProduct() {
         setLoading(true);
         var imageURLs = [];
         var hasColors = false;
+
         if (personName.length === 0) {
             hasColors = false;
         } else {
@@ -447,42 +434,47 @@ export default function CreateProduct() {
                 hasColors = true;
             }
         }
+
         for (let i = 0; i < productImages.length; i++) {
             const file = productImages[i].path;
-            var byteString = atob(file.split(',')[1]);
-            var mimeString = file.split(',')[0].split(':')[1].split(';')[0];
-            var arrayBuffer = new ArrayBuffer(byteString.length);
-            var uint8Array = new Uint8Array(arrayBuffer);
-            for (var j = 0; j < byteString.length; j++) {
-                uint8Array[j] = byteString.charCodeAt(j);
-            }
-            const blob = new Blob([arrayBuffer], { type: mimeString })
-            const imageRef = ref(storage, `images/ProductImages/${productId}/${uuidv4()}`)
-            await uploadBytes(imageRef, blob).then(() => {
-                return getDownloadURL(imageRef);
-            })
-            .then((downloadURL) => {
+
+            const response = await fetch(file);
+            const blob = await response.blob();
+
+            const mimeString = blob.type;
+            const imageRef = ref(storage, `images/ProductImages/${productId}/${uuidv4()}`);
+
+            try {
+                await uploadBytes(imageRef, blob);
+                const downloadURL = await getDownloadURL(imageRef);
                 setActiveImages((prevImages) => [
                     ...prevImages,
                     { id: uuidv4(), path: downloadURL },
                 ]);
                 imageURLs.push(downloadURL);
-            })
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                setImageError('Failed to upload image.');
+                setLoading(false);
+                return;
+            }
         }
+
         if (productImages.length > 0) {
             await fetch('https://localhost:7061/api/Product/updateProductImages', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwtToken}`
+                    'Authorization': `Bearer ${jwtToken}`,
                 },
                 body: JSON.stringify({
                     productId: productId,
                     productImages: imageURLs,
-                    Color: hasColors === true ? selectedColor.toString() : null
+                    Color: hasColors ? selectedColor.toString() : null,
                 }),
             });
         }
+
         setTimeout(() => {
             setLoading(false);
             setProductImages([]);
@@ -492,7 +484,7 @@ export default function CreateProduct() {
             }, 3000);
             window.scrollTo(0, 0);
         }, 2000);
-    }
+    };
 
     const removeImage = (e) => {
         setProductImages((prevImages) =>
@@ -582,7 +574,7 @@ export default function CreateProduct() {
                             </div>
                             <div style={{ width: '47%' }}>
                                 <Input
-                                    placeholder={"Product Price ($)"}
+                                    placeholder={"Product Price (₫)"}
                                     isVisible={true}
                                     icon={false}
                                     borderRadius={"5px"}
@@ -593,19 +585,6 @@ export default function CreateProduct() {
                                     errorMargin={'3px 0 0 0'}
                                 />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: productPriceError === false ? 'none' : 'block', fontSize: '15px' }}>Product price must be a number with up to two decimals</p>
-                            </div>
-                            <div style={{width: '47%'}}>
-                                <Input
-                                    placeholder={"Product Quantity"}
-                                    isVisible={true}
-                                    icon={false}
-                                    borderRadius={"5px"}
-                                    width={'100%'}
-                                    margin={'16px 0 0 0'}
-                                    onInputChange={handleProductQuantity}
-                                    error={productQuantityError}
-                                    errorMargin={'3px 0 0 0'}
-                                />
                             </div>
                             <FormControl sx={{ mt: 2, width: '47%' }}>
                             <InputLabel id="demo-multiple-chip-label">Colors</InputLabel>

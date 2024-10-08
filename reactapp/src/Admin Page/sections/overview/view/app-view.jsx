@@ -1,20 +1,44 @@
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
+import { useState, useEffect } from 'react';
 import AppCurrentVisits from '../app-current-visits';
 import AppWebsiteVisits from '../app-website-visits';
 import AppWidgetSummary from '../app-widget-summary';
+import Cookies from 'js-cookie';
 
 // ----------------------------------------------------------------------
 
 export function AppView() {
+  const [data, setData] = useState();
+  const jwtToken = Cookies.get('jwtToken');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://localhost:7061/api/Users/getDashboardData', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `bearer ${jwtToken}`
+          },
+        });
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <Container maxWidth="xl">
-
+    {data ? 
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Weekly Sales"
-            total={714000}
+            title="Active Products"
+            total={data.products}
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -22,8 +46,8 @@ export function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="New Users"
-            total={1352831}
+            title="Total Users"
+            total={data.users}
             color="info"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
@@ -31,8 +55,8 @@ export function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
+            title="Total Orders"
+            total={data.orders}
             color="warning"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
           />
@@ -40,8 +64,8 @@ export function AppView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Bug Reports"
-            total={234}
+            title="Total Revenue ($)"
+            total={data.revenue}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
@@ -49,40 +73,28 @@ export function AppView() {
 
         <Grid xs={12} md={6} lg={8}>
           <AppWebsiteVisits
-            title="Website Visits"
-            subheader="(+43%) than last year"
+            title="Yearly Orders"
             chart={{
               labels: [
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
+                Object.keys(data.yearlyOrders)[0],
+                Object.keys(data.yearlyOrders)[1],
+                Object.keys(data.yearlyOrders)[2],
+                Object.keys(data.yearlyOrders)[3],
+                Object.keys(data.yearlyOrders)[4],
+                Object.keys(data.yearlyOrders)[5],
+                Object.keys(data.yearlyOrders)[6],
+                Object.keys(data.yearlyOrders)[7],
+                Object.keys(data.yearlyOrders)[8],
+                Object.keys(data.yearlyOrders)[9],
+                Object.keys(data.yearlyOrders)[10],
+                Object.keys(data.yearlyOrders)[11]
               ],
               series: [
                 {
-                  name: 'Team A',
+                  name: 'Total',
                   type: 'column',
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: 'Team B',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                  data: [data.yearlyOrders.Jan, data.yearlyOrders.Feb, data.yearlyOrders.Mar, data.yearlyOrders.Apr, data.yearlyOrders.May, data.yearlyOrders.Jun, data.yearlyOrders.Jul, data.yearlyOrders.Aug, data.yearlyOrders.Sep, data.yearlyOrders.Oct, data.yearlyOrders.Nov, data.yearlyOrders.Dec],
                 },
               ],
             }}
@@ -91,19 +103,21 @@ export function AppView() {
 
         <Grid xs={12} md={6} lg={4}>
           <AppCurrentVisits
-            title="Current Visits"
+            title="Total Orders"
             chart={{
               series: [
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
+                { label: 'Canceled', value: data.canceledOrders },
+                { label: 'Paid', value: data.paidOrders },
+                { label: 'Processing', value: data.processingOrders },
+                { label: 'Shipping', value: data.shippingOrders },
+                { label: 'Delivered', value: data.deliveredOrders },
               ],
             }}
           />
         </Grid>
 
       </Grid>
+    : <></> }
     </Container>
   );
 }

@@ -13,8 +13,10 @@ import UserPage from './Admin Page/Pages/user';
 import { Route, Routes } from 'react-router-dom';
 import { Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
+import AuthRoute0 from './Admin Page/routes/AuthRoute0';
 import AuthRoute from './Admin Page/routes/AuthRoute';
 import AuthRoute2 from './Admin Page/routes/AuthRoute2';
+import AuthRoute3 from './Admin Page/routes/AuthRoute3';
 import CreateUser from './Admin Page/Pages/createUser';
 import CategoryPage from './Admin Page/Pages/category';
 import CreateCategory from './Admin Page/Pages/createCategory';
@@ -33,6 +35,8 @@ import Failed from './Main Page/Pages/Failed';
 import Success from './Main Page/Pages/Success';
 import Order from './Main Page/Pages/Order';
 import Checkout from './Main Page/Pages/Checkout';
+import OrdersView from './Admin Page/sections/order/view/orders-view';
+import EditOrder from './Admin Page/sections/order/view/edit-order';
 
 function App() {
     return (
@@ -70,31 +74,31 @@ function App() {
                         <Route
                             path="/dashboard/"
                             element={
-                                <AuthRoute2>
+                                <AuthRoute0>
                                     <DashboardLayout>
                                         <AppPage />
                                     </DashboardLayout>
-                                </AuthRoute2>
+                                </AuthRoute0>
                             }
                         />
                         <Route
                             path="/dashboard/products"
                             element={
-                                <AuthRoute2>
+                                <AuthRoute0>
                                     <DashboardLayout>
                                         <ProductsPage />
                                     </DashboardLayout>
-                                </AuthRoute2>
+                                </AuthRoute0>
                             }
                         />
                         <Route
                             path="/dashboard/products/createProduct"
                             element={
-                                <AuthRoute>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <CreateProduct />
                                     </DashboardLayout>
-                                </AuthRoute>
+                                </AuthRoute2>
                             }
                         />
                         <Route
@@ -110,11 +114,11 @@ function App() {
                         <Route
                             path="/dashboard/users"
                             element={
-                                <AuthRoute2>
+                                <AuthRoute0>
                                     <DashboardLayout>
                                         <UserPage />
                                     </DashboardLayout>
-                                </AuthRoute2>
+                                </AuthRoute0>
                             }
                         />
                         <Route
@@ -140,51 +144,71 @@ function App() {
                         <Route
                             path="/dashboard/categories"
                             element={
-                                <AuthRoute2>
+                                <AuthRoute0>
                                     <DashboardLayout>
                                         <CategoryPage />
                                     </DashboardLayout>
-                                </AuthRoute2>
+                                </AuthRoute0>
                             }
                         />
                         <Route
                             path="/dashboard/categories/createCategory"
                             element={
-                                <AuthRoute>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <CreateCategory />
                                     </DashboardLayout>
-                                </AuthRoute>
+                                </AuthRoute2>
                             }
                         />
                         <Route
                             path="/dashboard/categories/editCategory"
                             element={
-                                <AuthRoute>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <EditCategory />
                                     </DashboardLayout>
-                                </AuthRoute>
+                                </AuthRoute2>
                             }
                         />
                         <Route
                             path="/dashboard/categories/createSubcategory"
                             element={
-                                <AuthRoute>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <CreateSubcategory />
                                     </DashboardLayout>
-                                </AuthRoute>
+                                </AuthRoute2>
                             }
                         />
                         <Route
                             path="/dashboard/categories/editSubcategory"
                             element={
-                                <AuthRoute>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <EditSubcategory />
                                     </DashboardLayout>
-                                </AuthRoute>
+                                </AuthRoute2>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/orders"
+                            element={
+                                <AuthRoute0>
+                                    <DashboardLayout>
+                                        <OrdersView />
+                                    </DashboardLayout>
+                                </AuthRoute0>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/orders/editOrder"
+                            element={
+                                <AuthRoute3>
+                                    <DashboardLayout>
+                                        <EditOrder />
+                                    </DashboardLayout>
+                                </AuthRoute3>
                             }
                         />
                     </Routes>

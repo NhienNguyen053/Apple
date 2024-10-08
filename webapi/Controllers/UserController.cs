@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using AppleApi.Interfaces;
 using System.Text.RegularExpressions;
 using AppleApi.Models.User;
+using AppleApi.Models.Product;
+using AppleApi.Models.Order;
 
 namespace AppleApi.Controllers
 {
@@ -22,15 +24,19 @@ namespace AppleApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService userService;
+        private readonly IProductService productService;
+        private readonly IOrderService orderService;
         private readonly IConfiguration configuration;
 
-        public UsersController(IUserService userService, IConfiguration configuration)
+        public UsersController(IUserService userService, IConfiguration configuration, IOrderService orderService, IProductService productService)
         {
             this.configuration = configuration;
             this.userService = userService;
+            this.productService = productService;
+            this.orderService = orderService;
         }
 
-        [Authorize(Roles = "Admin, Employee")]
+        [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {
@@ -60,7 +66,7 @@ namespace AppleApi.Controllers
             return Ok(dashboardUserList);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User Manager")]
         [HttpGet("getUserById")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -113,7 +119,7 @@ namespace AppleApi.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User Manager")]
         [HttpPost("newUser")]
         public async Task<IActionResult> NewUser([FromBody] NewUserRequest request)
         {
@@ -376,7 +382,7 @@ namespace AppleApi.Controllers
             return Ok("Update successful!");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "User Manager")]
         [HttpDelete("deleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -391,6 +397,55 @@ namespace AppleApi.Controllers
             }
             await userService.DeleteOneAsync(id);
             return Ok("Delete successful");
+        }
+
+        [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
+        [HttpGet("getDashboardData")]
+        public async Task<IActionResult> GetDashboardData()
+        {
+            List<Product> products = await productService.GetAll();
+            decimal revenue = 0;
+            List<Order> orders = await orderService.GetAll();
+            List<User> users = await userService.GetAll();
+            var yearlyOrders = new Dictionary<string, int>
+            {
+                { "Jan", 0 },
+                { "Feb", 0 },
+                { "Mar", 0 },
+                { "Apr", 0 },
+                { "May", 0 },
+                { "Jun", 0 },
+                { "Jul", 0 },
+                { "Aug", 0 },
+                { "Sep", 0 },
+                { "Oct", 0 },
+                { "Nov", 0 },
+                { "Dec", 0 }
+            };
+            int currentYear = DateTime.Now.Year;
+            foreach (var order in orders)
+            {
+                revenue += order.AmountTotal;
+                if (order.DateCreated.Year == currentYear)
+                {
+                    string month = order.DateCreated.ToString("MMM");
+                    yearlyOrders[month]++;
+                }
+            }
+            DashboardData data = new()
+            {
+                Products = products.Count(x => x.ProductStatus == "Active"),
+                Users = users.Count(),
+                Orders = orders.Count(),
+                CanceledOrders = orders.Count(x => x.Status == "Canceled"),
+                PaidOrders = orders.Count(x => x.Status == "Paid"),
+                ProcessingOrders = orders.Count(x => x.Status == "Processing"),
+                ShippingOrders = orders.Count(x => x.Status == "Shipping"),
+                DeliveredOrders = orders.Count(x => x.Status == "Delivered"),
+                Revenue = revenue,
+                YearlyOrders = yearlyOrders
+            };
+            return Ok(data);
         }
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

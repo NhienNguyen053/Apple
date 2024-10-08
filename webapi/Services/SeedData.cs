@@ -33,7 +33,7 @@ namespace AppleApi.Services
                         VerifiedAt = DateTime.Now,
                         PasswordResetToken = null,
                         ResetTokenExpires = null,
-                        Role = "Admin"
+                        Role = "User Manager"
                     };
 
                     await userService.InsertOneAsync(user);

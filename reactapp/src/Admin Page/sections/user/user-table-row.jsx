@@ -47,7 +47,7 @@ export default function UserTableRow({
           <Label color={(isVerified === null && 'error') || 'success'}>{isVerified === null ? 'No' : 'Yes'}</Label>
         </TableCell>
 
-        <TableCell align="right" sx={{display: userRole === 'Admin' ? 'flex' : 'none'}}>
+        <TableCell align="right" sx={{display: userRole === 'User Manager' ? 'flex' : 'none'}}>
           <IconButton onClick={handleOpenMenu}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>

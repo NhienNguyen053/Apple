@@ -16,6 +16,7 @@ namespace AppleApi.Common
         Task<List<T>> FindManyByFieldAsync(string field, string value);
         Task<List<T>> FindManyByListId(List<string> ids);
         Task<T> FindNewest(string field);
+        Task<List<T>> GetPagedAsync(int page, int pageSize, FilterDefinition<T>? filter = null);
         Task<T> InsertOneAsync(T model);
         Task UpdateOneAsync(string id, T model);
         Task<T> DeleteOneAsync(string id);

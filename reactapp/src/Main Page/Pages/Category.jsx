@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 import Footer from '../Components/Footer';
 import { ColorPreview } from '../../Admin Page/Components/color-utils';
 import Specification from '../Components/Specification';
+import { fCurrency } from '../../Admin Page/utils/format-number';
 
 const Category = ({ categories }) => {
     const [products, setProducts] = useState([]);
@@ -73,7 +74,7 @@ const Category = ({ categories }) => {
                             </div>
                             <p style={{ width: '90%', color: 'black', fontFamily: 'SF-Pro-Display-SemiBold', textAlign: 'center', fontSize: '22px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{product.productName}</p>
                             {product.productDescription ? <div className="description" style={{ width: '90%' }} dangerouslySetInnerHTML={{ __html: product.productDescription }} /> : <div style={{ width: '90%', height: '19.2px' }}></div>}
-                            {product.productPrice ? <p className="price">For ${product.productPrice}</p> : null}
+                            {product.productPrice ? <p className="price">For {fCurrency(product.productPrice)}</p> : null}
                             <div style={{ fontSize: '19px', alignItems: 'center', width: '95%' }}>
                                 <a href="">Buy</a>
                                 <i class="fa-solid fa-chevron-right" style={{ color: '#0071e3', marginLeft: '3px', marginTop: '2px', fontSize: '14px' }}></i>
@@ -119,9 +120,9 @@ const Category = ({ categories }) => {
             <div style={{ width: '85%', margin: 'auto', position: 'relative' }}>
                 <p style={{ fontSize: '70px', color: 'black', fontFamily: 'SF-Pro-Display-Bold', display: categories && categories.childCategories ? 'block' : 'none' }}>{categories && categories.categoryName}</p>
                 {categories && categories.videoURL ? <Video url={categories.videoURL} /> : null}
-                {categories && categories.imageURL ? <img src={categories.imageURL} alt={categories.categoryName} style={{ marginTop: '150px', width: '100%' }} /> : null}
+                {categories && categories.imageURL ? <img src={categories.imageURL} alt={categories.categoryName} style={{ marginTop: '75px', width: '100%' }} /> : null}
             </div>
-            <div style={{ width: '100%', background: 'white', marginTop: '75px', paddingTop: '50px', minHeight: '500px' }}>
+            <div style={{ width: '100%', background: 'white', paddingTop: '50px', minHeight: '500px' }}>
                 <p style={{ fontSize: '50px', color: 'black', fontFamily: 'SF-Pro-Display-Regular', width: '85%', margin: '0 auto 50px auto' }}>Explore</p>
                 <div style={{ width: '85%', margin: 'auto' }}>
                     {renderProductSlider()}

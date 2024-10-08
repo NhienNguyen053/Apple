@@ -1,4 +1,4 @@
-/* eslint-disable no-loop-func */
+﻿/* eslint-disable no-loop-func */
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Container from '@mui/material/Container';
@@ -49,14 +49,13 @@ export default function EditProduct() {
     const [productNameError, setProductNameError] = useState('');
     const [productPrice, setProductPrice] = useState();
     const [productPriceError, setProductPriceError] = useState(false);
-    const [productQuantity, setProductQuantity] = useState();
-    const [productQuantityError, setProductQuantityError] = useState('');
     const [productDescription, setProductDescription] = useState();
     const [productStatus, setProductStatus] = useState();
     const [productImages, setProductImages] = useState([]);
     const [activeImages, setActiveImages] = useState([]);
     const [created, setCreated] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [loading2, setLoading2] = useState(false);
     const [open, setOpen] = React.useState(false);
     const [openText, setOpenText] = useState('');
     const [openColor, setOpenColor] = useState('');
@@ -150,11 +149,6 @@ export default function EditProduct() {
         setProductPriceError(false);
     }
 
-    const handleProductQuantity = (e) => {
-        setProductQuantity(e.target.value);
-        setProductQuantityError('');
-    }
-
     const handleProductStatus = (e) => {
         setProductStatus(e.target.value);
     }
@@ -233,7 +227,6 @@ export default function EditProduct() {
         setSubCategoryId(product.subCategoryId);
         setProductName(product.productName);
         setProductPrice(product.productPrice);
-        setProductQuantity(product.productQuantity);
         setProductDescription(product.productDescription);
         setProductStatus(product.productStatus);
         setDisplay(product.specifications.display);
@@ -390,13 +383,7 @@ export default function EditProduct() {
         else {
             setProductPriceError(true)
         }
-        if (quantityRegex.test(productQuantity)) {
-            count++;
-        }
-        else {
-            setProductQuantityError('Invalid product quantity')
-        }
-        if (count === 5) {
+        if (count === 4) {
             const result = await fetch('https://localhost:7061/api/Product/updateProduct', {
                 method: 'POST',
                 headers: {
@@ -407,7 +394,6 @@ export default function EditProduct() {
                     Id: productId,
                     ProductName: productName,
                     ProductPrice: productPrice,
-                    ProductQuantity: productQuantity,
                     ProductStatus: productStatus,
                     CategoryId: categoryId,
                     SubCategoryId: subCategoryId,
@@ -517,6 +503,7 @@ export default function EditProduct() {
         setLoading(true);
         var imageURLs = [];
         var hasColors = false;
+
         if (personName.length === 0) {
             hasColors = false;
         } else {
@@ -529,42 +516,47 @@ export default function EditProduct() {
                 hasColors = true;
             }
         }
+
         for (let i = 0; i < productImages.length; i++) {
             const file = productImages[i].path;
-            var byteString = atob(file.split(',')[1]);
-            var mimeString = file.split(',')[0].split(':')[1].split(';')[0];
-            var arrayBuffer = new ArrayBuffer(byteString.length);
-            var uint8Array = new Uint8Array(arrayBuffer);
-            for (var j = 0; j < byteString.length; j++) {
-                uint8Array[j] = byteString.charCodeAt(j);
+
+            const response = await fetch(file);
+            const blob = await response.blob();
+
+            const mimeString = blob.type;
+            const imageRef = ref(storage, `images/ProductImages/${productId}/${uuidv4()}`);
+
+            try {
+                await uploadBytes(imageRef, blob);
+                const downloadURL = await getDownloadURL(imageRef);
+                setActiveImages((prevImages) => [
+                    ...prevImages,
+                    { id: uuidv4(), path: downloadURL },
+                ]);
+                imageURLs.push(downloadURL);
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                setImageError('Failed to upload image.');
+                setLoading(false);
+                return;
             }
-            const blob = new Blob([arrayBuffer], { type: mimeString })
-            const imageRef = ref(storage, `images/ProductImages/${productId}/${uuidv4()}`)
-            await uploadBytes(imageRef, blob).then(() => {
-                return getDownloadURL(imageRef);
-            })
-                .then((downloadURL) => {
-                    setActiveImages((prevImages) => [
-                        ...prevImages,
-                        { id: uuidv4(), path: downloadURL },
-                    ]);
-                    imageURLs.push(downloadURL);
-                })
         }
+
         if (productImages.length > 0) {
             await fetch('https://localhost:7061/api/Product/updateProductImages', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwtToken}`
+                    'Authorization': `Bearer ${jwtToken}`,
                 },
                 body: JSON.stringify({
                     productId: productId,
                     productImages: imageURLs,
-                    Color: hasColors === true ? selectedColor.toString() : null
+                    Color: hasColors ? selectedColor.toString() : null,
                 }),
             });
         }
+
         setTimeout(() => {
             setLoading(false);
             setProductImages([]);
@@ -574,7 +566,8 @@ export default function EditProduct() {
             }, 3000);
             window.scrollTo(0, 0);
         }, 2000);
-    }
+    };
+
 
     const removeImage = (e) => {
         setProductImages((prevImages) =>
@@ -618,6 +611,7 @@ export default function EditProduct() {
     }
 
     const deleteProduct = async () => {
+        setLoading2(true);
         const response = await fetch(`https://localhost:7061/api/Product/deleteProduct?id=${productId}`, {
             method: 'DELETE',
             headers: {
@@ -638,6 +632,7 @@ export default function EditProduct() {
         });
         setTimeout(() => {
             navigate('/dashboard/products/');
+            setLoading2(false);
         }, 3000);
     }
 
@@ -700,7 +695,7 @@ export default function EditProduct() {
                             </div>
                             <div style={{ width: '47%' }}>
                                 <Input
-                                    placeholder={"Product Price ($)"}
+                                    placeholder={"Product Price (₫)"}
                                     isVisible={true}
                                     icon={false}
                                     borderRadius={"5px"}
@@ -713,21 +708,6 @@ export default function EditProduct() {
                                     disabled={role === 'Admin' ? false : true}
                                 />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: productPriceError === false ? 'none' : 'block', fontSize: '15px' }}>Product price must be a number with up to two decimals</p>
-                            </div>
-                            <div style={{ width: '47%' }}>
-                                <Input
-                                    placeholder={"Product Quantity"}
-                                    isVisible={true}
-                                    icon={false}
-                                    borderRadius={"5px"}
-                                    width={'100%'}
-                                    margin={'16px 0 0 0'}
-                                    onInputChange={handleProductQuantity}
-                                    inputValue={productQuantity}
-                                    error={productQuantityError}
-                                    errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
-                                />
                             </div>
                             <FormControl sx={{ mt: 2, width: '47%' }}>
                                 <InputLabel id="demo-multiple-chip-label">Colors</InputLabel>
@@ -1047,7 +1027,7 @@ export default function EditProduct() {
                 </div>
             </TabPanel>
             <Modal name2={"image"} isVisible={isModalVisible} toggleModal={toggleModal} func={removeImage2} />
-            <Modal name3={"product"} name={product ? " #" + product.productNumber : "" } isVisible={isModalVisible2} toggleModal={toggleModal2} func={deleteProduct} />
+            <Modal name3={"product"} name={product ? " #" + product.productNumber : ""} isVisible={isModalVisible2} toggleModal={toggleModal2} func={deleteProduct} loading={loading2} />
             <Modal name1={'!'} name4={"update"} name3={"product's colors? This will delete previous images"} isVisible={isModalVisible3} toggleModal={toggleModal3} func={() => handleUpdateProduct(1)} />
         </Container>
     );

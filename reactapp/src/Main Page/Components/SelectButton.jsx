@@ -3,7 +3,7 @@ import React from 'react';
 const SelectButton = ({ buttonId, buttonText, isActive, onToggle }) => {
     const handleClick = () => {
         if (onToggle) {
-            onToggle(buttonId);
+            onToggle(buttonId, buttonText);
         }
     };
 

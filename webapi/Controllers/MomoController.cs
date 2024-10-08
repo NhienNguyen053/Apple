@@ -26,6 +26,24 @@ public class MomoController : ControllerBase
     private readonly IShoppingCartService shoppingCartService;
     private readonly IProductService productService;
     private readonly IOrderService orderService;
+    Dictionary<string, int> memoryPrices = new Dictionary<string, int> 
+    {
+        {"4GB", 1242250},
+        {"8GB", 2484500},
+        {"16GB", 3726750},
+        {"32GB", 4969000},
+        {"64GB", 6211250}
+    };
+
+    Dictionary<string, int> storagePrices = new Dictionary<string, int> 
+    {
+        {"64GB", 1242250},
+        {"128GB", 2484500},
+        {"256GB", 3726750},
+        {"512GB", 4969000},
+        {"1TB", 6211250},
+        {"2TB", 7453500}
+    };
 
     public MomoController(IConfiguration configuration, IShoppingCartService shoppingCartService, IProductService productService, IOrderService orderService)
     {
@@ -54,6 +72,9 @@ public class MomoController : ControllerBase
             foreach (var cart in carts)
             {
                 Product product = await productService.FindByIdAsync(cart.ProductId);
+                int selectedMemoryPrice = cart.Memory != null ? memoryPrices.ContainsKey(cart.Memory) ? memoryPrices[cart.Memory] : 0 : 0;
+                int selectedStoragePrice = cart.Storage != null ? storagePrices.ContainsKey(cart.Storage) ? storagePrices[cart.Storage] : 0 : 0;
+                product.ProductPrice = (decimal.Parse(product.ProductPrice) + selectedMemoryPrice + selectedStoragePrice).ToString();
                 if (cart.ProductId != product.Id) continue;
                 product.ProductName = product.ProductName + (cart.Color != null ? " - " + cart.Color : "") + (cart.Memory != null ? " - " + cart.Memory + " Memory" : "") + (cart.Storage != null ? " - " + cart.Storage + " Storage" : "");
                 product.Colors = new List<string>();
@@ -71,7 +92,7 @@ public class MomoController : ControllerBase
                 {
                     product.Options.Storage.Add(cart.Storage);
                 }
-                product.ProductQuantity = cart.Quantity.ToString();
+                product.ProductStatus = cart.Quantity.ToString();
                 products.Add(product);
             }
 
@@ -81,6 +102,9 @@ public class MomoController : ControllerBase
             foreach (var item in checkoutRequest.Products)
             {
                 Product product = await productService.FindByIdAsync(item.productId);
+                int selectedMemoryPrice = item.memory != null ? memoryPrices.ContainsKey(item.memory) ? memoryPrices[item.memory] : 0 : 0;
+                int selectedStoragePrice = item.storage != null ? storagePrices.ContainsKey(item.storage) ? storagePrices[item.storage] : 0 : 0;
+                product.ProductPrice = (decimal.Parse(product.ProductPrice) + selectedMemoryPrice + selectedStoragePrice).ToString();
                 product.ProductName = product.ProductName + (item.color != null ? " - " + item.color : "") + (item.memory != null ? " - " + item.memory + " Memory" : "") + (item.storage != null ? " - " + item.storage + " Storage" : "");
                 product.Colors = new List<string>();
                 if (item.color != null)
@@ -97,7 +121,7 @@ public class MomoController : ControllerBase
                 {
                     product.Options.Storage.Add(item.storage);
                 }
-                product.ProductQuantity = item.quantity.ToString();
+                product.ProductStatus = item.quantity.ToString();
                 products.Add(product);
             }
         }
@@ -107,7 +131,7 @@ public class MomoController : ControllerBase
         }
         foreach (var product in products)
         {
-            decimal unitPrice = decimal.Parse(product.ProductPrice) * int.Parse(product.ProductQuantity);
+            decimal unitPrice = decimal.Parse(product.ProductPrice) * int.Parse(product.ProductStatus);
             total = total + unitPrice;
             RequestAnonymousShoppingCart data = new()
             {
@@ -115,7 +139,7 @@ public class MomoController : ControllerBase
                 color = !product.Colors.Any() ? "" : product.Colors[0],
                 memory = !product.Options.Memory.Any() ? "" : product.Options.Memory[0],
                 storage = !product.Options.Storage.Any() ? "" : product.Options.Storage[0],
-                quantity = int.Parse(product.ProductQuantity)
+                quantity = int.Parse(product.ProductStatus)
             };
             cartData.Add(data);
         }
@@ -139,31 +163,6 @@ public class MomoController : ControllerBase
         };
         await orderService.InsertOneAsync(newOrder);
 
-        var client = new HttpClient();
-        var currencyApi = await client.GetAsync("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json");
-        if (currencyApi.IsSuccessStatusCode)
-        {
-            var currencyList = await currencyApi.Content.ReadAsStringAsync();
-            JObject data = JObject.Parse(currencyList);
-            string currencyCode = "vnd"; 
-            var currencyValue = data["usd"]?[currencyCode];
-
-            if (currencyValue != null && decimal.TryParse(currencyValue.ToString(), out decimal parsedValue))
-            {
-                total = total * parsedValue;
-            }
-            else
-            {
-                Console.WriteLine("Currency not found.");
-                return StatusCode(500);
-            }
-        }
-        else
-        {
-            Console.WriteLine("Failed to fetch currency data.");
-            return StatusCode(500);
-        }
-
         CollectionLinkRequest request = new()
         {
             orderInfo = "pay with MoMo",
@@ -184,6 +183,7 @@ public class MomoController : ControllerBase
         var rawSignature = "accessKey=" + accessKey + "&amount=" + request.amount + "&extraData=" + request.extraData + "&ipnUrl=" + request.ipnUrl + "&orderId=" + request.orderId + "&orderInfo=" + request.orderInfo + "&partnerCode=" + request.partnerCode + "&redirectUrl=" + request.redirectUrl + "&requestId=" + request.requestId + "&requestType=" + request.requestType;
         request.signature = getSignature(rawSignature, secretKey);
         StringContent httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+        var client = new HttpClient();
         var quickPayResponse = await client.PostAsync("https://test-payment.momo.vn/v2/gateway/api/create", httpContent);
         if (!quickPayResponse.IsSuccessStatusCode)
         {

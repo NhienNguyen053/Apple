@@ -20,6 +20,13 @@ public class OrderController : ControllerBase
         this.productService = productService;
     }
 
+    [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
+    [HttpGet("getAllOrders")]
+    public async Task<IActionResult> GetAllOrders()
+    {
+        List<Order> orders = await orderService.GetAll();
+        return Ok(orders);
+    }
 
     [HttpGet("getOrderDetails")]
     public async Task<IActionResult> GetOrderDetails(string id)
@@ -56,5 +63,18 @@ public class OrderController : ControllerBase
             details.ProductDetails.Add(orderProduct);
         }
         return Ok(details);
+    }
+
+    [Authorize(Roles = "Order Manager")]
+    [HttpPost("updateOrder")]
+    public async Task UpdateOrder([FromBody] Order newOrder)
+    {
+        Order order = await orderService.FindByFieldAsync("OrderId", newOrder.OrderId);
+        if (order != null) {
+            order.CustomerDetails = newOrder.CustomerDetails;
+            order.ShippingDetails = newOrder.ShippingDetails;
+            order.Status = newOrder.Status;
+            await orderService.UpdateOneAsync(order.Id, order);
+        }
     }
 }

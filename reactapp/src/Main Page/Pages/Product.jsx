@@ -8,23 +8,49 @@ import Specification from '../Components/Specification';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
+import { fCurrency } from '../../Admin Page/utils/format-number';
 
 const Product = ({ categories, products }) => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [product, setProduct] = useState(products);
+    const [productPrice, setProductPrice] = useState(products.productPrice);
+    const [activeMemoryPrice, setActiveMemoryPrice] = useState(0);
+    const [activeStoragePrice, setActiveStoragePrice] = useState(0);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [images, setImages] = useState([]);
     const [activeButton, setActiveButton] = useState(null);
     const [activeButton2, setActiveButton2] = useState(null);
     const [activeColor, setActiveColor] = useState(null);
     const [cartChange, setCartChange] = useState(false);
+    const memoryPrices = {
+        '4GB': 1242250,
+        '8GB': 2484500,
+        '16GB': 3726750,
+        '32GB': 4969000,
+        '64GB': 6211250
+    };
 
-    const handleToggle = (buttonId) => {
+    const storagePrices = {
+        '64GB': 1242250,
+        '128GB': 2484500,
+        '256GB': 3726750,
+        '512GB': 4969000,
+        '1TB': 6211250,
+        '2TB': 7453500
+    };
+
+    const handleToggle = (buttonId, buttonText) => {
+        const selectedMemoryPrice = memoryPrices[buttonText] || 0;
+        setProductPrice(prevPrice => prevPrice - activeMemoryPrice + selectedMemoryPrice);
+        setActiveMemoryPrice(selectedMemoryPrice);
         setActiveButton(buttonId);
     };
 
-    const handleToggle2 = (buttonId) => {
+    const handleToggle2 = (buttonId, buttonText) => {
+        const selectedStoragePrice = storagePrices[buttonText] || 0;
+        setProductPrice(prevPrice => prevPrice - activeStoragePrice + selectedStoragePrice);
+        setActiveStoragePrice(selectedStoragePrice);
         setActiveButton2(buttonId);
     }
 
@@ -156,7 +182,7 @@ const Product = ({ categories, products }) => {
                             </div>
                             <p style={{ width: '90%', color: 'black', fontFamily: 'SF-Pro-Display-SemiBold', textAlign: 'center', fontSize: '22px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{product.productName}</p>
                             {product.productDescription ? <div className="description" style={{ width: '90%' }} dangerouslySetInnerHTML={{ __html: product.productDescription }} /> : <div style={{ width: '90%', height: '19.2px' }}></div>}
-                            {product.productPrice ? <p className="price">For ${product.productPrice}</p> : null}
+                            {fCurrency(productPrice) ? <p className="price">For {fCurrency(productPrice)}</p> : null}
                             <div style={{ fontSize: '19px', alignItems: 'center', width: '95%' }}>
                                 <a href="">Buy</a>
                                 <i class="fa-solid fa-chevron-right" style={{ color: '#0071e3', marginLeft: '3px', marginTop: '2px', fontSize: '14px' }}></i>
@@ -269,9 +295,9 @@ const Product = ({ categories, products }) => {
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 0 auto' }}>
                 <div style={{ width: '100%', margin: 'auto' }}>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '50px', margin: '0' }}>Buy {product.productName}</p>
-                    <p style={{ color: 'black' }}>For ${product.productPrice}</p>
+                    <p style={{ color: 'black' }}>For {fCurrency(productPrice)}</p>
                 </div>
-                <div style={{ width: '100%', display: 'flex', marginBottom: nonEmptySpecsCount <= 4 ? '110px' : '220px' }}>
+                <div style={{ width: '100%', display: 'flex', marginBottom: nonEmptySpecsCount <= 4 ? '110px' :  '110px' }}>
                     <div style={sliderContainerStyle}>
                         {images.length > 0 ? (
                             <Slider {...settings} className="productSlider">

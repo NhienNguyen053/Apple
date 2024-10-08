@@ -12,7 +12,6 @@ namespace AppleApi.Models.Product
         public int ProductNumber { get; set; }
         public string ProductName { get; set; } = null!;
         public string ProductPrice { get; set; } = null!;
-        public string ProductQuantity { get; set; } = null!;
         public string ProductStatus { get; set; } = null!;
         public string CategoryId { get; set; } = null!;
         public string SubCategoryId { get; set; } = null!;

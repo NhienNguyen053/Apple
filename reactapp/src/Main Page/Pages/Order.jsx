@@ -5,10 +5,12 @@ import Footer from '../Components/Footer';
 import Button from '../Components/Button';
 import Cookies from 'js-cookie';
 import { useSearchParams } from "react-router-dom";
+import { fCurrency } from '../../Admin Page/utils/format-number';
 
 const Order = () => {
     const [searchParams] = useSearchParams();
     const [orderDetails, setOrderDetails] = useState(null);
+    const [active, setActive] = useState('');
     const orderId = searchParams.get('id');
 
     useEffect(() => {
@@ -20,61 +22,8 @@ const Order = () => {
                 },
             });
             const data = await response.json();
-            console.log(data);
             setOrderDetails(data);
-            if (data.status == "Placed") {
-                var order = document.getElementById("order");
-                var orderRight = document.getElementById("orderRight");
-                if (order && orderRight) {
-                    order.style.color = "white";
-                    order.style.background = "black";
-                    orderRight.style.borderLeftColor = "black";
-                }
-            } else if (data.status == "Canceled" || data.status == "Paid") {
-                var payment = document.getElementById("payment");
-                var paymentRight = document.getElementById("paymentRight");
-                var paymentLeftTop = document.getElementById("paymentLeftTop");
-                var paymentLeftBottom = document.getElementById("paymentLeftBottom");
-                if (payment && paymentRight && paymentLeftBottom && paymentLeftTop) {
-                    payment.style.color = "white";
-                    payment.style.background = "black";
-                    paymentRight.style.borderLeftColor = "black";
-                    paymentLeftBottom.style.borderBottomColor = "black";
-                    paymentLeftTop.style.borderTopColor = "black";
-                }
-            } else if (data.status == "Processing") {
-                var processing = document.getElementById("processing");
-                var processingRight = document.getElementById("processingRight");
-                var processingLeftTop = document.getElementById("processingLeftTop");
-                var processingLeftBottom = document.getElementById("processingLeftBottom");
-                if (processing && processingRight && processingLeftBottom && processingLeftTop) {
-                    processing.style.color = "white";
-                    processing.style.background = "black";
-                    processingRight.style.borderLeftColor = "black";
-                    processingLeftBottom.style.borderBottomColor = "black";
-                    processingLeftTop.style.borderTopColor = "black";
-                }
-            } else if (data.status == "Shipping") {
-                var shipping = document.getElementById("shipping");
-                var shippingRight = document.getElementById("shippingRight");
-                var shippingLeftTop = document.getElementById("shippingLeftTop");
-                var shippingLeftBottom = document.getElementById("shippingLeftBottom");
-                if (shipping && shippingRight && shippingLeftBottom && shippingLeftTop) {
-                    shipping.style.color = "white";
-                    shipping.style.background = "black";
-                    shippingRight.style.borderLeftColor = "black";
-                    shippingLeftBottom.style.borderBottomColor = "black";
-                    shippingLeftTop.style.borderTopColor = "black";
-                }
-            } else if (data.status == "Delivered") {
-                var delivered = document.getElementById("delivered");
-                var deliveredRight = document.getElementById("deliveredRight");
-                if (delivered && deliveredRight) {
-                    delivered.style.color = "white";
-                    delivered.style.background = "black";
-                    deliveredRight.style.borderLeftColor = "black";
-                }
-            }
+            setActive(data.status);
         };
         getOrderDetails();
     }, []);
@@ -95,39 +44,39 @@ const Order = () => {
                     </div>
                     <div style={{ width: '104%', display: 'flex', height: '35px', textAlign: 'center', marginBottom: '20px', overflow: 'hidden' }}>
                         <div style={{ width: '20%', display: 'flex' }}>
-                            <div id="order" className="progress-bar-text">Order</div>
-                            <div id="orderRight" className="right-arrow"></div>
+                            <div style={{ color: active == 'Placed' ? 'white' : '', background: active == 'Placed' ? 'black' : '' }} className="progress-bar-text">Order</div>
+                            <div style={{ borderLeftColor: active == 'Placed' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '13px' }}>
                             <div>
-                                <div id="paymentLeftTop" className="triangle-top-right"></div>
-                                <div id="paymentLeftBottom" className="triangle-bottom-right"></div>
+                                <div style={{ borderTopColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="triangle-top-right"></div>
+                                <div style={{ borderBottomColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }}  className="triangle-bottom-right"></div>
                             </div>
-                            <div id="payment" className="progress-bar-text">Payment</div>
-                            <div id="paymentRight" className="right-arrow"></div>
+                            <div style={{ color: active == 'Canceled' || active == 'Paid' ? 'white' : '', background: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="progress-bar-text">Payment</div>
+                            <div style={{ borderLeftColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '26px' }}>
                             <div>
-                                <div id="processingLeftTop" className="triangle-top-right"></div>
-                                <div id="processingLeftBottom" className="triangle-bottom-right"></div>
+                                <div style={{ borderTopColor: active == 'Processing' ? 'black' : '' }} className="triangle-top-right"></div>
+                                <div style={{ borderBottomColor: active == 'Processing' ? 'black' : '' }} className="triangle-bottom-right"></div>
                             </div>
-                            <div id="processing" className="progress-bar-text">Processing</div>
-                            <div id="processingRight" className="right-arrow"></div>
+                            <div style={{ color: active == 'Processing' ? 'white' : '', background: active == 'Processing' ? 'black': '' }} className="progress-bar-text">Processing</div>
+                            <div style={{ borderLeftColor: active == 'Processing' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '39px' }}>
                             <div>
-                                <div id="shippingLeftTop" className="triangle-top-right"></div>
-                                <div id="shippingLeftBottom" className="triangle-bottom-right"></div>
+                                <div style={{ borderTopColor: active == 'Shipping' ? 'black' : '' }} className="triangle-top-right"></div>
+                                <div style={{ borderBottomColor: active == 'Shipping' ? 'black' : '' }} className="triangle-bottom-right"></div>
                             </div>
-                            <div id="shipping" className="progress-bar-text">Shipping</div>
-                            <div id="shippingRight" className="right-arrow"></div>
+                            <div style={{ color: active == 'Shipping' ? 'white' : '', background: active == 'Shipping' ? 'black' : '' }} className="progress-bar-text">Shipping</div>
+                            <div style={{ borderLeftColor: active == 'Shipping' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '52px' }}>
                             <div>
-                                <div id="deliveredLeftTop" className="triangle-top-right"></div>
-                                <div id="deliveredLeftBottom" className="triangle-bottom-right"></div>
+                                <div style={{ borderTopColor: active == 'Delivered' ? 'black' : '' }} className="triangle-top-right"></div>
+                                <div style={{ borderBottomColor: active == 'Delivered' ? 'black' : '' }} className="triangle-bottom-right"></div>
                             </div>
-                            <div id="delivered" className="progress-bar-text">Delivered</div>
+                            <div style={{ color: active == 'Delivered' ? 'white' : '', background: active == 'Delivered' ? 'black' : '' }} className="progress-bar-text">Delivered</div>
                         </div>
                     </div>
                     <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px' }}>
@@ -173,14 +122,13 @@ const Order = () => {
                                         </div>
                                     </td>
                                     <td>{detail.quantity}</td>
-                                    <td>${detail.productPrice}</td>
-                                    <td>${detail.productPrice * detail.quantity}</td>
+                                    <td>{fCurrency(detail.productPrice)}</td>
+                                    <td>{fCurrency(detail.productPrice * detail.quantity)}</td>
                                 </tr>
                             ))}
                         </table>
                     </div>
                 </div>
-                
             ) : (
                <></>
             )}

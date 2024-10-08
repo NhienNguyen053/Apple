@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import { useLocation } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
+import { fCurrency } from '../../Admin Page/utils/format-number';
 
 const Checkout = () => {
     const jwtToken = Cookies.get('jwtToken');
@@ -178,7 +179,7 @@ const Checkout = () => {
             <div style={{ width: '62.5%', margin: 'auto' }}>
                 <div style={{ paddingBottom: '10px', marginTop: '75px', display: 'flex', justifyContent: 'space-between', borderBottom: '0.2px solid #c3c3c3' }}>
                     <span style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '26px' }}>Checkout</span>
-                    <span style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '16px' }}>Order Total: ${total}</span>
+                    <span style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '16px' }}>Order Total: {fCurrency(total)}</span>
                 </div>
                 <div style={{ paddingBottom: '30px', display: 'flex', borderBottom: '0.2px solid #c3c3c3', flexWrap: 'wrap', flexDirection: 'column' }}>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '36px' }}>Where should we send your order?</p>

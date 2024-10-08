@@ -36,7 +36,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
           }
           const jwtToken = Cookies.get('jwtToken');
           const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-          const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
+          const existingCart = removeCart === true ? [] : JSON.parse(localStorage.getItem('cart')) || [];
           const delayTime = delay ? 1000 : 0;
           let count = 0;
           if (decodedToken == null) {
