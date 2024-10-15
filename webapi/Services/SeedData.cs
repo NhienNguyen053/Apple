@@ -33,6 +33,16 @@ namespace AppleApi.Services
                         VerifiedAt = DateTime.Now,
                         PasswordResetToken = null,
                         ResetTokenExpires = null,
+                        ShippingData = new ShippingData {
+                            FirstName = "Nhien",
+                            LastName = "Nguyen",
+                            StreetAddress = "asd",
+                            ZipCode = 123,
+                            City = "asd",
+                            State = "asd",
+                            EmailAddress = "nhiennguyen3999@gmail.com",
+                            PhoneNumber = "+84967835585"
+                        },
                         Role = "User Manager"
                     };
 

@@ -27,7 +27,6 @@ namespace AppleApi.Services
             List<Order> orders = new();
             FilterDefinition<Order> filter = Builders<Order>.Filter.Empty;
             filter = filter & Builders<Order>.Filter.Lt(x => x.DateCreated, DateTime.UtcNow.AddHours(-1).AddMinutes(-40));
-            Console.WriteLine(1);
             filter = filter & Builders<Order>.Filter.Eq(x => x.Status, "Placed");
             orders = await FindManyAsync(filter);
             foreach (var order in orders)

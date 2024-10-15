@@ -20,12 +20,24 @@ public class OrderController : ControllerBase
         this.productService = productService;
     }
 
-    [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
+    [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
     [HttpGet("getAllOrders")]
     public async Task<IActionResult> GetAllOrders()
     {
         List<Order> orders = await orderService.GetAll();
         return Ok(orders);
+    }
+
+    [Authorize]
+    [HttpGet("getUserOrders")]
+    public async Task<IActionResult> GetUserOrders(string userId)
+    {
+        List<Order> orders = await orderService.FindManyByFieldAsync("CustomerId", userId);
+        if (orders != null)
+        {
+            return Ok(orders);
+        }
+        return NoContent();
     }
 
     [HttpGet("getOrderDetails")]
@@ -36,42 +48,59 @@ public class OrderController : ControllerBase
             return BadRequest();
         }
         Order order = await orderService.FindByFieldAsync("OrderId", id);
-        OrderDetails details = new()
+        if (order != null)
         {
-            OrderId = order.OrderId,
-            AmountTotal = order.AmountTotal,
-            DateCreated = order.DateCreated,
-            CustomerDetails = order.CustomerDetails,
-            ProductDetails = new List<OrderProduct>(),
-            ShippingDetails = order.ShippingDetails,
-            Status = order.Status,
-        };
-        foreach (var item in order.ProductDetails)
-        {
-            Product product = await productService.FindByIdAsync(item.productId);
-            OrderProduct orderProduct = new()
+            OrderDetails details = new()
             {
-                productId = item.productId,
-                color = item.color,
-                storage = item.storage,
-                memory = item.memory,
-                quantity = item.quantity,
-                productName = product.ProductName,
-                productPrice = product.ProductPrice,
-                productImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color)?.ImageURLs?.FirstOrDefault()
+                OrderId = order.OrderId,
+                AmountTotal = order.AmountTotal,
+                DateCreated = order.DateCreated,
+                CustomerDetails = order.CustomerDetails,
+                ProductDetails = new List<OrderProduct>(),
+                ShippingDetails = order.ShippingDetails,
+                Status = order.Status,
             };
-            details.ProductDetails.Add(orderProduct);
+            foreach (var item in order.ProductDetails)
+            {
+                Product product = await productService.FindByIdAsync(item.productId);
+                OrderProduct orderProduct = new()
+                {
+                    productId = item.productId,
+                    color = item.color,
+                    storage = item.storage,
+                    memory = item.memory,
+                    quantity = item.quantity,
+                    productName = product.ProductName,
+                    productPrice = product.ProductPrice,
+                    productImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color)?.ImageURLs?.FirstOrDefault()
+                };
+                details.ProductDetails.Add(orderProduct);
+            }
+            return Ok(details);
         }
-        return Ok(details);
+        return BadRequest();
     }
 
-    [Authorize(Roles = "Order Manager")]
+    [Authorize(Roles = "Order Processor")]
     [HttpPost("updateOrder")]
     public async Task UpdateOrder([FromBody] Order newOrder)
     {
         Order order = await orderService.FindByFieldAsync("OrderId", newOrder.OrderId);
         if (order != null) {
             order.CustomerDetails = newOrder.CustomerDetails;
+            order.ShippingDetails = newOrder.ShippingDetails;
+            order.Status = newOrder.Status;
+            await orderService.UpdateOneAsync(order.Id, order);
+        }
+    }
+
+    [Authorize(Roles = "Order Processor")]
+    [HttpPost("cancelOrder")]
+    public async Task CancelOrder([FromBody] Order newOrder)
+    {
+        Order order = await orderService.FindByFieldAsync("OrderId", newOrder.OrderId);
+        if (order != null)
+        {
             order.ShippingDetails = newOrder.ShippingDetails;
             order.Status = newOrder.Status;
             await orderService.UpdateOneAsync(order.Id, order);

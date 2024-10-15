@@ -36,7 +36,7 @@ namespace AppleApi.Controllers
             this.orderService = orderService;
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
+        [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {
@@ -82,7 +82,8 @@ namespace AppleApi.Controllers
                 LastName = user.LastName,
                 Country = user.Country,
                 Birthday = user.Birthday,
-                Role = user.Role
+                Role = user.Role,
+                ShippingData = user.ShippingData
             };
             return Ok(returnUser);
         }
@@ -143,12 +144,16 @@ namespace AppleApi.Controllers
                 Email = request.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                VerificationToken = await CreateUniqueRandomTokenAsync(),
-                VerificationTokenExpires = DateTime.Now.AddDays(1),
+                VerificationToken = null,
+                VerificationTokenExpires = null,
+                VerifiedAt = DateTime.Now,
+                ShippingData = new ShippingData
+                {
+                    EmailAddress = request.Email,
+                },
                 Role = request.Role
             };
             await userService.InsertOneAsync(newUser);
-            SendEmail(newUser.VerificationToken, newUser.Email);
             return Ok("Registration successful!");
         }
 
@@ -176,6 +181,10 @@ namespace AppleApi.Controllers
                 PasswordSalt = passwordSalt,
                 VerificationToken = await CreateUniqueRandomTokenAsync(),
                 VerificationTokenExpires = DateTime.Now.AddDays(1),
+                ShippingData = new ShippingData
+                {
+                    EmailAddress = request.Email
+                },
                 Role = "Customer"
             };
             await userService.InsertOneAsync(newUser);
@@ -209,6 +218,49 @@ namespace AppleApi.Controllers
             }
             var token = CreateToken(user);
             return Ok(token);
+        }
+
+        [HttpPost("loginDashboard")]
+        public async Task<IActionResult> LoginDashboard([FromBody] UserLoginRequest request)
+        {
+            bool isPhoneNumber = Regex.IsMatch(request.EmailOrPhone, @"^[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]+$");
+            User? user;
+            if (isPhoneNumber)
+            {
+                user = await userService.FindByFieldAsync("PhoneNumber", request.EmailOrPhone);
+            }
+            else
+            {
+                user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
+            }
+            if (user == null || user.Role == "Customer")
+            {
+                return NoContent();
+            }
+            if (user.VerifiedAt == null)
+            {
+                return Unauthorized();
+            }
+            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest();
+            }
+            var token = CreateToken(user);
+            return Ok(token);
+        }
+
+        [Authorize]
+        [HttpPost("updateShipping")]
+        public async Task<IActionResult> UpdateShipping([FromBody] ShippingData shippingData, string userId)
+        {
+            User user = await userService.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.ShippingData = shippingData;
+                await userService.UpdateOneAsync(userId, user);
+                return Ok();
+            }
+            return NoContent();
         }
 
         [HttpPost("resendEmail")]
@@ -399,7 +451,7 @@ namespace AppleApi.Controllers
             return Ok("Delete successful");
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Manager")]
+        [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
         [HttpGet("getDashboardData")]
         public async Task<IActionResult> GetDashboardData()
         {

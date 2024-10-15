@@ -22,6 +22,7 @@ namespace AppleApi.Models.User
         public DateTime? VerifiedAt { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
+        public ShippingData? ShippingData { get; set; }
         public string Role { get; set; } = null!;
     }
 }

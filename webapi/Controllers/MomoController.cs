@@ -93,6 +93,7 @@ public class MomoController : ControllerBase
                     product.Options.Storage.Add(cart.Storage);
                 }
                 product.ProductStatus = cart.Quantity.ToString();
+                product.ProductDescription = product.ProductImages.Where(x => x.Color == cart.Color).FirstOrDefault()?.ImageURLs?.FirstOrDefault() ?? null;
                 products.Add(product);
             }
 
@@ -122,6 +123,7 @@ public class MomoController : ControllerBase
                     product.Options.Storage.Add(item.storage);
                 }
                 product.ProductStatus = item.quantity.ToString();
+                product.ProductDescription = product.ProductImages.Where(x => x.Color == item.color).FirstOrDefault()?.ImageURLs?.FirstOrDefault() ?? null;
                 products.Add(product);
             }
         }
@@ -139,7 +141,9 @@ public class MomoController : ControllerBase
                 color = !product.Colors.Any() ? "" : product.Colors[0],
                 memory = !product.Options.Memory.Any() ? "" : product.Options.Memory[0],
                 storage = !product.Options.Storage.Any() ? "" : product.Options.Storage[0],
-                quantity = int.Parse(product.ProductStatus)
+                quantity = int.Parse(product.ProductStatus),
+                image = product.ProductDescription,
+                productName = product.ProductName,
             };
             cartData.Add(data);
         }
@@ -154,7 +158,7 @@ public class MomoController : ControllerBase
             OrderId = myuuidAsString,
             AmountTotal = total,
             DateCreated = DateTime.Now,
-            Currency = "USD",
+            Currency = "VND",
             CustomerId = checkoutRequest.UserId,
             CustomerDetails = checkoutRequest.CustomerDetails,
             ShippingDetails = new List<ShippingDetail> { shippingDetail },
@@ -188,7 +192,6 @@ public class MomoController : ControllerBase
         if (!quickPayResponse.IsSuccessStatusCode)
         {
             var errorContent = await quickPayResponse.Content.ReadAsStringAsync();
-            Console.WriteLine($"Error details: {errorContent}");
             return StatusCode(500);
         }
         else
@@ -200,7 +203,7 @@ public class MomoController : ControllerBase
 
     // currently doesn't work cause ipn url can't be localhost
     [HttpPost("redirectMomo")]
-    public async Task RedirectMomo([FromBody] MomoIPN momoIPN)
+    public async Task<IActionResult> RedirectMomo([FromBody] MomoIPN momoIPN)
     {
         if (momoIPN.UserId != null)
         {
@@ -218,7 +221,9 @@ public class MomoController : ControllerBase
             };
             order.ShippingDetails.Add(shippingDetail);
             await orderService.UpdateOneAsync(order.Id, order);
+            return Ok();
         }
+        return BadRequest();
     }
 
     private static String getSignature(String text, String key)

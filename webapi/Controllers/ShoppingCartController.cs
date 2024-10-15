@@ -176,7 +176,7 @@ public class ShoppingCartController : ControllerBase
         var result = await shoppingCartService.DeleteOneAsync(id);
         if (result == null)
         {
-            return NotFound();
+            return NoContent();
         }
         return Ok();
     }
