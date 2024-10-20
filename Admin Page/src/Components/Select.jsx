@@ -17,7 +17,6 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                         <option>User Manager</option>
                         <option>Product Manager</option>
                         <option>Order Processor</option>
-                        <option>Shipper</option>
                     </>
                 );
             case 'status':

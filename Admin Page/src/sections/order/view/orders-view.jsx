@@ -118,6 +118,7 @@ export default function OrdersView() {
         const newShippingDetail = {
             note: detail,
             dateCreated: new Date().toISOString(),
+            dispatcherId: decodedToken['Id']
         };
         let updatedShippingDetails;    
         setOrders((prevOrders) => {
@@ -191,7 +192,7 @@ export default function OrdersView() {
                                             status={row.status}
                                             total={row.total}
                                             edit={() => { editOrder(row.id) }}
-                                            cancel={row.status === "Canceled" || row.status === 'Shipping' || row.status === 'Delivered' ? null : () => { cancelOrder(row.id) }}
+                                            cancel={row.status === "Failed" || row.status === "Canceled" || row.status === 'Shipping' || row.status === 'Delivered' ? null : () => { cancelOrder(row.id) }}
                                             userRole={decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null}
                                         />
                                     ))}

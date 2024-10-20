@@ -14,8 +14,7 @@ import AuthRouteCategories from './Components/AuthRouteCategories';
 import Product from './Pages/Product';
 import AuthRouteProducts from './Components/AuthRouteProducts';
 import ShoppingCart from './Pages/ShoppingCart';
-import Failed from './Pages/Failed';
-import Success from './Pages/Success';
+import Result from './Pages/Result';
 import Order from './Pages/Order';
 import Checkout from './Pages/Checkout';
 import Account from './Pages/Account';
@@ -51,7 +50,7 @@ function App() {
                         <Route path="/notfound" element={<NotFound />} />
                         <Route path="/newpassword" element={<NewPassword />} />
                         <Route path="/cart" element={<ShoppingCart />} />
-                        <Route path="/success" element={<Success />} />
+                        <Route path="/result" element={<Result />} />
                         <Route path="/order" element={<Order />} />
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/account" element={<AuthRouteUser><Account /></AuthRouteUser>} />

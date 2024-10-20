@@ -172,7 +172,7 @@ public class MomoController : ControllerBase
             orderInfo = "pay with MoMo",
             partnerCode = "MOMO",
             ipnUrl = "https://localhost:7061/api/Momo/redirectMomo",
-            redirectUrl = $"https://localhost:3000/success?orderId={myuuidAsString}",
+            redirectUrl = $"https://localhost:3000/result?orderId={myuuidAsString}",
             amount = (long)Math.Floor(total),
             orderId = myuuidAsString,
             requestId = myuuidAsString,
@@ -205,25 +205,47 @@ public class MomoController : ControllerBase
     [HttpPost("redirectMomo")]
     public async Task<IActionResult> RedirectMomo([FromBody] MomoIPN momoIPN)
     {
-        if (momoIPN.UserId != null)
+        if (int.Parse(momoIPN.ResultCode) == 0)
         {
-            await shoppingCartService.DeleteByFieldAsync("UserId", momoIPN.UserId);
-        }
-        Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
-        if (order != null)
-        {
-            SendEmail(order.CustomerDetails, order.OrderId, order.DateCreated, order.AmountTotal);
-            order.Status = "Paid";
-            ShippingDetail shippingDetail = new()
+            if (momoIPN.UserId != null)
             {
-                Note = "Order Paid",
-                dateCreated = DateTime.Now
-            };
-            order.ShippingDetails.Add(shippingDetail);
-            await orderService.UpdateOneAsync(order.Id, order);
-            return Ok();
+                await shoppingCartService.DeleteByFieldAsync("UserId", momoIPN.UserId);
+            }
+            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
+            if (order != null)
+            {
+                SendEmail(order.CustomerDetails, order.OrderId, order.DateCreated, order.AmountTotal);
+                order.Status = "Paid";
+                order.PaymentStatus = int.Parse(momoIPN.ResultCode);
+                ShippingDetail shippingDetail = new()
+                {
+                    Note = "Order Paid",
+                    dateCreated = DateTime.Now
+                };
+                order.ShippingDetails.Add(shippingDetail);
+                await orderService.UpdateOneAsync(order.Id, order);
+                return Ok();
+            }
+            return BadRequest();
         }
-        return BadRequest();
+        else
+        {
+            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
+            if (order != null)
+            {
+                order.Status = "Failed";
+                order.PaymentStatus = int.Parse(momoIPN.ResultCode);
+                ShippingDetail shippingDetail = new()
+                {
+                    Note = "Order Failed",
+                    dateCreated = DateTime.Now
+                };
+                order.ShippingDetails.Add(shippingDetail);
+                await orderService.UpdateOneAsync(order.Id, order);
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 
     private static String getSignature(String text, String key)

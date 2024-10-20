@@ -9,8 +9,9 @@ import '../../../style.css';
 import Collapse from '@mui/material/Collapse';
 import Cookies from 'js-cookie';
 import Alert from '@mui/material/Alert';
-import Modal2 from '../../../Components/Modal2';
+import Modal3 from '../../../Components/Modal3';
 import { fCurrency } from '../../../utils/format-number';
+import jwt_decode from 'jwt-decode';
 
 export default function EditOrder() {
     const location = useLocation();
@@ -22,6 +23,23 @@ export default function EditOrder() {
     const navigate = useNavigate();
     const [isModalVisible, setModalVisible] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
+    const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+    const memoryPrices = {
+        '4GB': 1242250,
+        '8GB': 2484500,
+        '16GB': 3726750,
+        '32GB': 4969000,
+        '64GB': 6211250
+    };
+
+    const storagePrices = {
+        '64GB': 1242250,
+        '128GB': 2484500,
+        '256GB': 3726750,
+        '512GB': 4969000,
+        '1TB': 6211250,
+        '2TB': 7453500
+    };
 
     useEffect(() => {
         getOrder();
@@ -35,6 +53,11 @@ export default function EditOrder() {
             },
         });
         const data = await response.json();
+        data.productDetails.forEach(detail => {
+            const memoryPrice = memoryPrices[detail.memory] || 0;
+            const storagePrice = storagePrices[detail.storage] || 0;
+            detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
+        });
         setOrder(data);
     }
 
@@ -71,7 +94,7 @@ export default function EditOrder() {
         setModalVisible(!isModalVisible);
     }
 
-    const handleUpdate = async (detail) => {
+    const handleUpdate = async (detail, address) => {
         setLoading(true);
         var count = 0;
         if (order.customerDetails.firstName.trim() === '') {
@@ -125,13 +148,15 @@ export default function EditOrder() {
         if (count === 6) {
             const newShippingDetail = {
                 note: detail,
-                dateCreated: new Date().toISOString()
+                dateCreated: new Date().toISOString(),
+                pickupAddress: address,
+                dispatcherId: decodedToken["Id"]
             };
             const updatedShippingDetails = [...order.shippingDetails, newShippingDetail];
             setOrder(prevOrder => ({
                 ...prevOrder,
                 shippingDetails: updatedShippingDetails,
-                status: order.status === "Paid" ? "Processing" : "Shipping"
+                status: "Processing"
             }));
             setModalVisible(!isModalVisible);
             await fetch('https://localhost:7061/api/Order/updateOrder', {
@@ -145,7 +170,7 @@ export default function EditOrder() {
                     CustomerDetails: order.customerDetails,
                     ShippingDetails: updatedShippingDetails,
                     ProductDetails: order.productDetails,
-                    Status: order.status === "Paid" ? "Processing" : "Shipping"
+                    Status: "Processing"
                 }),
             });
             setLoading(false);
@@ -309,7 +334,7 @@ export default function EditOrder() {
                             </div>
                         </div>
                         <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Shipping Details:</p>
-                        <div class="timeline" style={{ width: '100%' }}>
+                        <div className="timeline" style={{ width: '100%' }}>
                             {order.shippingDetails.map((detail, index) => (
                                 <div className="timeline-item" key={index}>
                                     <div className="dot"></div>
@@ -391,12 +416,12 @@ export default function EditOrder() {
                                     <div></div><div></div><div></div><div></div>
                                 </div>
                             ) : (
-                                order.status === "Paid" || order.status === "Processing" ? (
-                                    <Button text={order.status === "Paid" ? "Continue to processing" : "Continue to Shipping"} onclick={toggleModal} background="black" textColor="white" />
+                                order.status === "Paid" ? (
+                                    <Button text={"Continue to processing"} onclick={toggleModal} background="black" textColor="white" />
                                 ) : null
                             )}
                         </div>
-                        <Modal2 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} text2={order.status === "Paid" ? "Processing" : "Shipping"}/>
+                        <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} />
                     </>
                 ) : (
                     <></>
