@@ -6,7 +6,4 @@
     <ProductionBuildCommand>npm run build</ProductionBuildCommand>
     <BuildOutputFolder>$(MSBuildProjectDirectory)\build</BuildOutputFolder>
   </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="src\Main Page\Components\assets\" />
-  </ItemGroup>
 </Project>

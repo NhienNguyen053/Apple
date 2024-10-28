@@ -5,6 +5,7 @@ using AppleApi.Interfaces;
 using AppleApi.Models.Order;
 using AppleApi.Models.Product;
 using webapi.Models.Product;
+using AppleApi.Models.User;
 
 namespace AppleApi.Controllers;
 
@@ -13,11 +14,13 @@ public class OrderController : ControllerBase
 {
     private readonly IOrderService orderService;
     private readonly IProductService productService;
+    private readonly IUserService userService;
 
-    public OrderController(IOrderService orderService, IProductService productService)
+    public OrderController(IOrderService orderService, IProductService productService, IUserService userService)
     {
         this.orderService = orderService;
         this.productService = productService;
+        this.userService = userService;
     }
 
     [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
@@ -38,6 +41,80 @@ public class OrderController : ControllerBase
             return Ok(orders);
         }
         return NoContent();
+    }
+
+    [Authorize(Roles = "Dispatcher, Shipper")]
+    [HttpGet("getAndroidOrders")]
+    public async Task<IActionResult> GetAndroidOrders(string userId)
+    {
+        User user = await userService.FindByIdAsync(userId);
+        if (user != null)
+        {
+            if (user.Role == "Dispatcher")
+            {
+                List<Order> orders = await orderService.GetDispatcherOrders();
+                if (orders != null)
+                {
+                    return Ok(orders);
+                } else
+                {
+                    return NoContent();
+                }
+            } else
+            {
+                List<Order> orders = await orderService.GetShipperOrders(userId);
+                if (orders != null)
+                {
+                    return Ok(orders);
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+        }
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Dispatcher")]
+    [HttpPost("dispatchOrder")]
+    public async Task DispatchOrder([FromBody] DispatchOrder detail)
+    {
+        Order order = await orderService.FindByIdAsync(detail.Id);
+        if (order != null)
+        {
+            ShippingDetail shippingDetail = new()
+            {
+                DispatcherId = detail.DispatcherId,
+                DispatchedToId = detail.DispatchedToId,
+                PickupAddress = detail.PickupAddress,
+                Note = detail.Note,
+                dateCreated = detail.DateCreated
+            };
+            order.ShippingDetails.Add(shippingDetail);
+            await orderService.UpdateOneAsync(detail.Id, order);
+        }
+    }
+
+    [Authorize(Roles = "Shipper")]
+    [HttpPost("shippingOrder")]
+    public async Task ShippingOrder([FromBody] ShippingOrder detail)
+    {
+        Order order = await orderService.FindByIdAsync(detail.Id);
+        if (order != null)
+        {
+            ShippingDetail shippingDetail = new()
+            {
+                DispatcherId = detail.DispatcherId,
+                DispatchedToId = detail.DispatchedToId,
+                PickupAddress = detail.PickupAddress,
+                Note = detail.Note,
+                dateCreated = detail.DateCreated
+            };
+            order.ShippingDetails.Add(shippingDetail);
+            order.Status = detail.Status;
+            await orderService.UpdateOneAsync(detail.Id, order);
+        }
     }
 
     [HttpGet("getOrderDetails")]

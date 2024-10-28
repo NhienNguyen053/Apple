@@ -45,11 +45,10 @@ const Result = () => {
         };
         sendMomoIPN();
     }, [orderId, decodedToken]);
-
     return (
         <>
             <Navbar darkmode={false} removeCart={resultCode === 0 ? true : false} delay={resultCode === 0 ? true : false} />
-            {resultCode === 0 ? (
+            {resultCode == 0 ? (
                 <>
                     <div className='container3'>
                         <p className='p5'>Payment success

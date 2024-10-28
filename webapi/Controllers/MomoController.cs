@@ -172,7 +172,7 @@ public class MomoController : ControllerBase
             orderInfo = "pay with MoMo",
             partnerCode = "MOMO",
             ipnUrl = "https://localhost:7061/api/Momo/redirectMomo",
-            redirectUrl = $"https://localhost:3000/result?orderId={myuuidAsString}",
+            redirectUrl = $"http://localhost:3000/result?orderId={myuuidAsString}",
             amount = (long)Math.Floor(total),
             orderId = myuuidAsString,
             requestId = myuuidAsString,

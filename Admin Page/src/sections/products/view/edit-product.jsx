@@ -709,7 +709,7 @@ export default function EditProduct() {
                                 />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: productPriceError === false ? 'none' : 'block', fontSize: '15px' }}>Product price must be a number with up to two decimals</p>
                             </div>
-                            <FormControl sx={{ mt: 2, width: '47%' }}>
+                            <FormControl sx={{ mt: 2, width: '47%', mb: 2 }}>
                                 <InputLabel id="demo-multiple-chip-label">Colors</InputLabel>
                                 <Select
                                     labelId="demo-multiple-chip-label"

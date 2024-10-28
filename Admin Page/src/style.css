@@ -53,6 +53,9 @@ input[type=number] {
     --logo-color: #d0d0d1;
     --hover-color: white;
 }
+.tox {
+    width: 100%;
+}
 .h1{
     font-size: 38px;
     width: 100%;

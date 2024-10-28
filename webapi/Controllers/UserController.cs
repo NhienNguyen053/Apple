@@ -233,7 +233,7 @@ namespace AppleApi.Controllers
             {
                 user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
             }
-            if (user == null || user.Role == "Customer")
+            if (user == null || user.Role == "Customer" || user.Role == "Dispatcher" || user.Role == "Shipper")
             {
                 return NoContent();
             }
@@ -247,6 +247,52 @@ namespace AppleApi.Controllers
             }
             var token = CreateToken(user);
             return Ok(token);
+        }
+
+        [HttpPost("loginAndroid")]
+        public async Task<IActionResult> LoginAndroid([FromBody] UserLoginRequest request)
+        {
+            bool isPhoneNumber = Regex.IsMatch(request.EmailOrPhone, @"^[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-]+$");
+            User? user;
+            if (isPhoneNumber)
+            {
+                user = await userService.FindByFieldAsync("PhoneNumber", request.EmailOrPhone);
+            }
+            else
+            {
+                user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
+            }
+            if (user == null || user.Role == "Customer" || user.Role == "User Manager" || user.Role == "Product Manager" || user.Role == "Order Processor")
+            {
+                return NoContent();
+            }
+            if (user.VerifiedAt == null)
+            {
+                return Unauthorized();
+            }
+            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return BadRequest();
+            }
+            var token = CreateToken(user);
+            return Ok(token);
+        }
+
+        [Authorize(Roles = "Dispatcher")]
+        [HttpGet("getDriver")]
+        public async Task<IActionResult> GetDriver()
+        {
+            User user = await userService.FindByFieldAsync("Role", "Shipper");
+            if (user != null)
+            {
+                Driver driver = new()
+                {
+                    id = user.Id,
+                    name = user.FirstName + " " + user.LastName
+                };
+                return Ok(driver);
+            }
+            return NoContent();
         }
 
         [Authorize]
