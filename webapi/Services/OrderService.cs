@@ -54,6 +54,20 @@ namespace AppleApi.Services
                 await UpdateOneAsync(order.Id, order);
             }
         }
+
+        public async Task ScanAndConfirmOrders()
+        {
+            List<Order> orders = new();
+            FilterDefinition<Order> filter = Builders<Order>.Filter.Empty;
+            filter = filter & Builders<Order>.Filter.Lt(x => x.DateCreated, DateTime.UtcNow.AddDays(-60));
+            filter = filter & Builders<Order>.Filter.Eq(x => x.Status, "Delivered");
+            orders = await FindManyAsync(filter);
+            foreach (var order in orders)
+            {
+                order.Status = "Confirmed";
+                await UpdateOneAsync(order.Id, order);
+            }
+        }
     }
 }
 

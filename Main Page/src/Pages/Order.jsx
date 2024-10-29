@@ -54,6 +54,20 @@ const Order = () => {
         getOrderDetails();
     }, []);
 
+    const confirm = async (event) => {
+        event.preventDefault();
+        await fetch('https://localhost:7061/api/Order/confirmOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderDetails.orderId)
+        });
+        const updatedOrderDetails = { ...orderDetails, status: "Confirmed" };
+        setOrderDetails(updatedOrderDetails);
+        setActive("Confirmed");
+    }
+
     return (
         <>
             <Navbar darkmode={false} />
@@ -105,8 +119,15 @@ const Order = () => {
                             <div style={{ color: active == 'Delivered' ? 'white' : '', background: active == 'Delivered' ? 'black' : '' }} className="progress-bar-text">Delivered</div>
                         </div>
                     </div>
+                    <div style={{ background: '#fffbf6', display: orderDetails.status === 'Confirmed' ? 'flex' : 'none', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <p style={{ width: '97%', margin: '10px auto', fontFamily: 'SF-Pro-Display-Semibold', color: 'black' }}>Order Completed</p>
+                        <p style={{ width: '97%', margin: '0 auto 10px auto', color: 'black', fontSize: '14px' }}>This order is complete. If you did not confirm receipt, it may be that the system has automatically confirmed completion. Automatic confirmation occurs 60 days after shipment if there are no delivery tracking details recorded within our system.</p>
+                    </div>
                     <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px' }}>
-                        <div style={{ marginBottom: '20px', fontFamily: 'SF-Pro-Display-Light', width: '100%', background: '#f2f3f7', height: '35px', alignItems: 'center', display: 'flex', paddingLeft: '20px' }}>Shipping Details</div>
+                        <div style={{ marginBottom: '20px', fontFamily: 'SF-Pro-Display-Light', width: '100%', background: '#f2f3f7', height: '35px', alignItems: 'center', display: 'flex', padding: '0 20px', justifyContent: 'space-between' }}>
+                            <p style={{ color: 'black' }}>Shipping Details</p>
+                            <a onClick={confirm} style={{ display: orderDetails.status === 'Delivered' ? 'block' : 'none' }}>Confirm Delivery</a>
+                        </div>
                         <div className="timeline">
                             {orderDetails.shippingDetails.map((detail, index) => (
                                 <div className="timeline-item" key={index}>

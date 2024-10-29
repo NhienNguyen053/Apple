@@ -117,6 +117,17 @@ public class OrderController : ControllerBase
         }
     }
 
+    [HttpPost("confirmOrder")]
+    public async Task ConfirmOrder([FromBody] string id)
+    {
+        Order order = await orderService.FindByFieldAsync("OrderId", id);
+        if (order != null)
+        {
+            order.Status = "Confirmed";
+            await orderService.UpdateOneAsync(order.Id, order);
+        }
+    }
+
     [HttpGet("getOrderDetails")]
     public async Task<IActionResult> GetOrderDetails(string id)
     {

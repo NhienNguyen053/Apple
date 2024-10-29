@@ -9,5 +9,6 @@ namespace AppleApi.Interfaces
         Task<List<Order>> GetDispatcherOrders();
         Task<List<Order>> GetShipperOrders(string userId);
         Task ScanAndCancelOrders();
+        Task ScanAndConfirmOrders();
     }
 }

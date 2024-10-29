@@ -91,6 +91,7 @@ using (var scope = app.Services.CreateScope())
     var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
     recurringJobManager.AddOrUpdate("ScanAndCancelUnpaidOrders", () => orderService.ScanAndCancelOrders(), Cron.Hourly);
+    recurringJobManager.AddOrUpdate("ScanAndConfirmDeliveredOrders", () => orderService.ScanAndConfirmOrders(), Cron.Daily);
 }
 
 app.Run();
