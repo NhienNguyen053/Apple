@@ -8,11 +8,11 @@
 
         public string Address { get; set; } = null!;
 
-        public int ZipCode { get; set; }
+        public string CityProvince { get; set; } = null!;
 
-        public string City { get; set; } = null!;
+        public string District { get; set; } = null!;
 
-        public string State { get; set; } = null!;
+        public string Ward { get; set; } = null!;
 
         public string Email { get; set; } = null!;
 

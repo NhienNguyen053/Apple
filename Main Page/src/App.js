@@ -6,7 +6,7 @@ import NotFound from './Pages/NotFound';
 import ResetPassword from './Pages/ResetPassword';
 import Otp from './Pages/Otp';
 import NewPassword from './Pages/NewPassword';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import Category from './Pages/Category';
@@ -55,7 +55,7 @@ function App() {
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/account" element={<AuthRouteUser><Account /></AuthRouteUser>} />
                         <Route path="/account/orders" element={<AuthRouteUser><Orders /></AuthRouteUser>} />
-                        <Route path="*" element={<NotFound />} />
+                        <Route path="*" element={<Navigate to="/notfound" replace />} />
                     </Routes>
                 </Suspense>
             </HelmetProvider>

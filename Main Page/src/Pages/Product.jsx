@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { fCurrency } from '../Components/utils/format-number';
+import Collapse from '@mui/material/Collapse';
+import Alert from '@mui/material/Alert';
 
 const Product = ({ categories, products }) => {
     const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Product = ({ categories, products }) => {
     const [activeButton2, setActiveButton2] = useState(null);
     const [activeColor, setActiveColor] = useState(null);
     const [cartChange, setCartChange] = useState(false);
+    const [open, setOpen] = useState(false);
     const memoryPrices = {
         '4GB': 1242250,
         '8GB': 2484500,
@@ -286,12 +289,21 @@ const Product = ({ categories, products }) => {
         }
         setCartChange(!cartChange);
         setLoading(false);
+        setOpen(true);
+        setTimeout(() => {
+            setOpen(false);
+        }, 5000);
         smoothScroll(0, 250);
     };
 
     return (
         <>
             <Navbar darkmode={false} onCartChange={cartChange} />
+            <Collapse in={open} sx={{ width: '240px', position: 'absolute', right: '25px', top: '25px', zIndex: '1000' }}>
+                <Alert sx={{ mb: 2 }} severity={'success'}>
+                    Added to cart successfully!
+                </Alert>
+            </Collapse>
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 0 auto' }}>
                 <div style={{ width: '100%', margin: 'auto' }}>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '50px', margin: '0' }}>Buy {product.productName}</p>
@@ -302,7 +314,19 @@ const Product = ({ categories, products }) => {
                         {images.length > 0 ? (
                             <Slider {...settings} className="productSlider">
                                 {images.map((image) => (
-                                    <img key={image} src={image} alt={product.productName} style={{ width: '100%', height: 'auto', objectFit: 'contain', maxHeight: '500px' }} />
+                                    <div key={image} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '500px', overflow: 'hidden', width: '100%' }}>
+                                        <img
+                                            src={image}
+                                            alt={product.productName}
+                                            style={{
+                                                width: 'auto',
+                                                height: '100%',
+                                                objectFit: 'contain',
+                                                maxHeight: '500px',
+                                                maxWidth: '100%'
+                                            }}
+                                        />
+                                    </div>
                                 ))}
                             </Slider>
                         ) : (
@@ -311,7 +335,7 @@ const Product = ({ categories, products }) => {
                             </div>
                         )}
                     </div>
-                    <div style={{ position: 'absolute', display: 'flex', bottom: nonEmptySpecsCount <= 4 ? '-110px' : '-220px', justifyContent: 'center', width: '60%', flexWrap: 'wrap', height: '140px' }}>
+                    <div style={{ position: 'absolute', display: 'flex', bottom: nonEmptySpecsCount <= 4 ? '-180px' : '-220px', justifyContent: 'center', width: '60%', flexWrap: 'wrap', height: '140px' }}>
                         {Object.entries(product.specifications).map(([specName, specValue]) => {
                             if (specValue && specValue.trim() !== '') {
                                 return renderSpecs(specName, specValue);
@@ -319,7 +343,7 @@ const Product = ({ categories, products }) => {
                             return null;
                         })}
                     </div>
-                    <div style={{ width: '25%', margin: '0 auto 0 auto' }}>
+                    <div style={{ width: '25%', minHeight: '780px', margin: '0 auto 0 auto' }}>
                         {product.colors.length > 0 ? (
                             <div style={{ marginBottom: '40px' }}>
                                 <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>Finish. <span style={{ color: '#86868b' }}>Pick your favorite.</span></p>

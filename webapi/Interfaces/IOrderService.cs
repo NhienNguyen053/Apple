@@ -6,7 +6,6 @@ namespace AppleApi.Interfaces
 {
     public interface IOrderService : ICommonRepository<Order>
     {
-        Task<List<Order>> GetDispatcherOrders();
         Task<List<Order>> GetShipperOrders(string userId);
         Task ScanAndCancelOrders();
         Task ScanAndConfirmOrders();

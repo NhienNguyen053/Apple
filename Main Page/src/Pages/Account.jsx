@@ -26,7 +26,9 @@ const Account = () => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    data.shippingData.phoneNumber = data.shippingData.phoneNumber.substring(3);
+                    if (data.shippingData.phoneNumber) {
+                        data.shippingData.phoneNumber = data.shippingData.phoneNumber.substring(3);
+                    }
                     setUser(data);
                 }
             } catch (error) {
@@ -54,18 +56,18 @@ const Account = () => {
         setIsModalVisible2(!isModalVisible2);
     }
 
-    const updateShipping = async (data) => {
+    const updateShipping = async (data, cityName, districtName, wardName) => {
         setUser(data);
         const shippingData = {
             firstName: data.shippingData.firstName,
             lastName: data.shippingData.lastName,
             streetAddress: data.shippingData.streetAddress,
             country: data.shippingData.streetAddress,
-            zipCode: data.shippingData.zipCode,
-            city: data.shippingData.city,
-            state: data.shippingData.state,
+            cityProvince: cityName,
+            district: districtName,
+            ward: wardName,
             emailAddress: data.shippingData.emailAddress,
-            phoneNumber: "+84" + data.shippingData.phoneNumber
+            phoneNumber: data.shippingData.phoneNumber === null ? null : null
         }
         await fetch(`https://localhost:7061/api/Users/updateShipping?userId=${decodedToken['Id']}`, {
             method: 'POST',

@@ -136,7 +136,7 @@ export default function UserPage() {
           setModalVisible2(true);
           setTimeout(() => {
               setModalVisible2(false);
-          }, 3000);
+          }, 5000);
           setColor('rgb(192, 255, 203)');
           setError("Account deleted successfully!");
           const newUsers = users.filter(user => user.id !== deleteId);

@@ -24,7 +24,7 @@ const AuthRouteCategories = ({ children }) => {
     }, [category]);
 
     if (done) {
-        return categories ? React.cloneElement(children, { categories }) : <Navigate to="/notfound" />;
+        return categories ? React.cloneElement(children, { categories }) : <Navigate to="/notfound" replace />;
     }
 };
 

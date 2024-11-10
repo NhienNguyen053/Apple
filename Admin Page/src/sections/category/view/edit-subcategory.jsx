@@ -142,23 +142,6 @@ export default function EditSubcategory() {
             const file = input.files[0];
             const input2 = document.querySelector('#categoryicon');
             const file2 = input2.files[0];
-            fetch('https://localhost:7061/api/Category/updateCategory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                body: JSON.stringify({
-                    Id: id,
-                    CategoryName: categoryName,
-                    Description: desc,
-                    ImageURL: null,
-                    IconURL: null,
-                    ParentCategoryId: parentId
-                }),
-            });
-            setOpenColor('success');
-            setOpenText('Updated category successfully!');
             if (file != null) {
                 const imageRef = ref(storage, `images/SubcategoryImages/subcategoryImage_${id}`)
                 uploadBytes(imageRef, file).then(() => {
@@ -173,8 +156,7 @@ export default function EditSubcategory() {
                             },
                             body: JSON.stringify({
                                 Id: id,
-
-                                Name: categoryName,
+                                CategoryName: categoryName,
                                 Description: desc,
                                 ImageURL: downloadURL,
                                 IconURL: null,
@@ -206,12 +188,14 @@ export default function EditSubcategory() {
                         });
                     })
             }
+            setOpenColor('success');
+            setOpenText('Updated category successfully!');
             setTimeout(() => {
                 setLoading(false);
                 setOpen(true);
                 setTimeout(() => {
                     setOpen(false);
-                }, 3000);
+                }, 5000);
                 window.scrollTo(0, 0);
             }, 2000);
         } else {
@@ -241,7 +225,7 @@ export default function EditSubcategory() {
             setModalVisible2(true);
             setTimeout(() => {
                 setModalVisible2(false);
-            }, 3000);
+            }, 5000);
             window.scrollTo(0, 0);
         }
     }
@@ -324,7 +308,7 @@ export default function EditSubcategory() {
                             id={"categoryicon"}
                         />
                         <p style={{ color: 'red' }}>{imageError2}</p>
-                        <div id="image-preview2" style={{ width: '280px', height: 'fit-content', display: image ? 'block' : 'none', marginTop: '20px' }}>
+                        <div id="image-preview2" style={{ width: '280px', height: 'fit-content', display: icon ? 'block' : 'none', marginTop: '20px' }}>
                             {icon ? <img src={icon} style={{ width: '100%', height: 'auto', objectFit: 'contain', borderRadius: '10px' }} /> : null}
                         </div>
                         <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>

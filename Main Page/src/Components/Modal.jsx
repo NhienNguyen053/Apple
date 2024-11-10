@@ -1,14 +1,103 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import Button from './Button';
 import Input from './Input';
+import Select from './Select';
 
 const Modal = ({ user, isVisible, toggleModal, func, type }) => {
-    const [userData, setUserData] = useState();
-    const [errors, setErrors] = useState({ firstName: false, lastName: false, streetAddress: false, zipCode: false, city: false, state: false, emailAddress: false, phoneNumber: false });
+    const [userData, setUserData] = useState(null);
+    const [errors, setErrors] = useState({
+        firstName: false, lastName: false, streetAddress: false,
+        cityProvince: false, district: false, ward: false,
+        emailAddress: false, phoneNumber: false
+    });
+    const [cityJson, setCityJson] = useState();
+    const [districtJson, setDistrictJson] = useState();
+    const [wardJson, setWardJson] = useState();
+    const [districtStatus, setDistrictStatus] = useState(true);
+    const [wardStatus, setWardStatus] = useState(true);
 
     useEffect(() => {
-        setUserData(user)
+        if (user) {
+            setUserData(user);
+        }
     }, [user]);
+
+    useEffect(() => {
+        const fetchCityJson = async () => {
+            const response = await fetch('https://vapi.vnappmob.com/api/province/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setCityJson(data);
+                if (userData && userData.shippingData && userData.shippingData.cityProvince) {
+                    const decodedResults = data.results.map(province => ({
+                        ...province,
+                        province_name: province.province_name,
+                        province_type: province.province_type
+                    }));
+                    const cityData = decodedResults.find(province => province.province_name === userData.shippingData.cityProvince);
+                    if (cityData) {
+                        setDistrictStatus(false);
+                        const response2 = await fetch(`https://vapi.vnappmob.com/api/province/district/${cityData.province_id}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        if (response2.ok) {
+                            const data2 = await response2.json();
+                            setDistrictJson(data2);
+                            const decodedResults2 = data2.results.map(district => ({
+                                ...district,
+                                district_name: district.district_name,
+                                district_type: district.district_type
+                            }));
+                            const districtData = decodedResults2.find(district => district.district_name === userData.shippingData.district);
+                            if (districtData) {
+                                setWardStatus(false);
+                                const response3 = await fetch(`https://vapi.vnappmob.com/api/province/ward/${districtData.district_id}`, {
+                                    method: 'GET',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                if (response3.ok) {
+                                    const data3 = await response3.json();
+                                    setWardJson(data3);
+                                    const decodedResults3 = data3.results.map(ward => ({
+                                        ...ward,
+                                        ward_name: ward.ward_name,
+                                        ward_type: ward.ward_type
+                                    }));
+                                    const wardData = decodedResults3.find(ward => ward.ward_name === userData.shippingData.ward);
+                                    if (wardData) {
+                                        setUserData(prevUserData => ({
+                                            ...prevUserData,
+                                            shippingData: {
+                                                ...prevUserData.shippingData,
+                                                cityProvince: cityData.province_id,
+                                                district: districtData.district_id,
+                                                ward: wardData.ward_id
+                                            },
+                                        }));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        if (userData) {
+            fetchCityJson();
+        }
+    }, [userData]);
+
 
     const handleShippingChange = (e, field) => {
         let newErrors = { ...errors };
@@ -20,45 +109,94 @@ const Modal = ({ user, isVisible, toggleModal, func, type }) => {
                 [field]: e.target.value,
             },
         });
+        if (field === 'cityProvince') {
+            setUserData(prevUserData => ({
+                ...prevUserData,
+                shippingData: {
+                    ...prevUserData.shippingData,
+                    district: '',
+                    ward: ''
+                },
+            }));
+            setWardStatus(true);
+            getDistrict(e.target.value);
+            setDistrictStatus(false);
+        }
+        else if (field === 'district') {
+            setUserData(prevUserData => ({
+                ...prevUserData,
+                shippingData: {
+                    ...prevUserData.shippingData,
+                    ward: ''
+                },
+            }));
+            getWard(e.target.value);
+            setWardStatus(false);
+        }
         setErrors(newErrors);
     };
+
+    const getDistrict = async (id) => {
+        const response = await fetch(`https://vapi.vnappmob.com/api/province/district/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        if (response.ok) {
+            const data = await response.json();
+            setDistrictJson(data);
+        }
+    }
+
+    const getWard = async (id) => {
+        const response = await fetch(`https://vapi.vnappmob.com/api/province/ward/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        if (response.ok) {
+            const data = await response.json();
+            setWardJson(data);
+        }
+    }
 
     const handleSave = () => {
         let hasError = false;
         let newErrors = { ...errors };
-
-        if (!userData.shippingData.firstName.trim()) {
+        
+        if (!userData.shippingData.firstName?.trim()) {
             newErrors.firstName = true;
             hasError = true;
         }
-
-        if (!userData.shippingData.lastName.trim()) {
+        if (!userData.shippingData.lastName?.trim()) {
             newErrors.lastName = true;
             hasError = true;
         }
-
-        if (!userData.shippingData.streetAddress.trim()) {
+        if (!userData.shippingData.streetAddress?.trim()) {
             newErrors.streetAddress = true;
             hasError = true;
         }
-
-        if (!userData.shippingData.zipCode) {
-            newErrors.zipCode = true;
+        if (!userData.shippingData.cityProvince?.trim()) {
+            newErrors.cityProvince = true;
             hasError = true;
         }
-
-        if (!userData.shippingData.city.trim()) {
-            newErrors.city = true;
+        if (!userData.shippingData.district?.trim()) {
+            newErrors.district = true;
             hasError = true;
         }
-
-        if (!userData.shippingData.state.trim()) {
-            newErrors.state = true;
+        if (!userData.shippingData.ward?.trim()) {
+            newErrors.ward = true;
             hasError = true;
         }
+        
         setErrors(newErrors);
         if (!hasError) {
-            func(userData);
+            const cityName = cityJson.results.find(record => record.province_id === userData.shippingData.cityProvince) ? cityJson.results.find(record => record.province_id === userData.shippingData.cityProvince).province_name : '';
+            const districtName = districtJson.results.find(record => record.district_id === userData.shippingData.district) ? districtJson.results.find(record => record.district_id === userData.shippingData.district).district_name : '';
+            const wardName = wardJson.results.find(record => record.ward_id === userData.shippingData.ward) ? wardJson.results.find(record => record.ward_id === userData.shippingData.ward).ward_name : '';
+            func(userData, cityName, districtName, wardName);
             toggleModal();
         }
     };
@@ -86,7 +224,7 @@ const Modal = ({ user, isVisible, toggleModal, func, type }) => {
 
     return (
         <div className="modalBg" style={{ display: isVisible ? 'block' : 'none' }}>
-            <div className="modal" style={{ background: 'white', borderRadius: '25px', height: '605px', top: '50%', flexDirection: 'column' }}>
+            <div className="modal" style={{ background: 'white', borderRadius: '25px', height: '690px', top: '50%', flexDirection: 'column' }}>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'end', height: 'fit-content' }}>
                     <div onClick={toggleModal} className='x'>
                         <i className="fa-solid fa-xmark"></i>
@@ -121,7 +259,7 @@ const Modal = ({ user, isVisible, toggleModal, func, type }) => {
                                     warning={errors.lastName}
                                 />
                                 <Input
-                                    placeholder={"Street Address"}
+                                    placeholder={"Address"}
                                     isVisible={true}
                                     icon={false}
                                     borderRadius={"10px"}
@@ -132,51 +270,53 @@ const Modal = ({ user, isVisible, toggleModal, func, type }) => {
                                     warning={errors.streetAddress}
                                 />
                                 <Input
-                                    placeholder={"Country"}
+                                    placeholder={"Country/Region"}
                                     isVisible={true}
                                     icon={false}
                                     borderRadius={"10px"}
                                     width={'95%'}
                                     margin={'10px 0 0 0'}
-                                    inputValue={userData.shippingData.country}
+                                    inputValue={"Việt Nam"}
                                     disabled={true}
                                 />
-                                <div style={{ display: 'flex', width: '95%', marginTop: '10px' }}>
-                                    <Input
-                                        placeholder={"Zip Code"}
+                                <Select
+                                    isVisible={true}
+                                    icon={false}
+                                    borderRadius={"10px"}
+                                    width={'95%'}
+                                    onInputChange={(e) => handleShippingChange(e, 'cityProvince')}
+                                    margin={'15px 0 0 0'}
+                                    selectedValue={userData.shippingData.cityProvince}
+                                    type={"city/province"}
+                                    warning={errors.cityProvince}
+                                    json={cityJson}
+                                />
+                                <div style={{ display: 'flex', width: '95%', gap: '15px' }}>
+                                    <Select
                                         isVisible={true}
                                         icon={false}
                                         borderRadius={"10px"}
-                                        width={'95%'}
-                                        margin={'0'}
-                                        inputValue={userData.shippingData.zipCode}
-                                        onInputChange={(e) => handleShippingChange(e, 'zipCode')}
-                                        type={"number"}
-                                        warning={errors.zipCode}
+                                        warning={errors.district}
+                                        width={'50%'}
+                                        onInputChange={(e) => handleShippingChange(e, 'district')}
+                                        margin={'15px 0 0 0'}
+                                        selectedValue={userData.shippingData.district}
+                                        disabled={districtStatus}
+                                        type={"district"}
+                                        json={districtJson}
                                     />
-                                    <div style={{ width: '25px' }}></div>
-                                    <Input
-                                        placeholder={"City"}
+                                    <Select
                                         isVisible={true}
                                         icon={false}
                                         borderRadius={"10px"}
-                                        width={'95%'}
-                                        margin={'0'}
-                                        inputValue={userData.shippingData.city}
-                                        onInputChange={(e) => handleShippingChange(e, 'city')}
-                                        warning={errors.city}
-                                    />
-                                    <div style={{ width: '25px' }}></div>
-                                    <Input
-                                        placeholder={"State"}
-                                        isVisible={true}
-                                        icon={false}
-                                        borderRadius={"10px"}
-                                        width={'95%'}
-                                        margin={'0'}
-                                        inputValue={userData.shippingData.state}
-                                        onInputChange={(e) => handleShippingChange(e, 'zipCode')}
-                                        warning={errors.state}
+                                        warning={errors.ward}
+                                        width={'50%'}
+                                        onInputChange={(e) => handleShippingChange(e, 'ward')}
+                                        margin={'15px 0 0 0'}
+                                        selectedValue={userData.shippingData.ward}
+                                        disabled={wardStatus}
+                                        type={"ward"}
+                                        json={wardJson}
                                     />
                                 </div>
                             </>  

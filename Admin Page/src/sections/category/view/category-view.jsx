@@ -99,7 +99,7 @@ export default function CategoryPage() {
                 setModalVisible2(true);
                 setTimeout(() => {
                     setModalVisible2(false);
-                }, 3000);
+                }, 5000);
                 setError(data);
                 window.scrollTo(0, 0);
             }

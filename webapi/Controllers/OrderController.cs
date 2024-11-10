@@ -6,6 +6,7 @@ using AppleApi.Models.Order;
 using AppleApi.Models.Product;
 using webapi.Models.Product;
 using AppleApi.Models.User;
+using MongoDB.Driver;
 
 namespace AppleApi.Controllers;
 
@@ -23,77 +24,39 @@ public class OrderController : ControllerBase
         this.userService = userService;
     }
 
-    [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
+    [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
     [HttpGet("getAllOrders")]
     public async Task<IActionResult> GetAllOrders()
     {
-        List<Order> orders = await orderService.GetAll();
-        return Ok(orders);
+        if (User.IsInRole("Order Processor"))
+        {
+            var filter = Builders<Order>.Filter.Eq(order => order.Status, "Paid");
+            List <Order> orders = await orderService.FindManyAsync(filter);
+            return Ok(orders);
+        }
+        else if (User.IsInRole("Shipper"))
+        {
+            var filter = Builders<Order>.Filter.Eq(order => order.Status, "Processing");
+            List<Order> orders = await orderService.FindManyAsync(filter);
+            return Ok(orders);
+        }
+        else
+        {
+            List<Order> orders = await orderService.GetAll();
+            return Ok(orders);
+        }
     }
 
     [Authorize]
     [HttpGet("getUserOrders")]
     public async Task<IActionResult> GetUserOrders(string userId)
     {
-        List<Order> orders = await orderService.FindManyByFieldAsync("CustomerId", userId);
+        List<Order> orders = (await orderService.FindManyByFieldAsync("CustomerId", userId)).OrderByDescending(order => order.DateCreated).ToList();
         if (orders != null)
         {
             return Ok(orders);
         }
         return NoContent();
-    }
-
-    [Authorize(Roles = "Dispatcher, Shipper")]
-    [HttpGet("getAndroidOrders")]
-    public async Task<IActionResult> GetAndroidOrders(string userId)
-    {
-        User user = await userService.FindByIdAsync(userId);
-        if (user != null)
-        {
-            if (user.Role == "Dispatcher")
-            {
-                List<Order> orders = await orderService.GetDispatcherOrders();
-                if (orders != null)
-                {
-                    return Ok(orders);
-                } else
-                {
-                    return NoContent();
-                }
-            } else
-            {
-                List<Order> orders = await orderService.GetShipperOrders(userId);
-                if (orders != null)
-                {
-                    return Ok(orders);
-                }
-                else
-                {
-                    return NoContent();
-                }
-            }
-        }
-        return NoContent();
-    }
-
-    [Authorize(Roles = "Dispatcher")]
-    [HttpPost("dispatchOrder")]
-    public async Task DispatchOrder([FromBody] DispatchOrder detail)
-    {
-        Order order = await orderService.FindByIdAsync(detail.Id);
-        if (order != null)
-        {
-            ShippingDetail shippingDetail = new()
-            {
-                DispatcherId = detail.DispatcherId,
-                DispatchedToId = detail.DispatchedToId,
-                PickupAddress = detail.PickupAddress,
-                Note = detail.Note,
-                dateCreated = detail.DateCreated
-            };
-            order.ShippingDetails.Add(shippingDetail);
-            await orderService.UpdateOneAsync(detail.Id, order);
-        }
     }
 
     [Authorize(Roles = "Shipper")]

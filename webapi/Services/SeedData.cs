@@ -37,9 +37,6 @@ namespace AppleApi.Services
                             FirstName = "Nhien",
                             LastName = "Nguyen",
                             StreetAddress = "asd",
-                            ZipCode = 123,
-                            City = "asd",
-                            State = "asd",
                             EmailAddress = "nhiennguyen3999@gmail.com",
                             PhoneNumber = "+84967835585"
                         },

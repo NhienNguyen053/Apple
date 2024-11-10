@@ -30,7 +30,7 @@ const AuthRouteProducts = ({ children }) => {
     }, [category, product]);
 
     if (done) {
-        return categories && products ? React.cloneElement(children, { categories, products }) : <Navigate to="/notfound" />;
+        return categories && products ? React.cloneElement(children, { categories, products }) : <Navigate to="/notfound" replace />;
     }
 };
 

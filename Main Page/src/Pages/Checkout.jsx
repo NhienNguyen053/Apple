@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { fCurrency } from '../Components/utils/format-number';
+import Select from '../Components/Select';
 
 const Checkout = () => {
     const jwtToken = Cookies.get('jwtToken');
@@ -21,18 +22,23 @@ const Checkout = () => {
     const [lnError, setLnError] = useState('');
     const [address, setAddress] = useState('');
     const [addressError, setAddressError] = useState('');
-    const [zip, setZip] = useState('');
-    const [zipError, setZipError] = useState(false);
-    const [city, setCity] = useState('');
-    const [cityError, setCityError] = useState(false);
-    const [state, setState] = useState('');
-    const [stateError, setStateError] = useState(false);
+    const [cityProvince, setCityProvince] = useState('');
+    const [cityProvinceError, setCityProvinceError] = useState(false);
+    const [district, setDistrict] = useState('');
+    const [districtError, setDistrictError] = useState(false);
+    const [ward, setWard] = useState('');
+    const [wardError, setWardError] = useState(false);
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState('');
     const [number, setNumber] = useState('');
     const [numberError, setNumberError] = useState('');
     const [loading, setLoading] = useState(false);
     const [region, setRegion] = useState('+84');
+    const [districtStatus, setDistrictStatus] = useState(true);
+    const [wardStatus, setWardStatus] = useState(true);
+    const [cityJson, setCityJson] = useState();
+    const [districtJson, setDistrictJson] = useState();
+    const [wardJson, setWardJson] = useState();
 
     useEffect(() => {
         if (!location.state || !location.state.total) {
@@ -41,26 +47,55 @@ const Checkout = () => {
         }
         const fetchUserShippingData = async () => {
             try {
-                if(decodedToken) {
+                if (decodedToken) {
                     const response = await fetch(`https://localhost:7061/api/Users/getUserById?Id=${decodedToken['Id']}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    data.shippingData.phoneNumber = data.shippingData.phoneNumber.substring(3);
-                    setFn(data.shippingData.firstName);
-                    setLn(data.shippingData.lastName);
-                    setAddress(data.shippingData.streetAddress);
-                    setZip(data.shippingData.zipCode);
-                    setCity(data.shippingData.city);
-                    setState(data.shippingData.state);
-                    setEmail(data.shippingData.emailAddress);
-                    setNumber(data.shippingData.phoneNumber)
-                }
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${jwtToken}`
+                        },
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.shippingData.phoneNumber) {
+                            data.shippingData.phoneNumber = data.shippingData.phoneNumber.substring(3);
+                        }
+                        setFn(data.shippingData.firstName !== null ? data.shippingData.firstName : '');
+                        setLn(data.shippingData.lastName !== null ? data.shippingData.lastName : '');
+                        setAddress(data.shippingData.streetAddress !== null ? data.shippingData.streetAddress : '');
+                        setEmail(data.shippingData.emailAddress !== null ? data.shippingData.emailAddress : '');
+                        setNumber(data.shippingData.phoneNumber !== null ? data.shippingData.phoneNumber : '');
+                        const response2 = await fetch('https://vapi.vnappmob.com/api/province/', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        if (response2.ok) {
+                            const data2 = await response2.json();
+                            setCityJson(data2);
+                            const decodedResults = data2.results.map(province => ({
+                                ...province,
+                                province_name: province.province_name,  
+                                province_type: province.province_type   
+                            }));
+                            const cityData = decodedResults.find(province => province.province_name === data.shippingData.cityProvince);
+                            if (cityData) {
+                                handleCityProvinceChange(cityData.province_id, data.shippingData.district, data.shippingData.ward);
+                            }
+                        }
+                    }
+                } else {
+                    const response2 = await fetch('https://vapi.vnappmob.com/api/province/', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    if (response2.ok) {
+                        const data2 = await response2.json();
+                        setCityJson(data2);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -84,19 +119,42 @@ const Checkout = () => {
         setAddress(e.target.value);
     }
 
-    const handleZipChange = (e) => {
-        setZipError(false);
-        setZip(e.target.value);
+    const handleCityProvinceChange = (e, districtName, wardName) => {
+        if (districtName && wardName) {
+            setCityProvinceError(false);
+            setCityProvince(e);
+            getDistrict(e, districtName, wardName);
+            setDistrictStatus(false);
+        } else {
+            setWardStatus(true);
+            setDistrict('');
+            setWard('');
+            setCityProvinceError(false);
+            setCityProvince(e.target.value);
+            getDistrict(e.target.value, null);
+            setDistrictStatus(false);
+        }
     }
 
-    const handleCityChange = (e) => {
-        setCityError(false);
-        setCity(e.target.value);
+    const handleDistrictChange = (e, wardName) => {
+        if (wardName) {
+            setWard('');
+            setDistrictError(false);
+            setDistrict(e);
+            getWard(e, wardName);
+            setWardStatus(false);
+        }
+        else {
+            setDistrictError(false);
+            setDistrict(e.target.value);
+            getWard(e.target.value);
+            setWardStatus(false);
+        }
     }
 
-    const handleStateChange = (e) => {
-        setStateError(false);
-        setState(e.target.value);
+    const handleWardChange = (e) => {
+        setWardError(false);
+        setWard(e.target.value);
     }
 
     const handleEmailChange = (e) => {
@@ -107,6 +165,50 @@ const Checkout = () => {
     const handleNumberChange = (e) => {
         setNumberError('');
         setNumber(e.target.value);
+    }
+
+    const getDistrict = async(id, districtName, wardName) => {
+        const response = await fetch(`https://vapi.vnappmob.com/api/province/district/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        if (response.ok) {
+            const data = await response.json();
+            setDistrictJson(data);
+            if (districtName) {
+                const decodedResults = data.results.map(district => ({
+                    ...district,
+                    district_name: district.district_name,
+                    district_type: district.district_type
+                }));
+                const districtData = decodedResults.find(district => district.district_name === districtName);
+                handleDistrictChange(districtData.district_id, wardName);
+            }
+        }
+    }
+
+    const getWard = async (id, wardName) => {
+        const response = await fetch(`https://vapi.vnappmob.com/api/province/ward/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        if (response.ok) {
+            const data = await response.json();
+            setWardJson(data);
+            if (wardName) {
+                const decodedResults = data.results.map(ward => ({
+                    ...ward,
+                    ward_name: ward.ward_name,
+                    ward_type: ward.ward_type
+                }));
+                const wardData = decodedResults.find(ward => ward.ward_name === wardName);
+                setWard(wardData.ward_id);
+            }
+        }
     }
 
     const routeChange = async () => {
@@ -126,33 +228,27 @@ const Checkout = () => {
                 count++;
             }
             if (address.trim() === '') {
-                setAddressError('Street address is required!');
+                setAddressError('Address is required!');
             } else {
                 setAddressError('');
                 count++;
             }
-            if (zip.toString().trim() === '') {
-                setZipError(true);
+            if (cityProvince.trim() === '') {
+                setCityProvinceError(true);
             } else {
-                setZipError(false);
+                setCityProvinceError(false);
                 count++;
             }
-            if (city.trim() === '') {
-                setCityError(true);
+            if (district.trim() === '') {
+                setDistrictError(true);
             } else {
-                setCityError(false);
+                setDistrictError(false);
                 count++;
             }
-            if (state.trim() === '') {
-                setStateError(true);
+            if (ward.trim() === '') {
+                setWardError(true);
             } else {
-                setStateError(false);
-                count++;
-            }
-            if (number.trim() === '') {
-                setNumberError('Phone number is required!');
-            } else {
-                setNumberError('');
+                setWardError(false);
                 count++;
             }
             if (number.trim() === '') {
@@ -166,8 +262,12 @@ const Checkout = () => {
                 setEmailError('Please enter a valid email!');
             } else {
                 setEmailError('');
+                count++;
             }
             if (count === 8) {
+                const cityName = cityJson.results.find(record => record.province_id === cityProvince) ? cityJson.results.find(record => record.province_id === cityProvince).province_name : '';
+                const districtName = districtJson.results.find(record => record.district_id === district) ? districtJson.results.find(record => record.district_id === district).district_name : '';
+                const wardName = wardJson.results.find(record => record.ward_id === ward) ? wardJson.results.find(record => record.ward_id === ward).ward_name : '';
                 const checkoutRequest = {
                     UserId: decodedToken ? decodedToken["Id"] : null,
                     Products: decodedToken ? null : existingCart,
@@ -175,9 +275,9 @@ const Checkout = () => {
                         FirstName: fn,       
                         LastName: ln,
                         Address: address,
-                        ZipCode: zip,
-                        City: city,
-                        State: state,
+                        CityProvince: cityName,
+                        District: districtName,
+                        Ward: wardName,
                         Email: email,
                         PhoneNumber: region + number
                     }
@@ -243,7 +343,7 @@ const Checkout = () => {
                         inputValue={ln}
                     />
                     <Input
-                        placeholder={"Street Address"}
+                        placeholder={"Address"}
                         isVisible={true}
                         icon={false}
                         borderRadius={"10px"}
@@ -263,40 +363,44 @@ const Checkout = () => {
                         inputValue={"Việt Nam"}
                         disabled={true}
                     />
-                    <div style={{ display: 'flex', width: '51.6%', gap: '15px' }}>
-                        <Input
-                            placeholder={"Zip Code"}
+                    <Select
+                        isVisible={true}
+                        icon={false}
+                        borderRadius={"10px"}
+                        width={'50%'}
+                        onInputChange={(e) => handleCityProvinceChange(e, null, null)}
+                        margin={'15px 0 0 0'}
+                        selectedValue={cityProvince}
+                        type={"city/province"}
+                        warning={cityProvinceError}
+                        json={cityJson}
+                    />
+                    <div style={{ display: 'flex', width: '50%', gap: '15px' }}>
+                        <Select
                             isVisible={true}
                             icon={false}
                             borderRadius={"10px"}
+                            warning={districtError}
                             width={'50%'}
-                            onInputChange={handleZipChange}
+                            onInputChange={(e) => handleDistrictChange(e, null)}
                             margin={'15px 0 0 0'}
-                            inputValue={zip}
-                            type={"number"}
-                            warning={zipError}
+                            selectedValue={district}
+                            disabled={districtStatus}
+                            type={"district"}
+                            json={districtJson}
                         />
-                        <Input
-                            placeholder={"City"}
+                        <Select
                             isVisible={true}
                             icon={false}
                             borderRadius={"10px"}
-                            warning={cityError}
+                            warning={wardError}
                             width={'50%'}
-                            onInputChange={handleCityChange}
+                            onInputChange={(e) => handleWardChange(e, false)}
                             margin={'15px 0 0 0'}
-                            inputValue={city}
-                        />
-                        <Input
-                            placeholder={"State"}
-                            isVisible={true}
-                            icon={false}
-                            borderRadius={"10px"}
-                            warning={stateError}
-                            width={'50%'}
-                            onInputChange={handleStateChange}
-                            margin={'15px 0 0 0'}
-                            inputValue={state}
+                            selectedValue={ward}
+                            disabled={wardStatus}
+                            type={"ward"}
+                            json={wardJson}
                         />
                     </div>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '26px', margin: '15px 0' }}>What's your contact information?</p>

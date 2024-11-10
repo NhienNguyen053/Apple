@@ -47,6 +47,17 @@ const Order = () => {
                     const storagePrice = storagePrices[detail.storage] || 0;
                     detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
                 });
+                const date = new Date(data.dateCreated);
+                const vietnamTime = date.toLocaleString("en-GB", {
+                    timeZone: "Asia/Ho_Chi_Minh",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                });
+                data.dateCreated = vietnamTime;
                 setOrderDetails(data);
                 setActive(data.status);
             }

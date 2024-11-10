@@ -122,7 +122,7 @@ export default function EditUser() {
             setOpen(true);
             setTimeout(() => {
                 setOpen(false);
-            }, 3000);
+            }, 5000);
         } else {
             setLoading(false);
         }

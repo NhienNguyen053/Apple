@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 
-const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margin, customOptions, categoryId, disabled, selectedCategory, selectedSubCategory }) => {
+const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margin, customOptions, categoryId, disabled, selectedCategory, selectedSubCategory, json, warning }) => {
     const renderOptions = () => {
         switch (type) {
             case 'countries':
@@ -88,6 +88,54 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                         ))}
                     </>
                 );
+            case 'city/province':
+                if (!json) {
+                    return <option hidden>Tỉnh/Thành Phố</option>;
+                }
+                else {
+                    return (
+                        <>
+                            <option hidden>Tỉnh/Thành Phố</option>
+                            {json.results.map((province) => (
+                                <option key={province.province_id} value={province.province_id} selected={province.province_id === selectedValue}>
+                                    {province.province_name}
+                                </option>
+                            ))}
+                        </>
+                    );
+                }
+            case 'district':
+                if (!json) {
+                    return <option hidden>Quận/Huyện</option>;
+                }
+                else {
+                    return (
+                        <>
+                            <option hidden>Quận/Huyện</option>
+                            {json.results.map((district) => (
+                                <option key={district.district_id} value={district.district_id} selected={district.district_id === selectedValue}>
+                                    {district.district_name}
+                                </option>
+                            ))}
+                        </>
+                    );
+                }
+            case 'ward':
+                if (!json) {
+                    return <option hidden>Phường</option>;
+                }
+                else {
+                    return (
+                        <>
+                            <option hidden>Phường</option>
+                            {json.results.map((ward) => (
+                                <option key={ward.ward_id} value={ward.ward_id} selected={ward.ward_id === selectedValue}>
+                                    {ward.ward_name}
+                                </option>
+                            ))}
+                        </>
+                    );
+                }
             default:
                 return null;
         }
@@ -98,7 +146,11 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
             <div className="input-container" style={{ width: width, margin: margin }}>
                 <select
                     className="input"
-                    style={{ paddingTop: '0', borderRadius: borderRadius }}
+                    style={{
+                        paddingTop: '0',
+                        borderRadius: borderRadius,
+                        border: warning === false || warning == null ? '0.5px solid gray' : '0.5px solid red'
+                    }}
                     onChange={onInputChange}
                     value={selectedValue}
                     disabled={disabled}

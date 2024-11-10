@@ -446,7 +446,7 @@ export default function EditProduct() {
             setOpen(true);
             setTimeout(() => {
                 setOpen(false);
-            }, 3000);
+            }, 5000);
         }
         else { }
         setLoading(false);
@@ -563,7 +563,7 @@ export default function EditProduct() {
             setOpen2(true);
             setTimeout(() => {
                 setOpen2(false);
-            }, 3000);
+            }, 5000);
             window.scrollTo(0, 0);
         }, 2000);
     };
@@ -603,7 +603,7 @@ export default function EditProduct() {
             setTimeout(() => {
                 setOpen2(false);
                 setDeleted(false);
-            }, 3000);
+            }, 5000);
             window.scrollTo(0, 0);
         }).catch((error) => {
             console.error(error);
@@ -671,7 +671,7 @@ export default function EditProduct() {
                     <div style={{ width: 'fit-content', height: '80%' }}>
                         <div style={{ paddingBottom: '25px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }} className="formInputs3">
                             <div style={{ width: '47%' }}>
-                                <Select2 type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} selectedCategory={categoryId} disabled={role === 'Admin' ? false : true} />
+                                <Select2 type={'category'} customOptions={categories} margin={'0'} width={'100%'} borderRadius={'5px'} onInputChange={handleCategoryId} selectedCategory={categoryId} disabled={role === 'Product Manager' ? false : true} />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: categoryError === false ? 'none' : 'block' }}>Please select a category</p>
                             </div>
                             <div style={{ width: '47%' }}>
@@ -690,7 +690,7 @@ export default function EditProduct() {
                                     inputValue={productName}
                                     error={productNameError}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -705,7 +705,7 @@ export default function EditProduct() {
                                     inputValue={productPrice}
                                     error={productPriceError}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                                 <p style={{ margin: '3px 0 0 0', color: 'red', display: productPriceError === false ? 'none' : 'block', fontSize: '15px' }}>Product price must be a number with up to two decimals</p>
                             </div>
@@ -717,7 +717,7 @@ export default function EditProduct() {
                                     multiple
                                     sx={{ width: '100%', height: '56px' }}
                                     value={personName}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                     onChange={handleChange2}
                                     input={<OutlinedInput id="select-multiple-chip" label="Colors" />}
                                     renderValue={(selected) => (
@@ -762,7 +762,7 @@ export default function EditProduct() {
                                     onInputChange={handleDisplay}
                                     inputValue={display}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -775,7 +775,7 @@ export default function EditProduct() {
                                     onInputChange={handleMaterial}
                                     inputValue={material}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -789,7 +789,7 @@ export default function EditProduct() {
                                     onInputChange={handleChip}
                                     inputValue={chip}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -803,7 +803,7 @@ export default function EditProduct() {
                                     onInputChange={handleCamera}
                                     inputValue={camera}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -817,7 +817,7 @@ export default function EditProduct() {
                                     onInputChange={handleFunctionality}
                                     inputValue={functionality}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -831,7 +831,7 @@ export default function EditProduct() {
                                     onInputChange={handleSizeAndWeight}
                                     inputValue={sizeAndWeight}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -845,7 +845,7 @@ export default function EditProduct() {
                                     inputValue={powerAndBattery}
                                     onInputChange={handlePowerAndBattery}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <div style={{ width: '47%' }}>
@@ -859,7 +859,7 @@ export default function EditProduct() {
                                     onInputChange={handleConnector}
                                     inputValue={connector}
                                     errorMargin={'3px 0 0 0'}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                 />
                             </div>
                             <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Options:</p>
@@ -869,7 +869,7 @@ export default function EditProduct() {
                                     labelId="demo-multiple-chip-label"
                                     id="demo-multiple-chip"
                                     multiple
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                     sx={{ width: '100%', height: '56px' }}
                                     value={productMemory}
                                     onChange={handleChange3}
@@ -903,7 +903,7 @@ export default function EditProduct() {
                                     sx={{ width: '100%', height: '56px' }}
                                     value={productStorage}
                                     onChange={handleChange4}
-                                    disabled={role === 'Admin' ? false : true}
+                                    disabled={role === 'Product Manager' ? false : true}
                                     input={<OutlinedInput id="select-multiple-chip" label="Colors" />}
                                     renderValue={(selected) => (
                                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -926,7 +926,7 @@ export default function EditProduct() {
                                 </Select>
                             </FormControl>
                             <p style={{ width: '100%', color: 'black', margin: '16px 0 5px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Product Status</p>
-                            <Select2 selectedValue={productStatus} type={"status"} width={'47%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} disabled={role === 'Admin' ? false : true} />
+                            <Select2 selectedValue={productStatus} type={"status"} width={'47%'} borderRadius={'5px'} margin={'0'} onInputChange={handleProductStatus} disabled={role === 'Product Manager' ? false : true} />
                             <div style={{ width: '100%' }}></div>
                             <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content' }}>
                                 <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
@@ -952,7 +952,7 @@ export default function EditProduct() {
                             {deleted == false ? 'Uploaded images successfully!' : 'Deleted image successfully!'}
                         </Alert>
                     </Collapse>
-                    <div style={{display: role === 'Admin' ? 'block' : 'none' }}>
+                    <div style={{display: role === 'Product Manager' ? 'block' : 'none' }}>
                         <p style={{ width: '100%', color: 'black', margin: '16px 0 10px 0', fontFamily: 'SF-Pro-Display-Regular' }}>Add product images:</p>
                         <button style={{ fontSize: '14px', padding: '4px 8px', cursor: 'pointer' }} onClick={handleButtonClick}>Choose Files</button> <span style={{ color: 'black' }}>or paste your images here!</span>
                         <Input
@@ -999,7 +999,7 @@ export default function EditProduct() {
                         </Select>
                     </FormControl>
                 </div>
-                <div style={{ display: role === 'Admin' ? 'flex' : 'none' , height: 'fit-content', width: 'fit-content' }}>
+                <div style={{ display: role === 'Product Manager' ? 'flex' : 'none' , height: 'fit-content', width: 'fit-content' }}>
                     <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
                     <div style={{ width: '15px' }}></div>
                     {loading ? (

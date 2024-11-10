@@ -23,17 +23,6 @@ namespace AppleApi.Services
         {
         }
 
-        public async Task<List<Order>> GetDispatcherOrders()
-        {
-            var filter = Builders<Order>.Filter.Or(
-                Builders<Order>.Filter.Eq(order => order.Status, "Processing"),
-                Builders<Order>.Filter.Eq(order => order.Status, "Shipping"),
-                Builders<Order>.Filter.Eq(order => order.Status, "Delivered")
-            );
-            var orders = await FindManyAsync(filter);
-            return orders;
-        }
-
         public async Task<List<Order>> GetShipperOrders(string userId)
         {
             var filter = Builders<Order>.Filter.ElemMatch(order => order.ShippingDetails, Builders<ShippingDetail>.Filter.Eq(detail => detail.DispatchedToId, userId));

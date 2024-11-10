@@ -23,6 +23,8 @@ export default function OrderTableRow({
 }) {
     const [open, setOpen] = useState(null);
     const [color, setColor] = useState('default');
+    const [formattedDate, setFormattedDate] = useState('');
+
     useEffect(() => {
         switch (status) {
             case 'Canceled':
@@ -44,7 +46,19 @@ export default function OrderTableRow({
                 setColor('default');
                 break;
         }
-    }, [status]);
+
+        const date = new Date(dateCreated);
+        const vietnamTime = date.toLocaleString("en-GB", {
+            timeZone: "Asia/Ho_Chi_Minh",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+        setFormattedDate(vietnamTime);
+    }, [status, dateCreated]);
 
     const handleOpenMenu = (event) => {
         setOpen(event.currentTarget);
@@ -58,18 +72,16 @@ export default function OrderTableRow({
         <>
             <TableRow hover tabIndex={-1} role="checkbox">
                 <TableCell>{id}</TableCell>
-                <TableCell>{dateCreated}</TableCell>
+                <TableCell>{formattedDate}</TableCell>
                 <TableCell>
                     {items.map((item, index) => (
-                        <>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: index !== items.length - 1 ? '10px' : '0' }}>
-                                <p style={{ color: 'black', width: '70%' }}>{item.productName}</p>
-                                <div style={{ width: '25%', display: 'flex', justifyContent: 'center' }}>
-                                    <img src={item.image} style={{ width: '50px', height: '50px' }}/>
-                                </div>
-                                <p style={{ color: 'black', width: '5%' }}>({item.quantity})</p>
+                        <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: index !== items.length - 1 ? '10px' : '0' }}>
+                            <p style={{ color: 'black', width: '70%' }}>{item.productName}</p>
+                            <div style={{ width: '25%', display: 'flex', justifyContent: 'center' }}>
+                                <img src={item.image} style={{ width: '50px', height: '50px' }} alt={item.productName} />
                             </div>
-                        </>
+                            <p style={{ color: 'black', width: '5%' }}>({item.quantity})</p>
+                        </div>
                     ))}
                 </TableCell>
                 <TableCell>{fCurrency(total)}</TableCell>
@@ -97,7 +109,7 @@ export default function OrderTableRow({
             >
                 <MenuItem onClick={edit}>
                     <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-                    Edit
+                    View
                 </MenuItem>
                 <MenuItem onClick={() => { cancel(); handleCloseMenu(); }} sx={{ color: 'red', display: cancel === null ? 'none' : 'flex' }}>
                     <Iconify icon="eva:trash-2-outline" sx={{ mr: 2, color: 'red' }} />
@@ -115,4 +127,6 @@ OrderTableRow.propTypes = {
     total: PropTypes.any,
     status: PropTypes.any,
     edit: PropTypes.func,
+    cancel: PropTypes.func,
+    userRole: PropTypes.string
 };

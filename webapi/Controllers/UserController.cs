@@ -66,7 +66,6 @@ namespace AppleApi.Controllers
             return Ok(dashboardUserList);
         }
 
-        [Authorize(Roles = "User Manager")]
         [HttpGet("getUserById")]
         public async Task<IActionResult> GetUserById(string id)
         {
@@ -233,7 +232,7 @@ namespace AppleApi.Controllers
             {
                 user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
             }
-            if (user == null || user.Role == "Customer" || user.Role == "Dispatcher" || user.Role == "Shipper")
+            if (user == null || user.Role == "Customer" || user.Role == "Shipper")
             {
                 return NoContent();
             }
@@ -276,23 +275,6 @@ namespace AppleApi.Controllers
             }
             var token = CreateToken(user);
             return Ok(token);
-        }
-
-        [Authorize(Roles = "Dispatcher")]
-        [HttpGet("getDriver")]
-        public async Task<IActionResult> GetDriver()
-        {
-            User user = await userService.FindByFieldAsync("Role", "Shipper");
-            if (user != null)
-            {
-                Driver driver = new()
-                {
-                    id = user.Id,
-                    name = user.FirstName + " " + user.LastName
-                };
-                return Ok(driver);
-            }
-            return NoContent();
         }
 
         [Authorize]

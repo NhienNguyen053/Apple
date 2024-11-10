@@ -36,45 +36,45 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
           }
           const jwtToken = Cookies.get('jwtToken');
           const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-          const existingCart = removeCart === true ? [] : JSON.parse(localStorage.getItem('cart')) || [];
-          const delayTime = delay ? 1000 : 0;
+          const delayTime = delay ? 3000 : 0;
           let count = 0;
-          if (decodedToken == null) {
-              if (existingCart.length > 0) {
-                  const response = await fetch('https://localhost:7061/api/ShoppingCart/get-cart-anonymous', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(existingCart),
-                  })
-                  if (response.ok) {
-                      const data = await response.json();
-                      setCartItems(data);
-                      var cart = [];
-                      data.forEach(item => {
-                          const cartItem = {
-                              productId: item.id,
-                              color: item.color,
-                              memory: item.memory,
-                              storage: item.storage,
-                              quantity: item.quantity
-                          }
-                          cart.push(cartItem);
-                          count = count + item.quantity;
-                      });
-                      localStorage.setItem('cart', JSON.stringify(cart));
-                      setCartCount(count);
+          setTimeout(async () => {
+              if (decodedToken == null) {
+                  const existingCart = removeCart === true ? [] : JSON.parse(localStorage.getItem('cart')) || [];
+                  if (existingCart.length > 0) {
+                      const response = await fetch('https://localhost:7061/api/ShoppingCart/get-cart-anonymous', {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify(existingCart),
+                      })
+                      if (response.ok) {
+                          const data = await response.json();
+                          setCartItems(data);
+                          var cart = [];
+                          data.forEach(item => {
+                              const cartItem = {
+                                  productId: item.id,
+                                  color: item.color,
+                                  memory: item.memory,
+                                  storage: item.storage,
+                                  quantity: item.quantity
+                              }
+                              cart.push(cartItem);
+                              count = count + item.quantity;
+                          });
+                          localStorage.setItem('cart', JSON.stringify(cart));
+                          setCartCount(count);
+                      } else {
+                          setCartItems([]);
+                          setCartCount(0);
+                      }
                   } else {
-                      setCartItems([]);
                       setCartCount(0);
+                      setCartItems([]);
                   }
               } else {
-                  setCartCount(0);
-                  setCartItems([]);
-              }
-          } else {
-              setTimeout(async () => {
                   const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
                       method: 'GET',
                       headers: {
@@ -93,8 +93,8 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
                       setCartItems([]);
                       setCartCount(0);
                   }
-              }, delayTime);
-          }
+              }
+          })
       } catch (error) {
           console.error('Failed to fetch cart count:', error);
       }

@@ -64,7 +64,7 @@ const Category = ({ categories }) => {
                         <div style={{ cursor: 'pointer' }} onClick={() => routeChange2(product.subCategoryId, product.productName)} >
                             {product.productImages.length > 0 ? (
                                 <div style={{ width: '90%', height: '288px', display: 'flex' }}>
-                                    <img src={product.productImages[0].imageURLs[0]} alt={product.productName} style={{ maxWidth: '90%', height: 'auto', objectFit: 'cover' }} />
+                                    <img src={product.productImages[0].imageURLs[0]} alt={product.productName} style={{ maxWidth: '90%', height: 'auto', objectFit: 'cover', maxHeight: '280px' }} />
                                 </div>
                             ) : (
                                 <div style={{ width: '100%', height: '288px' }}></div>
@@ -109,18 +109,18 @@ const Category = ({ categories }) => {
                     {categories.childCategories.map((child) => (
                         <div key={child.categoryName} onClick={() => routeChange(child.categoryName)} style={{ width: '76px', margin: '0 20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'center', width: '60%', height: '80%', margin: 'auto' }}>
-                                <img src={child.iconURL} alt={child.categoryName} style={{ width: '100%' }} />
+                                <img src={child.iconURL} alt={child.categoryName} style={{ width: child.categoryName === 'iPad Mini' ? '80%' : '100%' }} />
                             </div>
                             <p style={{ color: 'black', margin: '5px 0 0 0', fontSize: '13px', textAlign: 'center' }}>{child.categoryName}</p>
                         </div>
                     ))}
                 </div>
             ) : null}
-            <div style={{ width: '100%', height: '30px', background: '#f5f5f7', marginTop: '20px' }}></div>
-            <div style={{ width: '85%', margin: 'auto', position: 'relative' }}>
+            <div style={{ width: '100%', height: '30px', background: '#f5f5f7', marginTop: '15px' }}></div>
+            <div style={{ width: categories && categories.categoryName === 'iPhone 16' || categories.categoryName === 'MacBook Pro' || categories.categoryName === 'iPad Pro' || categories.categoryName === 'AirPods Pro' ? '100%' : '85%', margin: 'auto', position: 'relative' }}>
                 <p style={{ fontSize: '70px', color: 'black', fontFamily: 'SF-Pro-Display-Bold', display: categories && categories.childCategories ? 'block' : 'none' }}>{categories && categories.categoryName}</p>
-                {categories && categories.videoURL ? <Video url={categories.videoURL} /> : null}
-                {categories && categories.imageURL ? <img src={categories.imageURL} alt={categories.categoryName} style={{ marginTop: '75px', width: '100%' }} /> : null}
+                {categories && categories.videoURL ? <Video url={categories.videoURL} key={categories.videoURL} /> : null}
+                {categories && categories.imageURL ? <img src={categories.imageURL} alt={categories.categoryName} style={{ marginTop: categories && categories.categoryName === 'iPhone 16' || categories.categoryName === 'MacBook Pro' || categories.categoryName === 'iPad Pro' || categories.categoryName === 'AirPods Pro' ? '0' : '75px', width: '100%', borderRadius: categories && categories.categoryName === 'iPhone 16' || categories.categoryName === 'MacBook Pro' || categories.categoryName === 'iPad Pro' || categories.categoryName === 'AirPods Pro' ? '0' : '25px' }} /> : null}
             </div>
             <div style={{ width: '100%', background: 'white', paddingTop: '50px', minHeight: '500px' }}>
                 <p style={{ fontSize: '50px', color: 'black', fontFamily: 'SF-Pro-Display-Regular', width: '85%', margin: '0 auto 50px auto' }}>Explore</p>

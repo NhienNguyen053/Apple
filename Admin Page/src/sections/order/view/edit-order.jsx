@@ -61,35 +61,6 @@ export default function EditOrder() {
         setOrder(data);
     }
 
-    const updateOrder = (section, fieldOrValue, value = null) => {
-        if (value === null) {
-            setOrder((prevOrder) => ({
-                ...prevOrder,
-                [section]: fieldOrValue
-            }));
-        } else {
-            setOrder((prevOrder) => ({
-                ...prevOrder,
-                [section]: {
-                    ...prevOrder[section],
-                    [fieldOrValue]: value
-                }
-            }));
-            if (fieldOrValue === "firstName" || fieldOrValue === "lastName") {
-                setError((prevError) => ({
-                    ...prevError,
-                    [fieldOrValue]: ''
-                }));
-            }
-            else {
-                setError((prevError) => ({
-                    ...prevError,
-                    [fieldOrValue]: false
-                }));
-            }
-        }
-    };
-
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     }
@@ -177,7 +148,7 @@ export default function EditOrder() {
             setOpen(true);
             setTimeout(() => {
                 setOpen(false);
-            }, 3000);
+            }, 5000);
         } else {
             setModalVisible(!isModalVisible);
             setLoading(false);
@@ -191,7 +162,7 @@ export default function EditOrder() {
 
     return (
         <>
-            <Typography variant="h4" style={{ marginLeft: '3%' }}>Edit Order</Typography>
+            <Typography variant="h4" style={{ marginLeft: '3%' }}>Order Details</Typography>
             <div className='container7 display'>
                 <Collapse in={open} sx={{ width: '100%' }}>
                     <Alert sx={{ mb: 2 }}>
@@ -212,8 +183,7 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.firstName}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'firstName', e.target.value)}
-                                        error={error.firstName}
+                                        disabled={true}
                                     />
                                 </div>
                             </div>
@@ -227,9 +197,8 @@ export default function EditOrder() {
                                         borderRadius={"5px"}
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
+                                        disabled={true}
                                         inputValue={order.customerDetails.lastName}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'lastName', e.target.value)}
-                                        error={error.lastName}
                                     />
                                 </div>
                             </div>
@@ -245,8 +214,7 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.address}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'address', e.target.value)}
-                                        warning={error.address}
+                                        disabled={true}
                                     />
                                 </div>
                             </div>
@@ -261,9 +229,8 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.zipCode}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'zipCode', e.target.value)}
                                         type={'number'}
-                                        warning={error.zipCode}
+                                        disabled={true}
                                     />
                                 </div>
                             </div>
@@ -278,8 +245,7 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.city}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'city', e.target.value)}
-                                        warning={error.city}
+                                        disabled={true}
                                     />
                                 </div>
                             </div>
@@ -294,8 +260,7 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.state}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'state', e.target.value)}
-                                        warning={error.state}
+                                        disabled={true}
                                     />
                                 </div>
                             </div>
@@ -311,7 +276,6 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.email}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'email', e.target.value)}
                                         disabled={true}
                                     />
                                 </div>
@@ -327,7 +291,6 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         inputValue={order.customerDetails.phoneNumber}
-                                        onInputChange={(e) => updateOrder('customerDetails', 'phoneNumber', e.target.value)}
                                         disabled={true}
                                     />
                                 </div>
@@ -417,7 +380,7 @@ export default function EditOrder() {
                                 </div>
                             ) : (
                                 order.status === "Paid" ? (
-                                    <Button text={"Continue to processing"} onclick={toggleModal} background="black" textColor="white" />
+                                    <Button text={"Processing"} onclick={toggleModal} background="black" textColor="white" />
                                 ) : null
                             )}
                         </div>

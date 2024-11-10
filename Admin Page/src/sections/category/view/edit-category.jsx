@@ -162,7 +162,7 @@ export default function EditCategory() {
                 setOpen(true);
                 setTimeout(() => {
                     setOpen(false);
-                }, 3000);
+                }, 5000);
                 window.scrollTo(0, 0);
             }, 2000);
         } else {

@@ -101,19 +101,22 @@ namespace AppleApi.Services
 
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
+                // Adjust category name regex to handle spaces and hyphens
                 var escapedName = Regex.Escape(categoryName);
-                var normalizedPattern = escapedName.Replace("-", "\\s");
+                var normalizedPattern = escapedName.Replace("-", "(\\s|-)");
                 var regexPattern = $"^{normalizedPattern}$";
                 var regex = new BsonRegularExpression(regexPattern, "i");
                 categoryFilter = Builders<Category>.Filter.Regex(x => x.CategoryName, regex);
             }
+
             category = await categoryService.FindAsync(categoryFilter);
             if (category != null)
             {
                 if (!string.IsNullOrWhiteSpace(productName))
                 {
+                    // Adjust product name regex to handle spaces and hyphens
                     var escapedName = Regex.Escape(productName);
-                    var normalizedPattern = escapedName.Replace("-", "\\s");
+                    var normalizedPattern = escapedName.Replace("-", "(\\s|-)");
                     var regexPattern = $"^{normalizedPattern}$";
                     var regex = new BsonRegularExpression(regexPattern, "i");
                     productFilter = Builders<Product>.Filter.Regex(x => x.ProductName, regex);
@@ -121,8 +124,10 @@ namespace AppleApi.Services
                     productFilter = productFilter & Builders<Product>.Filter.Eq(p => p.ProductStatus, "Active");
                 }
             }
+
             return await FindAsync(productFilter);
         }
+
 
         public async Task<(List<Product>, long)> FindProductsByFilter(string categoryId, string subcategoryId, string price, string status, string name, int pageIndex, int pageSize)
         {

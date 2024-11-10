@@ -35,7 +35,7 @@ function App() {
                         <Route path="/login" element={ <Login /> } />
                         <Route path="/notfound" element={ <NotFound /> }/>
                         <Route path="/resetpassword" element={ <ResetPassword /> } />
-                        <Route path="*" element={<NotFound />} />
+                        <Route path="*" element={<Navigate to="/notfound" replace />} />
                         <Route
                             path="/dashboard/"
                             element={
