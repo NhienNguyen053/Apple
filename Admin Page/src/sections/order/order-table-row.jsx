@@ -90,7 +90,7 @@ export default function OrderTableRow({
                         {status}
                     </Label>
                 </TableCell>
-                <TableCell align="right" sx={{ display: userRole === 'Order Processor' ? 'table-cell' : 'none' }}>
+                <TableCell align="right" sx={{ display: userRole === 'Order Processor' || userRole === 'Shipper' ? 'table-cell' : 'none' }}>
                     <IconButton onClick={handleOpenMenu}>
                         <Iconify icon="eva:more-vertical-fill" />
                     </IconButton>

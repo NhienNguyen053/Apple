@@ -94,7 +94,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
                       setCartCount(0);
                   }
               }
-          })
+          }, [delayTime])
       } catch (error) {
           console.error('Failed to fetch cart count:', error);
       }

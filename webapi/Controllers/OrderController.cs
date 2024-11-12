@@ -60,24 +60,22 @@ public class OrderController : ControllerBase
     }
 
     [Authorize(Roles = "Shipper")]
-    [HttpPost("shippingOrder")]
-    public async Task ShippingOrder([FromBody] ShippingOrder detail)
+    [HttpGet("getShipperOrders")]
+    public async Task<IActionResult> ShippingOrder(string id)
     {
-        Order order = await orderService.FindByIdAsync(detail.Id);
-        if (order != null)
+        var filter = Builders<Order>.Filter.Or(
+            Builders<Order>.Filter.Eq(order => order.Status, "Processing"),
+            Builders<Order>.Filter.And(
+                Builders<Order>.Filter.Eq(order => order.Status, "Shipping"),
+                Builders<Order>.Filter.ElemMatch(order => order.ShippingDetails, detail => detail.createdBy == id)
+            )
+        );
+        List<Order> orders = await orderService.FindManyAsync(filter);
+        if (orders != null)
         {
-            ShippingDetail shippingDetail = new()
-            {
-                DispatcherId = detail.DispatcherId,
-                DispatchedToId = detail.DispatchedToId,
-                PickupAddress = detail.PickupAddress,
-                Note = detail.Note,
-                dateCreated = detail.DateCreated
-            };
-            order.ShippingDetails.Add(shippingDetail);
-            order.Status = detail.Status;
-            await orderService.UpdateOneAsync(detail.Id, order);
+            return Ok(orders);
         }
+        return NoContent();
     }
 
     [HttpPost("confirmOrder")]
@@ -132,7 +130,7 @@ public class OrderController : ControllerBase
         return BadRequest();
     }
 
-    [Authorize(Roles = "Order Processor")]
+    [Authorize(Roles = "Order Processor, Shipper")]
     [HttpPost("updateOrder")]
     public async Task UpdateOrder([FromBody] Order newOrder)
     {

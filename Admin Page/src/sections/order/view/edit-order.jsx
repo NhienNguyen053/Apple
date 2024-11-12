@@ -18,12 +18,14 @@ export default function EditOrder() {
     const id = location.state?.id;
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState();
-    const [error, setError] = useState({ firstName: '', lastName: '', address: false, zipCode: false, city: false, state: false })
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [isModalVisible, setModalVisible] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+    const [formattedDate, setFormattedDate] = useState('');
+    const [buttonComponent, setButtonComponent] = useState(null);
+    const [text, setText] = useState();
     const memoryPrices = {
         '4GB': 1242250,
         '8GB': 2484500,
@@ -45,6 +47,30 @@ export default function EditOrder() {
         getOrder();
     }, []);
 
+    useEffect(() => {
+        let component;
+        if (order && order.status === "Paid") {
+            component = <Button text={"Processing"} onclick={() => toggleModal2('Processing')} background="black" textColor="white" />;
+        } else if (order && order.status === "Processing") {
+            if (decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === "Shipper") {
+                component = <Button text={"Deliver"} onclick={() => toggleModal2('Deliver')} background="black" textColor="white" />;
+            } else {
+                component = null;
+            }
+        } else if (order && order.status === "Shipping" && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === "Shipper") {
+            component = (
+                <>
+                    <Button text={"Shipping"} onclick={() => toggleModal2('Shipping')} background="black" textColor="white" />
+                    <div style={{ width: '10px' }}></div>
+                    <Button text={"Delivered"} onclick={() => toggleModal2('Delivered')} background="black" textColor="white" />
+                </>
+            );
+        } else {
+            component = null;
+        }
+        setButtonComponent(component);
+    }, [order, decodedToken]);
+
     const getOrder = async () => {
         const response = await fetch(`https://localhost:7061/api/Order/getOrderDetails?id=${id}`, {
             method: 'GET',
@@ -58,6 +84,17 @@ export default function EditOrder() {
             const storagePrice = storagePrices[detail.storage] || 0;
             detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
         });
+        const date = new Date(data.dateCreated);
+        const vietnamTime = date.toLocaleString("en-GB", {
+            timeZone: "Asia/Ho_Chi_Minh",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+        setFormattedDate(vietnamTime);
         setOrder(data);
     }
 
@@ -65,97 +102,46 @@ export default function EditOrder() {
         setModalVisible(!isModalVisible);
     }
 
-    const handleUpdate = async (detail, address) => {
-        setLoading(true);
-        var count = 0;
-        if (order.customerDetails.firstName.trim() === '') {
-            setError((prevError) => ({
-                ...prevError,
-                firstName: 'Enter a first name'
-            }));
-        } else {
-            count++;
-        }
-        if (order.customerDetails.lastName.trim() === '') {
-            setError((prevError) => ({
-                ...prevError,
-                lastName: 'Enter a last name'
-            }));
-        } else {
-            count++;
-        }
-        if (order.customerDetails.address.trim() === '') {
-            setError((prevError) => ({
-                ...prevError,
-                address: true
-            }));
-        } else {
-            count++;
-        }
-        if (order.customerDetails.zipCode === null || order.customerDetails.zipCode === undefined || order.customerDetails.zipCode <= 0) {
-            setError((prevError) => ({
-                ...prevError,
-                zipCode: true
-            }));
-        } else {
-            count++;
-        }
-        if (order.customerDetails.city.trim() === '') {
-            setError((prevError) => ({
-                ...prevError,
-                city: true
-            }));
-        } else {
-            count++;
-        }
-        if (order.customerDetails.state.trim() === '') {
-            setError((prevError) => ({
-                ...prevError,
-                state: true
-            }));
-        } else {
-            count++;
-        }
-        if (count === 6) {
-            const newShippingDetail = {
-                note: detail,
-                dateCreated: new Date().toISOString(),
-                pickupAddress: address,
-                dispatcherId: decodedToken["Id"]
-            };
-            const updatedShippingDetails = [...order.shippingDetails, newShippingDetail];
-            setOrder(prevOrder => ({
-                ...prevOrder,
-                shippingDetails: updatedShippingDetails,
-                status: "Processing"
-            }));
-            setModalVisible(!isModalVisible);
-            await fetch('https://localhost:7061/api/Order/updateOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwtToken}`
-                },
-                body: JSON.stringify({
-                    OrderId: order.orderId,
-                    CustomerDetails: order.customerDetails,
-                    ShippingDetails: updatedShippingDetails,
-                    ProductDetails: order.productDetails,
-                    Status: "Processing"
-                }),
-            });
-            setLoading(false);
-            setOpen(true);
-            setTimeout(() => {
-                setOpen(false);
-            }, 5000);
-        } else {
-            setModalVisible(!isModalVisible);
-            setLoading(false);
-        }
-        window.scrollTo(0, 0);
+    const toggleModal2 = (text) => {
+        setText(text);
+        setModalVisible(!isModalVisible);
     }
 
+    const handleUpdate = async (detail) => {
+        setLoading(true);
+        const newShippingDetail = {
+            note: detail,
+            dateCreated: new Date().toISOString(),
+            createdBy: decodedToken["Id"]
+        };
+        const updatedShippingDetails = [...order.shippingDetails, newShippingDetail];
+        setOrder(prevOrder => ({
+            ...prevOrder,
+            shippingDetails: updatedShippingDetails,
+            status: text === 'Deliver' ? 'Shipping' : text
+        }));
+        await fetch('https://localhost:7061/api/Order/updateOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({
+                OrderId: order.orderId,
+                CustomerDetails: order.customerDetails,
+                ShippingDetails: updatedShippingDetails,
+                ProductDetails: order.productDetails,
+                Status: text === 'Deliver' ? 'Shipping' : text
+            }),
+        });
+        setModalVisible(!isModalVisible);
+        setLoading(false);
+        setOpen(true);
+        setTimeout(() => {
+            setOpen(false);
+        }, 5000);
+        window.scrollTo(0, 0);
+    }
     const back = () => {
         navigate('/dashboard/orders');
     }
@@ -222,14 +208,13 @@ export default function EditOrder() {
                             <div style={{ width: '23%' }} className="formInputs2">
                                 <div>
                                     <Input
-                                        placeholder={"Zip"}
+                                        placeholder={"City/Province"}
                                         isVisible={true}
                                         icon={false}
                                         borderRadius={"5px"}
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
-                                        inputValue={order.customerDetails.zipCode}
-                                        type={'number'}
+                                        inputValue={order.customerDetails.cityProvince}
                                         disabled={true}
                                     />
                                 </div>
@@ -238,13 +223,13 @@ export default function EditOrder() {
                             <div style={{ width: '23%' }} className="formInputs2">
                                 <div>
                                     <Input
-                                        placeholder={"City"}
+                                        placeholder={"District"}
                                         isVisible={true}
                                         icon={false}
                                         borderRadius={"5px"}
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
-                                        inputValue={order.customerDetails.city}
+                                        inputValue={order.customerDetails.district}
                                         disabled={true}
                                     />
                                 </div>
@@ -253,13 +238,13 @@ export default function EditOrder() {
                             <div style={{ width: '23%' }} className="formInputs2">
                                 <div>
                                     <Input
-                                        placeholder={"State"}
+                                        placeholder={"Ward"}
                                         isVisible={true}
                                         icon={false}
                                         borderRadius={"5px"}
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
-                                        inputValue={order.customerDetails.state}
+                                        inputValue={order.customerDetails.ward}
                                         disabled={true}
                                     />
                                 </div>
@@ -336,7 +321,7 @@ export default function EditOrder() {
                                         width={'100%'}
                                         margin={'0 auto 0 auto'}
                                         disabled={true}
-                                        inputValue={order.dateCreated}
+                                        inputValue={formattedDate}
                                     />
                                 </div>
                             </div>
@@ -379,12 +364,10 @@ export default function EditOrder() {
                                     <div></div><div></div><div></div><div></div>
                                 </div>
                             ) : (
-                                order.status === "Paid" ? (
-                                    <Button text={"Processing"} onclick={toggleModal} background="black" textColor="white" />
-                                ) : null
+                                buttonComponent
                             )}
                         </div>
-                        <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} />
+                        <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} text={text} />
                     </>
                 ) : (
                     <></>

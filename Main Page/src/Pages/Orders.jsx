@@ -93,7 +93,7 @@ const Orders = () => {
                                         rowCount={orders.length}
                                         onRequestSort={handleSort}
                                         headLabel={[
-                                            { id: 'id', label: 'ID', width: '15%' },
+                                            { id: 'id', label: 'Order ID', width: '15%' },
                                             { id: 'dateCreated', label: 'Date Created', width: '15%' },
                                             { id: 'items', label: 'Items', width: '50%' },
                                             { id: 'total', label: 'Total', width: '15%' },

@@ -8,7 +8,7 @@ const AuthRoute0 = ({ children }) => {
 
     const userRole = decodedToken?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
-    if (userRole === 'User Manager' || userRole === 'Product Manager' || userRole === 'Order Processor') {
+    if (userRole === 'User Manager' || userRole === 'Product Manager' || userRole === 'Order Processor' || userRole === 'Shipper') {
         return children;
     }
 

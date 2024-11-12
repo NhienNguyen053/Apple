@@ -41,29 +41,52 @@ export default function OrdersView() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`https://localhost:7061/api/Order/getAllOrders`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}`
-                    },
-                });
-                if (response.status === 401) {
-                    navigate('/signin');
+                if (decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper') {
+                    const response = await fetch(`https://localhost:7061/api/Order/getShipperOrders?id=${decodedToken["Id"]}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${jwtToken}`
+                        },
+                    });
+                    if (response.status !== 200) {
+                        navigate('/login');
+                    }
+                    const datas = await response.json();
+                    const dashboardOrders = datas.map(data => ({
+                        id: data.orderId,
+                        dateCreated: data.dateCreated,
+                        items: data.productDetails,
+                        status: data.status,
+                        total: data.amountTotal,
+                        shippingDetails: data.shippingDetails
+                    }));
+                    setOrders(dashboardOrders);
+                } else {
+                    const response = await fetch(`https://localhost:7061/api/Order/getAllOrders`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${jwtToken}`
+                        },
+                    });
+                    if (response.status === 401) {
+                        navigate('/login');
+                    }
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    const datas = await response.json();
+                    const dashboardOrders = datas.map(data => ({
+                        id: data.orderId,
+                        dateCreated: data.dateCreated,
+                        items: data.productDetails,
+                        status: data.status,
+                        total: data.amountTotal,
+                        shippingDetails: data.shippingDetails
+                    }));
+                    setOrders(dashboardOrders);
                 }
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const datas = await response.json();
-                const dashboardOrders = datas.map(data => ({
-                    id: data.orderId,
-                    dateCreated: data.dateCreated,
-                    items: data.productDetails,
-                    status: data.status,
-                    total: data.amountTotal,
-                    shippingDetails: data.shippingDetails
-                }));
-                setOrders(dashboardOrders);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -118,7 +141,7 @@ export default function OrdersView() {
         const newShippingDetail = {
             note: detail,
             dateCreated: new Date().toISOString(),
-            dispatcherId: decodedToken['Id']
+            createdBy: decodedToken['Id']
         };
         let updatedShippingDetails;    
         setOrders((prevOrders) => {
@@ -173,12 +196,12 @@ export default function OrdersView() {
                                 rowCount={orders.length}
                                 onRequestSort={handleSort}
                                 headLabel={[
-                                    { id: 'id', label: 'ID', width: '15%'},
+                                    { id: 'id', label: 'Order ID', width: '15%'},
                                     { id: 'dateCreated', label: 'Date Created', width: '20%'},
                                     { id: 'items', label: 'Items', width: '48%'},
                                     { id: 'total', label: 'Total', width: '12%'},
                                     { id: 'status', label: 'Status', align: 'center', width: '5%'},
-                                    decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Order Processor' ? { id: '', label: '' } : null : null,
+                                    decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Order Processor' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper' ? { id: '', label: '' } : null : null,
                                 ].filter(Boolean)}
                             />
                             <TableBody>
@@ -192,7 +215,7 @@ export default function OrdersView() {
                                             status={row.status}
                                             total={row.total}
                                             edit={() => { editOrder(row.id) }}
-                                            cancel={row.status === "Failed" || row.status === "Canceled" || row.status === 'Shipping' || row.status === 'Delivered' ? null : () => { cancelOrder(row.id) }}
+                                            cancel={row.status === "Failed" || row.status === "Canceled" || row.status === 'Shipping' || row.status === 'Delivered' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper' ? null : () => { cancelOrder(row.id) }}
                                             userRole={decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null}
                                         />
                                     ))}

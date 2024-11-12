@@ -36,7 +36,7 @@ export default function CategoryPage() {
                     },
                 });
                 if (response.status === 401) {
-                    navigate('/signin');
+                    navigate('/login');
                 }
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);

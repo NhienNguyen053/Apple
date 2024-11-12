@@ -36,7 +36,7 @@ namespace AppleApi.Controllers
             this.orderService = orderService;
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
+        [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {
@@ -232,7 +232,7 @@ namespace AppleApi.Controllers
             {
                 user = await userService.FindByFieldAsync("Email", request.EmailOrPhone);
             }
-            if (user == null || user.Role == "Customer" || user.Role == "Shipper")
+            if (user == null || user.Role == "Customer")
             {
                 return NoContent();
             }
@@ -479,7 +479,7 @@ namespace AppleApi.Controllers
             return Ok("Delete successful");
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
+        [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
         [HttpGet("getDashboardData")]
         public async Task<IActionResult> GetDashboardData()
         {

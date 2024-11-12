@@ -252,7 +252,7 @@ export default function EditProduct() {
                 },
             });
             if (response.status === 401) {
-                navigate('/signin');
+                navigate('/login');
             }
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -278,7 +278,7 @@ export default function EditProduct() {
                 }),
             });
             if (response.status === 401) {
-                navigate('/signin');
+                navigate('/login');
             }
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
