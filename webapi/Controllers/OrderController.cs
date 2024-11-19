@@ -15,29 +15,24 @@ public class OrderController : ControllerBase
 {
     private readonly IOrderService orderService;
     private readonly IProductService productService;
-    private readonly IUserService userService;
 
-    public OrderController(IOrderService orderService, IProductService productService, IUserService userService)
+    public OrderController(IOrderService orderService, IProductService productService)
     {
         this.orderService = orderService;
         this.productService = productService;
-        this.userService = userService;
     }
 
-    [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
+    [Authorize(Roles = "User Manager, Product Manager, Order Processor")]
     [HttpGet("getAllOrders")]
     public async Task<IActionResult> GetAllOrders()
     {
         if (User.IsInRole("Order Processor"))
         {
-            var filter = Builders<Order>.Filter.Eq(order => order.Status, "Paid");
+            var filter = Builders<Order>.Filter.Or(
+                Builders<Order>.Filter.Eq(order => order.Status, "Paid"),
+                Builders<Order>.Filter.Eq(order => order.Status, "Processing")
+            );
             List <Order> orders = await orderService.FindManyAsync(filter);
-            return Ok(orders);
-        }
-        else if (User.IsInRole("Shipper"))
-        {
-            var filter = Builders<Order>.Filter.Eq(order => order.Status, "Processing");
-            List<Order> orders = await orderService.FindManyAsync(filter);
             return Ok(orders);
         }
         else
@@ -49,9 +44,25 @@ public class OrderController : ControllerBase
 
     [Authorize]
     [HttpGet("getUserOrders")]
-    public async Task<IActionResult> GetUserOrders(string userId)
+    public async Task<IActionResult> GetUserOrders(string userId, string status)
     {
-        List<Order> orders = (await orderService.FindManyByFieldAsync("CustomerId", userId)).OrderByDescending(order => order.DateCreated).ToList();
+        FilterDefinition<Order> filter;
+
+        if (status == "All")
+        {
+            filter = Builders<Order>.Filter.And(
+                Builders<Order>.Filter.Ne(order => order.Status, "Placed"),
+                Builders<Order>.Filter.Eq(order => order.CustomerId, userId)
+            );
+        }
+        else
+        {
+            filter = Builders<Order>.Filter.And(
+                Builders<Order>.Filter.Eq(order => order.Status, status),
+                Builders<Order>.Filter.Eq(order => order.CustomerId, userId)
+            );
+        }
+        List<Order> orders = await orderService.FindManyAsync(filter);
         if (orders != null)
         {
             return Ok(orders);
@@ -121,7 +132,7 @@ public class OrderController : ControllerBase
                     quantity = item.quantity,
                     productName = product.ProductName,
                     productPrice = product.ProductPrice,
-                    productImage = product.ProductImages.FirstOrDefault(x => x.Color == item.color)?.ImageURLs?.FirstOrDefault()
+                    productImage = product.Colors.Count == 0 ? product.ProductImages.FirstOrDefault()?.ImageURLs?.FirstOrDefault() : product.ProductImages.FirstOrDefault(x => x.Color == item.color)?.ImageURLs?.FirstOrDefault()
                 };
                 details.ProductDetails.Add(orderProduct);
             }

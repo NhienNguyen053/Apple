@@ -132,7 +132,7 @@ const Order = () => {
                     </div>
                     <div style={{ background: '#fffbf6', display: orderDetails.status === 'Confirmed' ? 'flex' : 'none', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: '20px' }}>
                         <p style={{ width: '97%', margin: '10px auto', fontFamily: 'SF-Pro-Display-Semibold', color: 'black' }}>Order Completed</p>
-                        <p style={{ width: '97%', margin: '0 auto 10px auto', color: 'black', fontSize: '14px' }}>This order is complete. If you did not confirm receipt, it may be that the system has automatically confirmed completion. Automatic confirmation occurs 60 days after shipment if there are no delivery tracking details recorded within our system.</p>
+                        <p style={{ width: '97%', margin: '0 auto 10px auto', color: 'black', fontSize: '14px' }}>This order is complete. If you did not confirm receipt, it may be that the system has automatically confirmed completion. Automatic confirmation occurs 3 days after shipment if there are no delivery tracking details recorded within our system.</p>
                     </div>
                     <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px' }}>
                         <div style={{ marginBottom: '20px', fontFamily: 'SF-Pro-Display-Light', width: '100%', background: '#f2f3f7', height: '35px', alignItems: 'center', display: 'flex', padding: '0 20px', justifyContent: 'space-between' }}>

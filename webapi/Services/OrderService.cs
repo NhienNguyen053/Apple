@@ -32,7 +32,7 @@ namespace AppleApi.Services
             orders = await FindManyAsync(filter);
             foreach (var order in orders)
             {
-                order.Status = "Canceled";
+                order.Status = "Expired";
                 await UpdateOneAsync(order.Id, order);
             }
         }
@@ -41,7 +41,7 @@ namespace AppleApi.Services
         {
             List<Order> orders = new();
             FilterDefinition<Order> filter = Builders<Order>.Filter.Empty;
-            filter = filter & Builders<Order>.Filter.Lt(x => x.DateCreated, DateTime.UtcNow.AddDays(-60));
+            filter = filter & Builders<Order>.Filter.Lt(x => x.DateCreated, DateTime.UtcNow.AddDays(-3));
             filter = filter & Builders<Order>.Filter.Eq(x => x.Status, "Delivered");
             orders = await FindManyAsync(filter);
             foreach (var order in orders)

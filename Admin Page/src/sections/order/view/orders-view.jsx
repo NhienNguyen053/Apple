@@ -28,7 +28,6 @@ import Modal2 from '../../../Components/Modal2';
 export default function OrdersView() {
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
-    const [orderId, setOrderId] = useState('');
     const [order, setOrder] = useState('asc');
     const [orders, setOrders] = useState([]);
     const [orderBy, setOrderBy] = useState('name');
@@ -36,7 +35,6 @@ export default function OrdersView() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-    const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -128,53 +126,6 @@ export default function OrdersView() {
         navigate('/dashboard/orders/editOrder', { state: { id: id } });
     }
 
-    const cancelOrder = (id) => {
-        setModalVisible(!isModalVisible);
-        setOrderId(id);
-    }
-
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    }
-
-    const updateOrder = async (detail) => {
-        const newShippingDetail = {
-            note: detail,
-            dateCreated: new Date().toISOString(),
-            createdBy: decodedToken['Id']
-        };
-        let updatedShippingDetails;    
-        setOrders((prevOrders) => {
-            const updatedOrders = prevOrders.map((order) => {
-                if (order.id === orderId) {
-                    updatedShippingDetails = [...order.shippingDetails, newShippingDetail];
-                    return {
-                        ...order,
-                        shippingDetails: updatedShippingDetails,
-                        status: 'Canceled',
-                    };
-                }
-                return order;
-            });
-            return updatedOrders;
-        });    
-        setModalVisible(!isModalVisible);    
-        await fetch('https://localhost:7061/api/Order/cancelOrder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            body: JSON.stringify({
-                OrderId: orderId,
-                ShippingDetails: updatedShippingDetails,
-                Status: 'Canceled'
-            }),
-        });
-    };
-    
-    
-
     return (
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -215,7 +166,6 @@ export default function OrdersView() {
                                             status={row.status}
                                             total={row.total}
                                             edit={() => { editOrder(row.id) }}
-                                            cancel={row.status === "Failed" || row.status === "Canceled" || row.status === 'Shipping' || row.status === 'Delivered' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper' ? null : () => { cancelOrder(row.id) }}
                                             userRole={decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null}
                                         />
                                     ))}
@@ -241,7 +191,6 @@ export default function OrdersView() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Card>
-            <Modal2 isVisible={isModalVisible} toggleModal={toggleModal} func={updateOrder} text={"cancel order"} text2={"Cancel"}/>
         </Container>
     );
 }

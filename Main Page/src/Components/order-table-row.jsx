@@ -5,9 +5,9 @@ import TableRow from '@mui/material/TableRow';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
-import Label from '../../Components/label';
-import Iconify from '../../Components/iconify';
-import { fCurrency } from '../../utils/format-number';
+import Label from '../Components/label';
+import Iconify from '../Components/iconify';
+import { fCurrency } from './utils/format-number';
 
 // ----------------------------------------------------------------------
 
@@ -18,8 +18,10 @@ export default function OrderTableRow({
     total,
     status,
     edit,
+    cancel,
     userRole
 }) {
+    const [open, setOpen] = useState(null);
     const [color, setColor] = useState('default');
     const [formattedDate, setFormattedDate] = useState('');
 
@@ -58,6 +60,14 @@ export default function OrderTableRow({
         setFormattedDate(vietnamTime);
     }, [status, dateCreated]);
 
+    const handleOpenMenu = (event) => {
+        setOpen(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setOpen(null);
+    };
+
     return (
         <>
             <TableRow hover tabIndex={-1} role="checkbox">
@@ -80,10 +90,32 @@ export default function OrderTableRow({
                         {status}
                     </Label>
                 </TableCell>
-                <TableCell>
-                    <a onClick={edit} style={{ display: userRole === 'Order Processor' || userRole === 'Shipper' ? 'block' : 'none', fontSize: '14px', fontFamily: 'SF-Pro-Display-Light', textAlign: 'center' }}>View Details</a>
+                <TableCell align="right" sx={{ display: userRole === 'Order Processor' || userRole === 'Shipper' ? 'table-cell' : 'none' }}>
+                    <IconButton onClick={handleOpenMenu}>
+                        <Iconify icon="eva:more-vertical-fill" />
+                    </IconButton>
                 </TableCell>
             </TableRow>
+
+            <Popover
+                open={!!open}
+                anchorEl={open}
+                onClose={handleCloseMenu}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                    sx: { width: 140 },
+                }}
+            >
+                <MenuItem onClick={edit}>
+                    <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+                    View
+                </MenuItem>
+                <MenuItem onClick={() => { cancel(); handleCloseMenu(); }} sx={{ color: 'red', display: cancel === null ? 'none' : 'flex' }}>
+                    <Iconify icon="eva:trash-2-outline" sx={{ mr: 2, color: 'red' }} />
+                    Cancel
+                </MenuItem>
+            </Popover>
         </>
     );
 }

@@ -301,7 +301,7 @@ const Product = ({ categories, products }) => {
             <Navbar darkmode={false} onCartChange={cartChange} />
             <Collapse in={open} sx={{ width: '240px', position: 'absolute', right: '25px', top: '25px', zIndex: '1000' }}>
                 <Alert sx={{ mb: 2 }} severity={'success'}>
-                    Added to cart successfully!
+                    Added to bag successfully!
                 </Alert>
             </Collapse>
             <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: '100px auto 0 auto' }}>

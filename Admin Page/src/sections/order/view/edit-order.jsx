@@ -1,7 +1,7 @@
 /* eslint-disable no-control-regex */
 import React, { useState, useEffect } from 'react';
 import Input from '../../../Components/Input';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Select from '../../../Components/Select';
 import Button from '../../../Components/Button';
 import Typography from '@mui/material/Typography';
@@ -19,7 +19,6 @@ export default function EditOrder() {
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState();
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
     const [isModalVisible, setModalVisible] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
@@ -142,14 +141,16 @@ export default function EditOrder() {
         }, 5000);
         window.scrollTo(0, 0);
     }
-    const back = () => {
-        navigate('/dashboard/orders');
+
+    const cancelOrder = () => {
+        setModalVisible(!isModalVisible);
+        setText('Canceled');
     }
 
     return (
         <>
             <Typography variant="h4" style={{ marginLeft: '3%' }}>Order Details</Typography>
-            <div className='container7 display'>
+            <div className='container7 display' style={{ paddingTop: '15px', paddingBottom: '20px' }}>
                 <Collapse in={open} sx={{ width: '100%' }}>
                     <Alert sx={{ mb: 2 }}>
                         Updated order successfully!
@@ -157,6 +158,92 @@ export default function EditOrder() {
                 </Collapse>
                 {order ? ( 
                     <>
+                        <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Order Details:</p>
+                        <div style={{ width: '100%', display: 'flex', margin: 'auto', marginBottom: '20px' }}>
+                            <div style={{ width: '48%' }} className="formInputs2">
+                                <div>
+                                    <Input
+                                        placeholder={"Order Id"}
+                                        isVisible={true}
+                                        icon={false}
+                                        borderRadius={"5px"}
+                                        width={'100%'}
+                                        margin={'0 auto 0 auto'}
+                                        disabled={true}
+                                        inputValue={order.orderId}
+                                    />
+                                </div>
+                            </div>
+                            <div style={{ width: '4%' }}></div>
+                            <div style={{ width: '48%' }} className="formInputs2">
+                                <div>
+                                    <Input
+                                        placeholder={"Date Created"}
+                                        isVisible={true}
+                                        icon={false}
+                                        borderRadius={"5px"}
+                                        width={'100%'}
+                                        margin={'0 auto 0 auto'}
+                                        disabled={true}
+                                        inputValue={formattedDate}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <table className="productsTable" style={{ width: '100%', marginBottom: '5px' }}>
+                            <tr>
+                                <th style={{ width: '5%' }}>No.</th>
+                                <th>Product name</th>
+                                <th style={{ width: '10%' }}>Product image</th>
+                                <th>Spec/Specs</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                            {order.productDetails.map((detail, index) => (
+                                <tr>
+                                    <td>{index + 1}</td>
+                                    <td>{detail.productName}</td>
+                                    <td><img src={detail.productImage} style={{ width: '75px', height: '75px' }} /></td>
+                                    <td>
+                                        <div>
+                                            <p>Color: {detail.color}</p>
+                                            <p>Storage: {detail.storage}</p>
+                                            <p>Memory: {detail.memory}</p>
+                                        </div>
+                                    </td>
+                                    <td>{detail.quantity}</td>
+                                    <td>{fCurrency(detail.productPrice)}</td>
+                                    <td>{fCurrency(detail.productPrice * detail.quantity)}</td>
+                                </tr>
+                            ))}
+                        </table>
+                        <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content', position: 'relative' }} className="formButtons">
+                            <Button display={order.status === 'Canceled' || order.status === 'Confirmed' || order.status === 'Delivered' ? 'none' : 'flex'} text={'Cancel'} onclick={cancelOrder} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
+                            <div style={{ width: '15px', display: order.status === 'Canceled' || order.status === 'Confirmed' || order.status === 'Delivered' ? 'none' : 'block' }}></div>
+                            {loading ? (
+                                <div className="lds-spinner">
+                                    <div></div><div></div><div></div><div></div>
+                                    <div></div><div></div><div></div><div></div>
+                                    <div></div><div></div><div></div><div></div>
+                                </div>
+                            ) : (
+                                buttonComponent
+                            )}
+                        </div>
+                        <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Shipping Details:</p>
+                        <div className="timeline" style={{ width: '100%' }}>
+                            {order.shippingDetails.map((detail, index) => (
+                                <div className="timeline-item" key={index}>
+                                    <div className="dot"></div>
+                                    {index !== order.shippingDetails.length - 1 && <div className="line"></div>}
+                                    <div className="content">
+                                        <p>{detail.note}</p>
+                                        <span className="time">{detail.dateCreated}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                         <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Customer Details:</p>
                         <div style={{ width: '100%', display: 'flex', margin: 'auto', marginBottom: '10px' }}>
                             <div style={{ width: '48%' }} className="formInputs2">
@@ -280,92 +367,6 @@ export default function EditOrder() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Shipping Details:</p>
-                        <div className="timeline" style={{ width: '100%' }}>
-                            {order.shippingDetails.map((detail, index) => (
-                                <div className="timeline-item" key={index}>
-                                    <div className="dot"></div>
-                                    {index !== order.shippingDetails.length - 1 && <div className="line"></div>}
-                                    <div className="content">
-                                        <p>{detail.note}</p>
-                                        <span className="time">{detail.dateCreated}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <p style={{ width: '100%', color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Semibold' }}>Order Details:</p>
-                        <div style={{ width: '100%', display: 'flex', margin: 'auto', marginBottom: '20px' }}>
-                            <div style={{ width: '48%' }} className="formInputs2">
-                                <div>
-                                    <Input
-                                        placeholder={"Order Id"}
-                                        isVisible={true}
-                                        icon={false}
-                                        borderRadius={"5px"}
-                                        width={'100%'}
-                                        margin={'0 auto 0 auto'}
-                                        disabled={true}
-                                        inputValue={order.orderId}
-                                    />
-                                </div>
-                            </div>
-                            <div style={{ width: '4%' }}></div>
-                            <div style={{ width: '48%' }} className="formInputs2">
-                                <div>
-                                    <Input
-                                        placeholder={"Date Created"}
-                                        isVisible={true}
-                                        icon={false}
-                                        borderRadius={"5px"}
-                                        width={'100%'}
-                                        margin={'0 auto 0 auto'}
-                                        disabled={true}
-                                        inputValue={formattedDate}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <table className="productsTable" style={{ width: '100%', marginBottom: '5px' }}>
-                            <tr>
-                                <th style={{ width: '5%' }}>No.</th>
-                                <th>Product name</th>
-                                <th style={{ width: '10%' }}>Product image</th>
-                                <th>Spec/Specs</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total</th>
-                            </tr>
-                            {order.productDetails.map((detail, index) => (
-                                <tr>
-                                    <td>{index + 1}</td>
-                                    <td>{detail.productName}</td>
-                                    <td><img src={detail.productImage} style={{ width: '75px', height: '75px' }} /></td>
-                                    <td>
-                                        <div>
-                                            <p>Color: {detail.color}</p>
-                                            <p>Storage: {detail.storage}</p>
-                                            <p>Memory: {detail.memory}</p>
-                                        </div>
-                                    </td>
-                                    <td>{detail.quantity}</td>
-                                    <td>{fCurrency(detail.productPrice)}</td>
-                                    <td>{fCurrency(detail.productPrice * detail.quantity)}</td>
-                                </tr>
-                            ))}
-                        </table>
-                        <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content', position: 'relative' }} className="formButtons">
-                            <Button text={'Back'} onclick={back} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
-                            <div style={{ width: '15px' }}></div>
-                            {loading ? (
-                                <div className="lds-spinner">
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            ) : (
-                                buttonComponent
-                            )}
                         </div>
                         <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} text={text} />
                     </>
