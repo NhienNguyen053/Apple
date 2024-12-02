@@ -49,11 +49,11 @@ function App() {
                         <Route
                             path="/dashboard/products"
                             element={
-                                <AuthRoute0>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <ProductsPage />
                                     </DashboardLayout>
-                                </AuthRoute0>
+                                </AuthRoute2>
                             }
                         />
                         <Route
@@ -79,11 +79,11 @@ function App() {
                         <Route
                             path="/dashboard/users"
                             element={
-                                <AuthRoute0>
+                                <AuthRoute>
                                     <DashboardLayout>
                                         <UserPage />
                                     </DashboardLayout>
-                                </AuthRoute0>
+                                </AuthRoute>
                             }
                         />
                         <Route
@@ -109,11 +109,11 @@ function App() {
                         <Route
                             path="/dashboard/categories"
                             element={
-                                <AuthRoute0>
+                                <AuthRoute2>
                                     <DashboardLayout>
                                         <CategoryPage />
                                     </DashboardLayout>
-                                </AuthRoute0>
+                                </AuthRoute2>
                             }
                         />
                         <Route
@@ -159,11 +159,11 @@ function App() {
                         <Route
                             path="/dashboard/orders"
                             element={
-                                <AuthRoute0>
+                                <AuthRoute3>
                                     <DashboardLayout>
                                         <OrdersView />
                                     </DashboardLayout>
-                                </AuthRoute0>
+                                </AuthRoute3>
                             }
                         />
                         <Route

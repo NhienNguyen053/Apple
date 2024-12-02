@@ -9,5 +9,6 @@ namespace AppleApi.Interfaces
     public interface IUserService : ICommonRepository<User>
     {
         Task<bool> TokenExistsAsync(string token);
+        Task<User?> UserWithLeastWorkCount(string role, string warehouseId);
     }
 }

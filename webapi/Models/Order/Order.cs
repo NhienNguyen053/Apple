@@ -13,6 +13,8 @@ namespace AppleApi.Models.Order
         public string Id { get; set; } = null!;
 
         public string OrderId { get; set; } = null!;
+        public string? RequestId { get; set; }
+        public string? TransId { get; set; }
 
         public decimal AmountTotal { get; set; }
 
@@ -32,5 +34,6 @@ namespace AppleApi.Models.Order
 
         public string Status { get; set; } = null!;
         public int? PaymentStatus { get; set; }
+        public string? WarehouseId { get; set; }
     }
 }

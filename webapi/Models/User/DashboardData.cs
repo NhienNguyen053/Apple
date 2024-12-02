@@ -9,7 +9,7 @@ namespace AppleApi.Models.User
         public int Products { get; set; }
         public int Users { get; set; }
         public int Orders { get; set; }
-        public int CanceledOrders { get; set; }
+        public int RefundedOrders { get; set; }
         public int PaidOrders { get; set; }
         public int ProcessingOrders { get; set; }
         public int ShippingOrders { get; set; }

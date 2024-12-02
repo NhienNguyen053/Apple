@@ -35,6 +35,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 builder.Services.AddControllers();
 
 builder.Services.AddHangfire(configuration => configuration.UseMemoryStorage());
@@ -55,7 +56,8 @@ builder.Services.AddAuthentication().AddJwtBearer(options => {
         ValidateIssuerSigningKey = true,
         ValidateAudience = false,
         ValidateIssuer = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+        RoleClaimType = "Role"
     };
 });
 
@@ -83,7 +85,9 @@ app.UseHangfireDashboard();
 using (var scope = app.Services.CreateScope())
 {
     var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+    var warehouseService = scope.ServiceProvider.GetRequiredService<IWarehouseService>();
     await SeedData.SeedDatabaseIfEmpty(scope.ServiceProvider, userService);
+    await SeedData.SeedWarehouseIfEmpty(scope.ServiceProvider, warehouseService);
 }
 
 using (var scope = app.Services.CreateScope())

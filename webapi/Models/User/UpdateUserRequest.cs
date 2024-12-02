@@ -8,5 +8,6 @@
         public string Country { get; set; } = null!;
         public DateTime Birthday { get; set; }
         public string Role { get; set; } = null!;
+        public string? WarehouseId { get; set; }
     }
 }

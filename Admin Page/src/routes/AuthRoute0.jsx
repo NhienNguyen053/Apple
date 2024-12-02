@@ -6,9 +6,9 @@ const AuthRoute0 = ({ children }) => {
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
 
-    const userRole = decodedToken?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+    const userRole = decodedToken?.['Role'];
 
-    if (userRole === 'User Manager' || userRole === 'Product Manager' || userRole === 'Order Processor' || userRole === 'Shipper') {
+    if (userRole === 'Order Manager') {
         return children;
     }
 

@@ -3,25 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-import Iconify from '../../../Components/iconify';
 import Scrollbar from '../../../Components/scrollbar';
 import TableNoData from '../../user/table-no-data';
-import UserTableRow from '../../user/user-table-row';
 import UserTableHead from '../../user/user-table-head';
 import TableEmptyRows from '../../user/table-empty-rows';
 import UserTableToolbar from '../../user/user-table-toolbar';
 import jwt_decode from 'jwt-decode';
 import { emptyRows, applyOrderFilter, getComparator } from '../../user/utils';
 import Cookies from 'js-cookie';
-import Modal from '../../../Components/Modal';
 import OrderTableRow from '../order-table-row';
-import Modal2 from '../../../Components/Modal2';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { Button as MuiButton } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -35,11 +33,23 @@ export default function OrdersView() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
+    const [statusText, setStatusText] = useState(decodedToken ? decodedToken['Role'] === 'Order Manager' ? 'All' : 'Paid' : 'Paid');
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = (text) => {
+        setAnchorEl(null);
+        setStatusText(text);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (decodedToken && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper') {
+                if (decodedToken && decodedToken['Role'] === 'Shipper') {
                     const response = await fetch(`https://localhost:7061/api/Order/getShipperOrders?id=${decodedToken["Id"]}`, {
                         method: 'GET',
                         headers: {
@@ -61,7 +71,7 @@ export default function OrdersView() {
                     }));
                     setOrders(dashboardOrders);
                 } else {
-                    const response = await fetch(`https://localhost:7061/api/Order/getAllOrders`, {
+                    const response = await fetch(`https://localhost:7061/api/Order/getAllOrders?status=${statusText}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -90,7 +100,7 @@ export default function OrdersView() {
             }
         };
         fetchData();
-    }, []);
+    }, [statusText]);
 
     const handleSort = (event, id) => {
         const isAsc = orderBy === id && order === 'asc';
@@ -151,8 +161,8 @@ export default function OrdersView() {
                                     { id: 'dateCreated', label: 'Date Created', width: '20%'},
                                     { id: 'items', label: 'Items', width: '48%'},
                                     { id: 'total', label: 'Total', width: '12%'},
-                                    { id: 'status', label: 'Status', align: 'center', width: '5%'},
-                                    decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Order Processor' || decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Shipper' ? { id: '', label: '' } : null : null,
+                                    { id: 'status', label: 'Status', align: 'center', width: '5%' },
+                                    decodedToken ? decodedToken['Role'] === 'Order Manager' || decodedToken['Role'] === 'Order Processor' || decodedToken['Role'] === 'Shipper' || decodedToken['Role'] === 'Warehouse Staff' ? { id: '', label: '' } : null : null,
                                 ].filter(Boolean)}
                             />
                             <TableBody>
@@ -166,7 +176,7 @@ export default function OrdersView() {
                                             status={row.status}
                                             total={row.total}
                                             edit={() => { editOrder(row.id) }}
-                                            userRole={decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null}
+                                            userRole={decodedToken ? decodedToken['Role'] : null}
                                         />
                                     ))}
 
@@ -180,7 +190,44 @@ export default function OrdersView() {
                         </Table>
                     </TableContainer>
                 </Scrollbar>
-
+                <div style={{ display: decodedToken ? decodedToken['Role'] === 'Order Manager' ? 'flex' : 'none' : 'none', position: 'absolute', zIndex: '1000', marginLeft: '15px' }}>
+                    <p style={{ fontFamily: 'SF-Pro-Display-Light' }}>Status:</p>
+                    <MuiButton
+                        id="basic-button"
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
+                        sx={{
+                            color: 'black',
+                            '&:hover': {
+                                backgroundColor: 'transparent',
+                            },
+                            textTransform: 'none',
+                            marginTop: '6px',
+                            height: '40px'
+                        }}
+                    >
+                        {statusText}
+                    </MuiButton>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={() => handleClose('All')}
+                        MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <MenuItem onClick={() => handleClose('All')}>All</MenuItem>
+                        <MenuItem onClick={() => handleClose('Paid')}>Paid</MenuItem>
+                        <MenuItem onClick={() => handleClose('Processing')}>Processing</MenuItem>
+                        <MenuItem onClick={() => handleClose('Shipping')}>Shipping</MenuItem>
+                        <MenuItem onClick={() => handleClose('Delivered')}>Delivered</MenuItem>
+                        <MenuItem onClick={() => handleClose('Confirmed')}>Confirmed</MenuItem>
+                        <MenuItem onClick={() => handleClose('Refunded')}>Refunded</MenuItem>
+                    </Menu>
+                </div>
                 <TablePagination
                     page={page}
                     component="div"

@@ -27,7 +27,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
+      {navConfig().map((item) => (
         <NavItem key={item.title} item={item} />
       ))}
     </Stack>

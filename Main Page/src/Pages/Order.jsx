@@ -47,6 +47,18 @@ const Order = () => {
                     const storagePrice = storagePrices[detail.storage] || 0;
                     detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
                 });
+                data.shippingDetails = data.shippingDetails.map(detail => ({
+                    ...detail,
+                    dateCreated: new Date(detail.dateCreated).toLocaleString("en-GB", {
+                        timeZone: "Asia/Ho_Chi_Minh",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                    })
+                }));
                 const date = new Date(data.dateCreated);
                 const vietnamTime = date.toLocaleString("en-GB", {
                     timeZone: "Asia/Ho_Chi_Minh",
@@ -100,11 +112,11 @@ const Order = () => {
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '13px' }}>
                             <div>
-                                <div style={{ borderTopColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="triangle-top-right"></div>
-                                <div style={{ borderBottomColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }}  className="triangle-bottom-right"></div>
+                                <div style={{ borderTopColor: active == 'Paid' ? 'black' : '' }} className="triangle-top-right"></div>
+                                <div style={{ borderBottomColor: active == 'Paid' ? 'black' : '' }}  className="triangle-bottom-right"></div>
                             </div>
-                            <div style={{ color: active == 'Canceled' || active == 'Paid' ? 'white' : '', background: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="progress-bar-text">Payment</div>
-                            <div style={{ borderLeftColor: active == 'Canceled' || active == 'Paid' ? 'black' : '' }} className="right-arrow"></div>
+                            <div style={{ color: active == 'Paid' ? 'white' : '', background: active == 'Paid' ? 'black' : '' }} className="progress-bar-text">Payment</div>
+                            <div style={{ borderLeftColor: active == 'Paid' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
                         <div style={{ width: '20%', display: 'flex', position: 'relative', right: '26px' }}>
                             <div>

@@ -16,6 +16,9 @@ using MimeKit.Text;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Stripe.Checkout;
+using webapi.Models.Momo;
+using AppleApi.Models.Warehouse;
+using AppleApi.Models.User;
 
 namespace AppleApi.Controllers;
 
@@ -26,7 +29,9 @@ public class MomoController : ControllerBase
     private readonly IShoppingCartService shoppingCartService;
     private readonly IProductService productService;
     private readonly IOrderService orderService;
-    Dictionary<string, int> memoryPrices = new Dictionary<string, int> 
+    private readonly IWarehouseService warehouseService;
+    private readonly IUserService userService;
+    readonly Dictionary<string, int> memoryPrices = new()
     {
         {"4GB", 1242250},
         {"8GB", 2484500},
@@ -35,8 +40,8 @@ public class MomoController : ControllerBase
         {"64GB", 6211250}
     };
 
-    Dictionary<string, int> storagePrices = new Dictionary<string, int> 
-    {
+     readonly Dictionary<string, int> storagePrices = new()
+     {
         {"64GB", 1242250},
         {"128GB", 2484500},
         {"256GB", 3726750},
@@ -45,12 +50,14 @@ public class MomoController : ControllerBase
         {"2TB", 7453500}
     };
 
-    public MomoController(IConfiguration configuration, IShoppingCartService shoppingCartService, IProductService productService, IOrderService orderService)
+    public MomoController(IConfiguration configuration, IUserService userService, IShoppingCartService shoppingCartService, IProductService productService, IOrderService orderService, IWarehouseService warehouseService)
     {
         _configuration = configuration;
         this.shoppingCartService = shoppingCartService;
         this.productService = productService;
         this.orderService = orderService;
+        this.warehouseService = warehouseService;
+        this.userService = userService;
     }
 
     [HttpPost]
@@ -60,8 +67,7 @@ public class MomoController : ControllerBase
         string myuuidAsString = myuuid.ToString();
         string accessKey = "F8BBA842ECF85";
         string secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-        string thisApiUrl = _configuration["BaseURL:BackEnd"]!;
-        string thisReactUrl = _configuration["BaseURL:FrontEnd"]!;
+        string thisReactUrl = _configuration["BaseURL:MainPage"]!;
         List<Product> products = new();
         List<RequestAnonymousShoppingCart> cartData = new List<RequestAnonymousShoppingCart>();
         decimal total = 0;
@@ -201,7 +207,7 @@ public class MomoController : ControllerBase
         }
     }
 
-    // currently doesn't work cause ipn url can't be localhost
+    // currently have to call from frontend cause ipn url can't be localhost
     [HttpPost("redirectMomo")]
     public async Task<IActionResult> RedirectMomo([FromBody] MomoIPN momoIPN)
     {
@@ -214,15 +220,27 @@ public class MomoController : ControllerBase
             Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
             if (order != null)
             {
+                // was planning to use google geolocation api to calculate the order distance to the nearest warehouse but couldn't get through google billing
+                Warehouse warehouse = await warehouseService.FindByFieldAsync("Name", "Warehouse North");
+                User? user = await userService.UserWithLeastWorkCount("Order Processor", warehouse.Id);
+                if (user != null)
+                {
+                    user.WorkCount = user.WorkCount + 1;
+                    await userService.UpdateOneAsync(user.Id, user);
+                }
                 SendEmail(order.CustomerDetails, order.OrderId, order.DateCreated, order.AmountTotal);
                 order.Status = "Paid";
+                order.TransId = momoIPN.TransId;
+                order.RequestId = momoIPN.RequestId;
                 order.PaymentStatus = int.Parse(momoIPN.ResultCode);
                 ShippingDetail shippingDetail = new()
                 {
                     Note = "Order Paid",
-                    dateCreated = DateTime.Now
+                    dateCreated = DateTime.Now,
+                    assignedTo = user?.Id
                 };
                 order.ShippingDetails.Add(shippingDetail);
+                order.WarehouseId = warehouse.Id;
                 await orderService.UpdateOneAsync(order.Id, order);
                 return Ok();
             }
@@ -248,6 +266,64 @@ public class MomoController : ControllerBase
         }
     }
 
+    [Authorize(Roles = "Order Processor")]
+    [HttpPost("cancelPayment")]
+    public async Task<IActionResult> CancelPayment([FromBody] Order newOrder)
+    {
+        if (newOrder != null)
+        {
+            Guid myuuid = Guid.NewGuid();
+            string myuuidAsString = myuuid.ToString();
+            string accessKey = "F8BBA842ECF85";
+            string secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+            Order order = await orderService.FindByFieldAsync("OrderId", newOrder.OrderId);
+            if (order != null)
+            {
+                RefundRequest request = new()
+                {
+                    partnerCode = "MOMO",
+                    orderId = myuuidAsString,
+                    requestId = myuuidAsString,
+                    amount = (long)order.AmountTotal,
+                    transId = order.TransId!,
+                    lang = "vi",
+                    description = ""
+                };
+                var rawSignature = "accessKey=" + accessKey + "&amount=" + request.amount + "&description=" + request.description + "&orderId=" + request.orderId + "&partnerCode=" + request.partnerCode + "&requestId=" + request.requestId + "&transId=" + request.transId;
+                request.signature = getSignature(rawSignature, secretKey);
+                StringContent httpContent = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+                var client = new HttpClient();
+                var quickPayResponse = await client.PostAsync("https://test-payment.momo.vn/v2/gateway/api/refund", httpContent);
+                if (!quickPayResponse.IsSuccessStatusCode)
+                {
+                    var errorContent = await quickPayResponse.Content.ReadAsStringAsync();
+                    return StatusCode(500);
+                }
+                else
+                {
+                    var contents = await quickPayResponse.Content.ReadAsStringAsync();
+                    HashSet<string> uniqueUserIds = new HashSet<string>(order.ShippingDetails.SelectMany(s => new[] { s.createdBy, s.assignedTo }).Where(id => id != null).Cast<string>());
+                    foreach (string userId in uniqueUserIds)
+                    {
+                        User? user = await userService.FindByIdAsync(userId);
+                        if (user != null)
+                        {
+                            user.WorkCount -= 1;
+                            await userService.UpdateOneAsync(user.Id, user);
+                        }
+                    }
+                    order.ShippingDetails = newOrder.ShippingDetails;
+                    order.Status = "Refunded";
+                    await orderService.UpdateOneAsync(order.Id, order);
+                    SendRefundEmail(order.CustomerDetails, order.OrderId, order.DateCreated, order.AmountTotal);
+                    return Ok(contents);
+                }
+            }
+            return NoContent();
+        }
+        return BadRequest();
+    }
+
     private static String getSignature(String text, String key)
     {
         ASCIIEncoding encoding = new ASCIIEncoding();
@@ -266,6 +342,7 @@ public class MomoController : ControllerBase
         string senderEmail = "nhiennguyen3999@gmail.com";
         string senderPassword = "gadj yvyj dhlg ixpj";
         string recipientEmail = customer.Email;
+        string amountFormatted = amountTotal.ToString("#,0");
         var body = $@"
         <p>Dear {customer.FirstName} {customer.LastName},</p>
         <p>Thank you for your recent order from <strong>Apple</strong>! We are here to confirm that your order has been successfully placed and is being processed.</p>
@@ -273,8 +350,41 @@ public class MomoController : ControllerBase
         <h3>Order Details</h3>
         <p><strong>Order Number:</strong> {orderId}<br>
         <strong>Order Date:</strong> {dateCreated}<br>
-        <strong>Total Amount:</strong> ${amountTotal}</p>
+        <strong>Total Amount:</strong> {amountFormatted} VND</p>
         <strong>Shipping Address:</strong> {customer.Address}</p>
+        
+        <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:FrontEnd"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
+        
+        <p>Thank you for shopping with us!</p>";
+        var email = new MimeMessage();
+        email.From.Add(MailboxAddress.Parse(senderEmail));
+        email.To.Add(MailboxAddress.Parse(recipientEmail));
+        email.Subject = "Apple Order Details - Thank You for Your Purchase!";
+        email.Body = new TextPart(TextFormat.Html) { Text = body };
+        using (var smtp = new SmtpClient())
+        {
+            smtp.Connect("smtp.gmail.com", 587, false);
+            smtp.Authenticate(senderEmail, senderPassword);
+            smtp.Send(email);
+            smtp.Disconnect(true);
+        }
+    }
+
+    private void SendRefundEmail(CustomerDetails customer, string orderId, DateTime dateCreated, decimal amountTotal)
+    {
+        string senderEmail = "nhiennguyen3999@gmail.com";
+        string senderPassword = "gadj yvyj dhlg ixpj";
+        string recipientEmail = customer.Email;
+        string amountFormatted = amountTotal.ToString("#,0");
+        var body = $@"
+        <p>Dear {customer.FirstName} {customer.LastName},</p>
+        <p>Your order from <strong>Apple</strong> has been refunded!</p>
+        
+        <h3>Order Details</h3>
+        <p><strong>Order Number:</strong> {orderId}<br>
+        <strong>Order Date:</strong> {dateCreated}<br>
+        <strong>Total Amount:</strong> {amountFormatted} VND</p>
+        <strong>Amount Refunded:</strong> {amountFormatted} VND</p>
         
         <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:FrontEnd"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
         

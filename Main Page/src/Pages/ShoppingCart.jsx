@@ -321,7 +321,7 @@ const ShoppingCart = () => {
                         </div>
                         <div style={{ width: '20%' }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                                <p style={{ textAlign: 'end', width: '100%', marginTop: 0, color: 'black', fontSize: '24px', fontFamily: 'SF-Pro-Display-Semibold' }}>${(fCurrency(item.total))}</p>
+                                <p style={{ textAlign: 'end', width: '100%', marginTop: 0, color: 'black', fontSize: '24px', fontFamily: 'SF-Pro-Display-Semibold' }}>{(fCurrency(item.total))}</p>
                                 <a href="#" onClick={() => removeItem(item.id, item.color, item.memory, item.storage)} style={{ fontSize: '18px', fontFamily: 'SF-Pro-Display-Light' }}>Remove</a>
                             </div>
                         </div>

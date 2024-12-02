@@ -27,5 +27,23 @@ namespace AppleApi.Services
             var result = await FindAsync(filter);
             return result != null;
         }
+
+        public async Task<User?> UserWithLeastWorkCount(string role, string warehouseId)
+        {
+            var filter = Builders<User>.Filter.And(
+                Builders<User>.Filter.Eq(user => user.Role, role),
+                Builders<User>.Filter.Eq(user => user.WarehouseId, warehouseId)
+            );
+            List<User> users = await FindManyAsync(filter);
+            if (users != null)
+            {
+                User user = users.OrderBy(x => x.WorkCount).First();
+                return user;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

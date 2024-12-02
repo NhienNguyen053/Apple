@@ -18,6 +18,7 @@ namespace AppleApi.Common
         Task<T> FindNewest(string field);
         Task<List<T>> GetPagedAsync(int page, int pageSize, FilterDefinition<T>? filter = null);
         Task<T> InsertOneAsync(T model);
+        Task<List<T>> InsertManyAsync(List<T> model);
         Task UpdateOneAsync(string id, T model);
         Task<T> DeleteOneAsync(string id);
         Task DeleteByFieldAsync(string field, string value);

@@ -97,6 +97,12 @@ namespace AppleApi.Common
             return model;
         }
 
+        public async Task<List<T>> InsertManyAsync(List<T> model)
+        {
+            await _collection.InsertManyAsync(model);
+            return model;
+        }
+
         public async Task UpdateOneAsync(string id, T model)
         {
             ObjectId.TryParse(id, out var objectId);

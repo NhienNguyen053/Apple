@@ -24,5 +24,7 @@ namespace AppleApi.Models.User
         public DateTime? ResetTokenExpires { get; set; }
         public ShippingData? ShippingData { get; set; }
         public string Role { get; set; } = null!;
+        public string? WarehouseId { get; set; }
+        public int WorkCount { get; set; }
     }
 }

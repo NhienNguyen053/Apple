@@ -49,7 +49,7 @@ export default function AccountPopover() {
 
   return (
     <>
-      <p>{decodedToken == null ? "" : decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']}</p>
+      <p>{decodedToken == null ? "" : decodedToken['Role']}</p>
       <IconButton
         onClick={handleOpen}
         sx={{

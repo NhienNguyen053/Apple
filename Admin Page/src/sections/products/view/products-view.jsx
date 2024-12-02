@@ -92,7 +92,7 @@ export default function ProductsView() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4">Products</Typography>
       
-          <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} sx={{ display: decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Product Manager' ? 'flex' : 'none' : null}} onClick={routeChange}>
+          <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} sx={{ display: decodedToken ? decodedToken['Role'] === 'Product Manager' ? 'flex' : 'none' : null}} onClick={routeChange}>
               New Product
           </Button>
       </Stack>
@@ -123,7 +123,7 @@ export default function ProductsView() {
       <Grid container spacing={3}>
         {products.map((product) => (
           <Grid key={product.id} xs={12} sm={6} md={3}>
-            <ProductCard product={product} role={decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']}/>
+            <ProductCard product={product} role={decodedToken['Role']}/>
           </Grid>
         ))}
         <div style={{width: '100%'}}>

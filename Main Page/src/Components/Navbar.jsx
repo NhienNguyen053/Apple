@@ -122,17 +122,6 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
     setClickedElement(category);
   };
 
-  const handleSearchHover = () => {
-    if (clickedElement !== 'search') {
-      setIsElementClicked(false);
-    }
-  };
-
-  const handleSearchClick = () => {
-    setIsElementClicked(!isElementClicked);
-    setClickedElement('search');
-  };
-
   const handleShoppingBagHover = () => {
     if (clickedElement !== 'shopping-bag') {
       setIsElementClicked(false);
@@ -163,9 +152,6 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
               <NavbarItem category={category} />
             </li>
           ))}
-          <li className='li1' onMouseOver={handleSearchHover} onClick={handleSearchClick}>
-            <i className="fa-solid fa-magnifying-glass"></i>
-          </li>
           <li className='li1' onMouseOver={handleShoppingBagHover} onClick={handleShoppingBagClick}>
             <i className="fa-solid fa-bag-shopping" style={{ position: 'relative' }}>
               <div style={{ display: 'flex', justifyContent: 'center', width: '12px', height: '10px', background: 'black', position: 'absolute', bottom: '-4px', right: '-6px', borderRadius: '10px'}}>

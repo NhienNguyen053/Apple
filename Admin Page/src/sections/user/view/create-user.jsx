@@ -29,8 +29,11 @@ export default function CreateUser() {
     const [confirmError, setconfirmError] = useState('');
     const [country, setCountry] = useState('United States');
     const [loading, setLoading] = useState(false);
-    const [role, setRole] = useState('Customer');
+    const [role, setRole] = useState('User Manager');
     const [open, setOpen] = useState(false);
+    const [warehouses, setWarehouses] = useState([]);
+    const [warehouse, setWarehouse] = useState('');
+    const [warehouseError, setWarehouseError] = useState('');
     const navigate = useNavigate();
     const jwtToken = Cookies.get('jwtToken');
 
@@ -57,8 +60,32 @@ export default function CreateUser() {
         setCountry(e.target.value);
     };
 
+    const handleWarehouseChange = (e) => {
+        setWarehouseError('');
+        setWarehouse(e.target.value);
+    }
+
     const handleRoleChange = (e) => {
         setRole(e.target.value);
+        if (e.target.value === 'Order Manager' || e.target.value === 'Order Processor' || e.target.value === 'Warehouse Staff' || e.target.value === 'Shipper') {
+            getWarehouses();
+        } else {
+            setWarehouses([]);
+        }
+    }
+
+    const getWarehouses = async () => {
+        const response = await fetch(`https://localhost:7061/api/Warehouse/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+        });
+        if (response.status === 200) {
+            const data = await response.json();
+            setWarehouses(data);
+        }
     }
 
     const back = () => {
@@ -147,7 +174,13 @@ export default function CreateUser() {
             setconfirmError('');
             count++;
         }
-        if (count === 6) {
+        if (warehouse === '') {
+            setWarehouseError('Please select a warehouse!');
+        } else {
+            setWarehouseError('');
+            count++;
+        }
+        if ((count === 6 && (role === 'User Manager' || role === 'Product Manager')) || (count === 7 && (role !== 'User Manager' && role !== 'Product Manager'))) {
             await fetch('https://localhost:7061/api/Users/newUser', {
                 method: 'POST',
                 headers: {
@@ -161,7 +194,8 @@ export default function CreateUser() {
                     Birthday: bd,
                     Email: email,
                     Password: password,
-                    Role: role
+                    Role: role,
+                    WarehouseId: warehouse
                 }),
             });
             setLoading(false);
@@ -173,6 +207,7 @@ export default function CreateUser() {
             setLoading(false);
         }
     };
+
     return (
         <>
             <Typography variant="h4" sx={{ marginLeft: '3%' }}>New User</Typography>
@@ -223,7 +258,12 @@ export default function CreateUser() {
                                 <li style={{ color: third ? 'lightgreen' : 'red' }}>At least one number</li>
                             </ul>
                         </div>
-                        <Input placeholder={'Confirm password'} type={'password'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleConfirmChange} error={confirmError} />
+                        <Input placeholder={'Confirm password'} type={'password'} isVisible={true} width={'100%'} margin={'20px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handleConfirmChange} error={confirmError} />
+                        <div style={{ display: warehouses.length === 0 ? 'none' : 'block' }}>
+                            <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '8px 0 5px 0' }}>WAREHOUSE</p>
+                            <Select width={'100%'} type={'warehouse'} borderRadius={'5px'} customOptions={warehouses} onInputChange={handleWarehouseChange} selectedCategory={warehouse} />
+                            <p style={{ display: warehouseError === '' ? 'none' : 'block', color: 'red', margin: '10px 0 0 0', fontSize: '16px' }}>{warehouseError}</p>
+                        </div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', height: 'fit-content', marginLeft: '1%', width: 'fit-content' }} className="formButtons">

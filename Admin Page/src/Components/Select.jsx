@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margin, customOptions, categoryId, disabled, selectedCategory, selectedSubCategory }) => {
+const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margin, customOptions, categoryId, disabled, selectedCategory, selectedSubCategory,  }) => {
     const renderOptions = () => {
         switch (type) {
             case 'countries':
@@ -16,7 +16,9 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                     <>
                         <option>User Manager</option>
                         <option>Product Manager</option>
+                        <option>Order Manager</option>
                         <option>Order Processor</option>
+                        <option>Warehouse Staff</option>
                         <option>Shipper</option>
                     </>
                 );
@@ -58,6 +60,15 @@ const Select = ({ width, type, borderRadius, onInputChange, selectedValue, margi
                         <option hidden>Select subcategory</option>
                         {customOptions.map((option, index) => (
                             option.id === categoryId ? option.childCategories.map((child) => (<option key={index} value={child.id} selected={child.id === selectedSubCategory}>{child.categoryName}</option>)) : null
+                        ))}
+                    </>
+                )
+            case 'warehouse':
+                return (
+                    <>
+                        <option hidden>Select warehouse</option>
+                        {customOptions.map((option, index) => (
+                            <option key={option.id} value={option.id} selected={option.id === selectedCategory}>{option.name}</option>
                         ))}
                     </>
                 )

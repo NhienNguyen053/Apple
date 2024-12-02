@@ -106,7 +106,7 @@ export function AppView() {
             title="Total Orders"
             chart={{
               series: [
-                { label: 'Canceled', value: data.canceledOrders },
+                { label: 'Refunded', value: data.refundedOrders },
                 { label: 'Paid', value: data.paidOrders },
                 { label: 'Processing', value: data.processingOrders },
                 { label: 'Shipping', value: data.shippingOrders },

@@ -104,14 +104,7 @@ function NavbarItemSliderContent({ data, cartItems }) {
                 </div>
             </div>
         );
-    }else if(data === 'search'){
-        return(
-            <div className="container" style={{alignItems: 'baseline'}}>
-                <i className="fa-solid fa-magnifying-glass" style={{color: 'gray', marginRight: '20px', fontSize: '20px'}}></i>
-                <input type="text" placeholder="Search apple.com" style={{backgroundColor: 'transparent', border: 'none', outline: 'none', color: 'gray', fontSize: '20px'}}/>
-            </div>
-        );
-    }else{
+    } else {
         return (
             <div style={{ width: '60%', margin: '10px auto' }}>
                 <div className="slidercontent">

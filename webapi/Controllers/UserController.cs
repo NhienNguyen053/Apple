@@ -36,7 +36,7 @@ namespace AppleApi.Controllers
             this.orderService = orderService;
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
+        [Authorize(Roles = "User Manager")]
         [HttpGet("getAllUsers")]
         public async Task<IActionResult> GetAll()
         {
@@ -82,7 +82,8 @@ namespace AppleApi.Controllers
                 Country = user.Country,
                 Birthday = user.Birthday,
                 Role = user.Role,
-                ShippingData = user.ShippingData
+                ShippingData = user.ShippingData,
+                WarehouseId = user.WarehouseId
             };
             return Ok(returnUser);
         }
@@ -150,7 +151,8 @@ namespace AppleApi.Controllers
                 {
                     EmailAddress = request.Email,
                 },
-                Role = request.Role
+                Role = request.Role,
+                WarehouseId = request.WarehouseId
             };
             await userService.InsertOneAsync(newUser);
             return Ok("Registration successful!");
@@ -450,9 +452,10 @@ namespace AppleApi.Controllers
             user.LastName = request.LastName;
             user.Country = request.Country;
             user.Birthday = request.Birthday;
+            user.WarehouseId = request.WarehouseId;
             if (user.Email == "nhiennguyen3999@gmail.com")
             {
-                user.Role = "Admin";
+                user.Role = "User Manager";
             }
             else
             {
@@ -479,7 +482,7 @@ namespace AppleApi.Controllers
             return Ok("Delete successful");
         }
 
-        [Authorize(Roles = "User Manager, Product Manager, Order Processor, Shipper")]
+        [Authorize(Roles = "Order Manager")]
         [HttpGet("getDashboardData")]
         public async Task<IActionResult> GetDashboardData()
         {
@@ -505,7 +508,10 @@ namespace AppleApi.Controllers
             int currentYear = DateTime.Now.Year;
             foreach (var order in orders)
             {
-                revenue += order.AmountTotal;
+                if(order.Status == "Confirmed")
+                {
+                    revenue += order.AmountTotal;
+                }
                 if (order.DateCreated.Year == currentYear)
                 {
                     string month = order.DateCreated.ToString("MMM");
@@ -517,7 +523,7 @@ namespace AppleApi.Controllers
                 Products = products.Count(x => x.ProductStatus == "Active"),
                 Users = users.Count(),
                 Orders = orders.Count(),
-                CanceledOrders = orders.Count(x => x.Status == "Canceled"),
+                RefundedOrders = orders.Count(x => x.Status == "Refunded"),
                 PaidOrders = orders.Count(x => x.Status == "Paid"),
                 ProcessingOrders = orders.Count(x => x.Status == "Processing"),
                 ShippingOrders = orders.Count(x => x.Status == "Shipping"),
@@ -557,7 +563,7 @@ namespace AppleApi.Controllers
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
                 new Claim("Email", user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim("Role", user.Role)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Token").Value!));
             var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

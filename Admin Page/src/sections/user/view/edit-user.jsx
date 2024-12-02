@@ -27,10 +27,27 @@ export default function EditUser() {
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState('Customer');
     const [open, setOpen] = useState(false);
+    const [warehouses, setWarehouses] = useState([]);
+    const [warehouse, setWarehouse] = useState('');
+    const [warehouseError, setWarehouseError] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
         getUser();
     }, []);
+
+    const getWarehouses = async () => {
+        const response = await fetch(`https://localhost:7061/api/Warehouse/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+        });
+        if (response.status === 200) {
+            const data = await response.json();
+            setWarehouses(data);
+        }
+    }
 
     const getUser = async () => {
         const response = await fetch(`https://localhost:7061/api/Users/getUserById?id=${id}`, {
@@ -45,6 +62,10 @@ export default function EditUser() {
         setln(data.lastName);
         setbd(data.birthday);
         setRole(data.role);
+        if (data.role !== 'User Manager' && data.role !== 'Product Manager') {
+            getWarehouses();
+            setWarehouse(data.warehouseId);
+        }
         setCountry(data.country);
         const parsedDate = parseISO(data.birthday);
         const formattedDate = format(parsedDate, "yyyy-MM-dd");
@@ -69,6 +90,16 @@ export default function EditUser() {
 
     const handleRoleChange = (e) => {
         setRole(e.target.value);
+        if (e.target.value === 'Order Manager' || e.target.value === 'Order Processor' || e.target.value === 'Warehouse Staff' || e.target.value === 'Shipper') {
+            getWarehouses();
+        } else {
+            setWarehouses([]);
+        }
+    }
+
+    const handleWarehouseChange = (e) => {
+        setWarehouseError('');
+        setWarehouse(e.target.value);
     }
 
     const back = () => {
@@ -103,7 +134,13 @@ export default function EditUser() {
             setbdError('');
             count++;
         }
-        if (count === 3) {
+        if (warehouse === '') {
+            setWarehouseError('Please select a warehouse!');
+        } else {
+            setWarehouseError('');
+            count++;
+        }
+        if ((count === 3 && (role === 'User Manager' || role === 'Product Manager')) || (count === 4 && (role !== 'User Manager' && role !== 'Product Manager'))) {
             await fetch('https://localhost:7061/api/Users/updateUser', {
                 method: 'POST',
                 headers: {
@@ -115,7 +152,8 @@ export default function EditUser() {
                     LastName: ln,
                     Country: country,
                     Birthday: bd,
-                    Role: role
+                    Role: role,
+                    WarehouseId: warehouse
                 }),
             });
             setLoading(false);
@@ -166,6 +204,11 @@ export default function EditUser() {
                             <Input type={'date'} placeholder={'Birthday'} isVisible={true} width={'100%'} margin={'15px auto 0 auto'} borderRadius={"5px"} paddingRight={'10px'} onInputChange={handelBirthdayChange} error={bdError} inputValue={bd} />
                             <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '10px 0 5px 0' }}>ROLE</p>
                             <Select width={'100%'} type={'roles'} borderRadius={"5px"} onInputChange={handleRoleChange} selectedValue={role} />
+                            <div style={{ display: warehouses.length === 0 ? 'none' : 'block', marginBottom: '10px' }}>
+                                <p style={{ fontFamily: 'SF-Pro-Display-Medium', fontSize: '15px', margin: '15px 0 5px 0' }}>WAREHOUSE</p>
+                                <Select width={'100%'} type={'warehouse'} borderRadius={'5px'} customOptions={warehouses} onInputChange={handleWarehouseChange} selectedCategory={warehouse} />
+                                <p style={{ display: warehouseError === '' ? 'none' : 'block', color: 'red', margin: '10px 0 0 0', fontSize: '16px' }}>{warehouseError}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

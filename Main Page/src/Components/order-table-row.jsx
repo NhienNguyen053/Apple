@@ -27,7 +27,7 @@ export default function OrderTableRow({
 
     useEffect(() => {
         switch (status) {
-            case 'Canceled':
+            case 'Refunded':
                 setColor('error');
                 break;
             case 'Paid':

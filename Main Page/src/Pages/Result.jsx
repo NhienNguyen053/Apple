@@ -12,6 +12,8 @@ const Result = () => {
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get('orderId');
     const resultCode = searchParams.get('resultCode');
+    const requestId = searchParams.get('requestId');
+    const transId = searchParams.get('transId');
     const message = searchParams.get('message');
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
@@ -30,7 +32,9 @@ const Result = () => {
             const momoIPN = {
                 OrderId: orderId,
                 UserId: decodedToken ? decodedToken["Id"] : null,
-                ResultCode: resultCode
+                ResultCode: resultCode,
+                RequestId: requestId,
+                TransId: transId
             };
             const response = await fetch('https://localhost:7061/api/Momo/redirectMomo', {
                 method: 'POST',
@@ -45,7 +49,7 @@ const Result = () => {
         };
         sendMomoIPN();
     }, [orderId, decodedToken]);
-    console.log(resultCode === 0);
+
     return (
         <>
             <Navbar darkmode={false} removeCart={resultCode === "0" ? true : false} delay={resultCode === "0" ? true : false} />

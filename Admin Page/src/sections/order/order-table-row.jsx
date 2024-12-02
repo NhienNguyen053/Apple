@@ -25,7 +25,7 @@ export default function OrderTableRow({
 
     useEffect(() => {
         switch (status) {
-            case 'Canceled':
+            case 'Refunded':
                 setColor('error');
                 break;
             case 'Paid':
@@ -81,7 +81,7 @@ export default function OrderTableRow({
                     </Label>
                 </TableCell>
                 <TableCell>
-                    <a onClick={edit} style={{ display: userRole === 'Order Processor' || userRole === 'Shipper' ? 'block' : 'none', fontSize: '14px', fontFamily: 'SF-Pro-Display-Light', textAlign: 'center' }}>View Details</a>
+                    <a onClick={edit} style={{ display: userRole === 'Order Processor' || userRole === 'Order Manager' || userRole === 'Shipper' || userRole === 'Warehouse Staff' ? 'block' : 'none', fontSize: '14px', fontFamily: 'SF-Pro-Display-Light', textAlign: 'center' }}>View Details</a>
                 </TableCell>
             </TableRow>
         </>

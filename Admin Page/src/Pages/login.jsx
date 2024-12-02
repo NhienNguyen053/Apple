@@ -3,6 +3,7 @@ import Input from '../Components/Input';
 import Button from '../Components/Button';
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
+import jwt_decode from 'jwt-decode';
 
 // ----------------------------------------------------------------------
 
@@ -48,15 +49,26 @@ export default function Login() {
             });
             if (response.status === 200) {
                 const data = await response.text();
+                const decodedToken = jwt_decode(data);
+                var path;
+                if (decodedToken["Role"] === 'Order Manager') {
+                    path = "/dashboard";
+                } else if (decodedToken['Role'] === 'User Manager') {
+                    path = "/dashboard/users";
+                } else if (decodedToken["Role"] === 'Product Manager') {
+                    path = "/dashboard/products";
+                } else {
+                    path = "/dashboard/orders";
+                }
                 if (isChecked === false) {
                     var expirationDate = new Date();
                     expirationDate.setDate(expirationDate.getDate() + 1);
                     var expirationDateString = expirationDate.toUTCString();
                     document.cookie = `jwtToken=${data}; expires=${expirationDateString}; path=/`;
-                    navigate('/dashboard')
+                    navigate(path);
                 } else {
                     document.cookie = `jwtToken=${data}; expires=${expirationDateString}; path=/`;
-                    navigate('/dashboard');
+                    navigate(path);
                 }
             }
             else if (response.status === 204) {

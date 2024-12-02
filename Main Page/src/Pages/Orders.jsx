@@ -49,7 +49,7 @@ const Orders = () => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Canceled':
+            case 'Refunded':
                 return 'error';
             case 'Paid':
                 return 'success';
@@ -81,7 +81,6 @@ const Orders = () => {
                         setHasOrder(false);
                     } else {
                         setHasOrder(true);
-                        console.log(data.length)
                     }
                 }
             } catch (error) {
@@ -210,7 +209,7 @@ const Orders = () => {
                                                 <MenuItem onClick={() => handleClose('Shipping')}>Shipping</MenuItem>
                                                 <MenuItem onClick={() => handleClose('Delivered')}>Delivered</MenuItem>
                                                 <MenuItem onClick={() => handleClose('Confirmed')}>Confirmed</MenuItem>
-                                                <MenuItem onClick={() => handleClose('Canceled')}>Canceled</MenuItem>
+                                                <MenuItem onClick={() => handleClose('Refunded')}>Refunded</MenuItem>
                                             </Menu>
                                         </div>
                                     <TablePagination

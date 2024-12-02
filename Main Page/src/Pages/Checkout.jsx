@@ -251,8 +251,9 @@ const Checkout = () => {
                 setWardError(false);
                 count++;
             }
-            if (number.trim() === '') {
-                setNumberError('Phone number is required!');
+            const regex2 = /^\d{9}$/;
+            if (!regex2.test(number)) {
+                setNumberError('Invalid phone number!');
             } else {
                 setNumberError('');
                 count++;

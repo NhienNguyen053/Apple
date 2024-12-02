@@ -81,7 +81,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   }
 
   return (
-    <Link component={RouterLink} to="/dashboard" sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
+    <Link component={RouterLink} sx={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
       {logo}
     </Link>
   );

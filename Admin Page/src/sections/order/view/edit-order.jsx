@@ -12,6 +12,7 @@ import Alert from '@mui/material/Alert';
 import Modal3 from '../../../Components/Modal3';
 import { fCurrency } from '../../../utils/format-number';
 import jwt_decode from 'jwt-decode';
+import { fVietNamTime } from '../../../utils/format-time';
 
 export default function EditOrder() {
     const location = useLocation();
@@ -48,27 +49,17 @@ export default function EditOrder() {
 
     useEffect(() => {
         let component;
-        if (order && order.status === "Paid") {
-            component = <Button text={"Processing"} onclick={() => toggleModal2('Processing')} background="black" textColor="white" />;
-        } else if (order && order.status === "Processing") {
-            if (decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === "Shipper") {
-                component = <Button text={"Deliver"} onclick={() => toggleModal2('Deliver')} background="black" textColor="white" />;
-            } else {
-                component = null;
-            }
-        } else if (order && order.status === "Shipping" && decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === "Shipper") {
-            component = (
-                <>
-                    <Button text={"Shipping"} onclick={() => toggleModal2('Shipping')} background="black" textColor="white" />
-                    <div style={{ width: '10px' }}></div>
-                    <Button text={"Delivered"} onclick={() => toggleModal2('Delivered')} background="black" textColor="white" />
-                </>
-            );
+        if (order && order.status === "Paid" && decodedToken['Role'] === "Order Processor") {
+            component = <Button text={"Process"} onclick={() => toggleModal2('Processing')} background="black" textColor="white" />;
+        } else if (order && order.status === "Processing" && decodedToken['Role'] === "Warehouse Staff") {
+            component = <Button text={"Deliver"} onclick={() => toggleModal2('Deliver')} background="black" textColor="white" />;
+        } else if (order && order.status === "Shipping" && decodedToken['Role'] === "Shipper") {
+            component = <Button text={"Finish"} onclick={() => toggleModal2('Delivered')} background="black" textColor="white" />
         } else {
             component = null;
         }
         setButtonComponent(component);
-    }, [order, decodedToken]);
+    }, [order]);
 
     const getOrder = async () => {
         const response = await fetch(`https://localhost:7061/api/Order/getOrderDetails?id=${id}`, {
@@ -84,15 +75,7 @@ export default function EditOrder() {
             detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
         });
         const date = new Date(data.dateCreated);
-        const vietnamTime = date.toLocaleString("en-GB", {
-            timeZone: "Asia/Ho_Chi_Minh",
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-        });
+        const vietnamTime = fVietNamTime(date);
         setFormattedDate(vietnamTime);
         setOrder(data);
     }
@@ -103,7 +86,7 @@ export default function EditOrder() {
 
     const toggleModal2 = (text) => {
         setText(text);
-        setModalVisible(!isModalVisible);
+        setModalVisible(true);
     }
 
     const handleUpdate = async (detail) => {
@@ -119,21 +102,37 @@ export default function EditOrder() {
             shippingDetails: updatedShippingDetails,
             status: text === 'Deliver' ? 'Shipping' : text
         }));
-        await fetch('https://localhost:7061/api/Order/updateOrder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`
-            },
-            body: JSON.stringify({
-                OrderId: order.orderId,
-                CustomerDetails: order.customerDetails,
-                ShippingDetails: updatedShippingDetails,
-                ProductDetails: order.productDetails,
-                Status: text === 'Deliver' ? 'Shipping' : text
-            }),
-        });
-        setModalVisible(!isModalVisible);
+        if (text === 'Refunded') {
+            setModalVisible(!isModalVisible);
+            await fetch('https://localhost:7061/api/Momo/cancelPayment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    OrderId: order.orderId,
+                    ShippingDetails: updatedShippingDetails,
+                    Status: text === 'Deliver' ? 'Shipping' : text
+                }),
+            });
+        } else {
+            setModalVisible(!isModalVisible);
+            await fetch('https://localhost:7061/api/Order/updateOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: JSON.stringify({
+                    OrderId: order.orderId,
+                    CustomerDetails: order.customerDetails,
+                    ShippingDetails: updatedShippingDetails,
+                    ProductDetails: order.productDetails,
+                    Status: text === 'Deliver' ? 'Shipping' : text
+                }),
+            });
+        }
         setLoading(false);
         setOpen(true);
         setTimeout(() => {
@@ -144,7 +143,7 @@ export default function EditOrder() {
 
     const cancelOrder = () => {
         setModalVisible(!isModalVisible);
-        setText('Canceled');
+        setText('Refunded');
     }
 
     return (
@@ -153,7 +152,7 @@ export default function EditOrder() {
             <div className='container7 display' style={{ paddingTop: '15px', paddingBottom: '20px' }}>
                 <Collapse in={open} sx={{ width: '100%' }}>
                     <Alert sx={{ mb: 2 }}>
-                        Updated order successfully!
+                        Processed order successfully!
                     </Alert>
                 </Collapse>
                 {order ? ( 
@@ -207,9 +206,9 @@ export default function EditOrder() {
                                     <td><img src={detail.productImage} style={{ width: '75px', height: '75px' }} /></td>
                                     <td>
                                         <div>
-                                            <p>Color: {detail.color}</p>
-                                            <p>Storage: {detail.storage}</p>
-                                            <p>Memory: {detail.memory}</p>
+                                            <p style={{ display: detail.color ? '' : 'none' }}>Color: {detail.color}</p>
+                                            <p style={{ display: detail.storage ? '' : 'none' }}>Storage: {detail.storage}</p>
+                                            <p style={{ display: detail.memory ? '' : 'none' }}>Memory: {detail.memory}</p>
                                         </div>
                                     </td>
                                     <td>{detail.quantity}</td>
@@ -218,9 +217,9 @@ export default function EditOrder() {
                                 </tr>
                             ))}
                         </table>
-                        <div style={{ display: 'flex', height: 'fit-content', width: 'fit-content', position: 'relative' }} className="formButtons">
-                            <Button display={order.status === 'Canceled' || order.status === 'Confirmed' || order.status === 'Delivered' ? 'none' : 'flex'} text={'Cancel'} onclick={cancelOrder} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
-                            <div style={{ width: '15px', display: order.status === 'Canceled' || order.status === 'Confirmed' || order.status === 'Delivered' ? 'none' : 'block' }}></div>
+                        <div style={{ display: (decodedToken && decodedToken["Role"] === 'Order Manager') ? 'none' : 'flex', height: 'fit-content', width: 'fit-content', position: 'relative' }} className="formButtons">
+                            <Button display={order.status === 'Refunded' || order.status === 'Confirmed' || order.status === 'Delivered' || (decodedToken && decodedToken["Role"] === 'Shipper' || decodedToken['Role'] === 'Warehouse Staff') ? 'none' : 'flex'} text={'Refund'} onclick={cancelOrder} background={'linear-gradient(to bottom, #ffffff, #e1e0e1)'} textColor={'black'} />
+                            <div style={{ width: '15px', display: order.status === 'Refunded' || order.status === 'Confirmed' || order.status === 'Delivered' || (decodedToken && decodedToken["Role"] === 'Shipper') ? 'none' : 'block' }}></div>
                             {loading ? (
                                 <div className="lds-spinner">
                                     <div></div><div></div><div></div><div></div>
@@ -239,7 +238,7 @@ export default function EditOrder() {
                                     {index !== order.shippingDetails.length - 1 && <div className="line"></div>}
                                     <div className="content">
                                         <p>{detail.note}</p>
-                                        <span className="time">{detail.dateCreated}</span>
+                                        <span className="time">{fVietNamTime(new Date(detail.dateCreated))}</span>
                                     </div>
                                 </div>
                             ))}
@@ -368,7 +367,7 @@ export default function EditOrder() {
                                 </div>
                             </div>
                         </div>
-                        <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} text={text} />
+                        <Modal3 isVisible={isModalVisible} toggleModal={toggleModal} func={handleUpdate} text={text === 'Processing' ? 'Process' : text === 'Delivered' ? 'Finish' : text === 'Refunded' ? 'Refund' : text} />
                     </>
                 ) : (
                     <></>

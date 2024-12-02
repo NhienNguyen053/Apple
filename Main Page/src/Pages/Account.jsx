@@ -67,7 +67,7 @@ const Account = () => {
             district: districtName,
             ward: wardName,
             emailAddress: data.shippingData.emailAddress,
-            phoneNumber: data.shippingData.phoneNumber === null ? null : null
+            phoneNumber: data.shippingData.phoneNumber === null ? null : "+84" + data.shippingData.phoneNumber
         }
         await fetch(`https://localhost:7061/api/Users/updateShipping?userId=${decodedToken['Id']}`, {
             method: 'POST',

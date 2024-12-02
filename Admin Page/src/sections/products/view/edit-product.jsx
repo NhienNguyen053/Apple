@@ -77,7 +77,7 @@ export default function EditProduct() {
     const [deleted, setDeleted] = useState(false);
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
-    const [role] = useState(decodedToken ? decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null);
+    const [role] = useState(decodedToken ? decodedToken['Role'] : null);
 
     const names = [
         'Red',

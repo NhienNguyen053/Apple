@@ -5,6 +5,7 @@ using AppleApi.Services;
 using AppleApi.Models.User;
 using System.Security.Cryptography;
 using AppleApi.Interfaces;
+using AppleApi.Models.Warehouse;
 
 namespace AppleApi.Services
 {
@@ -15,9 +16,9 @@ namespace AppleApi.Services
             using (var scope = serviceProvider.CreateScope())
             {
                 var users = await userService.GetAll();
-                CreatePasswordHash("123456789", out byte[] passwordHash, out byte[] passwordSalt);
                 if (users == null || users.Count == 0)
                 {
+                    CreatePasswordHash("Gardevoir123", out byte[] passwordHash, out byte[] passwordSalt);
                     var user = new User
                     {
                         FirstName = "Nhien",
@@ -42,8 +43,25 @@ namespace AppleApi.Services
                         },
                         Role = "User Manager"
                     };
-
                     await userService.InsertOneAsync(user);
+                }
+            }
+        }
+
+        public static async Task SeedWarehouseIfEmpty(IServiceProvider serviceProvider, IWarehouseService warehouseService)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var warehouses = await warehouseService.GetAll();
+                if (warehouses == null || warehouses.Count == 0)
+                {
+                    var newWarehouses = new List<Warehouse>()
+                    {
+                        new Warehouse { Name = "Warehouse North", Address = "Ha Noi, Viet Nam" },
+                        new Warehouse { Name = "Warehouse West", Address = "Da Nang, Viet Nam" },
+                        new Warehouse { Name = "Warehouse South", Address = "TP Ho Chi Minh, Viet Nam" }
+                    };
+                    await warehouseService.InsertManyAsync(newWarehouses);
                 }
             }
         }
