@@ -69,7 +69,7 @@ const Specification = ({ spec, text, width }) => {
             <div style={{ width: width ? width : '90%', display: 'flex', justifyContent: 'center' }}>
                 <div style={{ width: '50%' }}>
                     {renderImage()}
-                    <p style={{ textAlign: 'center', color: 'black', fontSize: spec == 'display' ? '18px' : '14px', fontFamily: spec == 'display' ? 'SF-Pro-Display-Medium' : 'SF-Pro-Display-Light' }}>{text}</p>
+                    <p style={{ textOverflow: 'ellipsis', textAlign: 'center', color: 'black', fontSize: spec == 'display' ? '18px' : '14px', fontFamily: spec == 'display' ? 'SF-Pro-Display-Medium' : 'SF-Pro-Display-Light' }}>{text}</p>
                 </div>
             </div>
         </>

@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 // ----------------------------------------------------------------------
 
 export default function Login() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const [isChecked, setChecked] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [password, setPassword] = useState('');
@@ -37,7 +38,7 @@ export default function Login() {
             }
         }
         else {
-            const response = await fetch('https://localhost:7061/api/Users/loginDashboard', {
+            const response = await fetch(`${API_BASE_URL}/api/Users/loginDashboard`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ export default function Login() {
       </Helmet>
 
       <div style={{ width: '100%', display: 'flex', background: '#d0d0d1', height: '100vh' }}>
-        <div style={{ width: '25%', margin: 'auto', height: '100vh', background: 'white', display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ width: '373px', margin: 'auto', height: '100vh', background: 'white', display: 'flex', flexWrap: 'wrap' }}>
             <div style={{ width: '100%', justifyContent: 'center', display: 'flex', height: 'fit-content', marginTop: '100px', flexWrap: 'wrap' }}>
                 <img src="/apple-logo.png" alt="" style={{ width: '40%', margin: 'auto auto 10px auto' }}/>
                 <Input isVisible={true} width={'80%'} placeholder={'Email or Phone Number'} error={error} onInputChange={handleInputChange}/>

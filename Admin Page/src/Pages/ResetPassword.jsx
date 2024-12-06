@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import { Link, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const [captcha, setCaptcha] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setemailError] = useState('');
@@ -24,7 +25,7 @@ const ResetPassword = () => {
     const regex3 = /^\+\d+$/;
 
     if (regex.test(email)) {
-      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${email}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/getUser?emailOrPhone=${email}`, {
           method: 'POST',
           headers: {
               'Accept': '*/*',
@@ -42,7 +43,7 @@ const ResetPassword = () => {
       setemailError('Please enter phone number with your international dialing code');
     } else if(regex3.test(email)){
       const encodeNumber = encodeURIComponent(email);
-      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${encodeNumber}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/getUser?emailOrPhone=${encodeNumber}`, {
           method: 'POST',
           headers: {
               'Accept': '*/*',
@@ -61,7 +62,7 @@ const ResetPassword = () => {
     }
     if(count === 1 && captcha === true){
       setLoading(true);
-      await fetch(`https://localhost:7061/api/users/sendemailotp?receiveEmail=${email}`, {
+      await fetch(`${API_BASE_URL}/api/users/sendemailotp?receiveEmail=${email}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +74,7 @@ const ResetPassword = () => {
     else if(count === 2 && captcha === true){
       setLoading(true);
       const encodedPhoneNumber = encodeURIComponent(email);
-      await fetch(`https://localhost:7061/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
+      await fetch(`${API_BASE_URL}/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

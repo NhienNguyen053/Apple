@@ -15,6 +15,7 @@ import Cookies from 'js-cookie';
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const [openFilter, setOpenFilter] = useState(false);
   const navigate = useNavigate();
   const jwtToken = Cookies.get('jwtToken');
@@ -37,7 +38,7 @@ export default function ProductsView() {
 
   const fetchProducts = async (category, subCategory, price, status, name, index, size) => {
       try {
-          const response = await fetch(`https://localhost:7061/api/Product/getProducts?categoryId=${category}&subcategoryId=${subCategory}&price=${price}&status=${status}&name=${name}&pageIndex=${index}&pageSize=${size}`);
+          const response = await fetch(`${API_BASE_URL}/api/Product/getProducts?categoryId=${category}&subcategoryId=${subCategory}&price=${price}&status=${status}&name=${name}&pageIndex=${index}&pageSize=${size}`);
           const data = await response.json();
           const { products, totalCount } = data;
           var array = [];
@@ -54,7 +55,7 @@ export default function ProductsView() {
 
   const fetchCategories = async () => {
       try {
-          const response = await fetch("https://localhost:7061/api/Category/getAllCategories");
+          const response = await fetch(`${API_BASE_URL}/api/Category/getAllCategories`);
           const data = await response.json();
           setCategories(data);
       } catch (error) {

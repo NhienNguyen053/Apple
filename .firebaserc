@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "apple-12071"
+  },
+  "targets": {
+    "apple-12071": {
+      "hosting": {
+        "admin": [
+          "apple-12071"
+        ],
+        "main": [
+          "apple-main"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

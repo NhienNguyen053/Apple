@@ -14,6 +14,7 @@ const { format, parseISO } = require("date-fns");
 // ----------------------------------------------------------------------
 
 export default function EditUser() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const location = useLocation();
     const id = location.state?.id;
     const jwtToken = Cookies.get('jwtToken');
@@ -36,7 +37,7 @@ export default function EditUser() {
     }, []);
 
     const getWarehouses = async () => {
-        const response = await fetch(`https://localhost:7061/api/Warehouse/`, {
+        const response = await fetch(`${API_BASE_URL}/api/Warehouse/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +51,7 @@ export default function EditUser() {
     }
 
     const getUser = async () => {
-        const response = await fetch(`https://localhost:7061/api/Users/getUserById?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Users/getUserById?id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ export default function EditUser() {
             count++;
         }
         if ((count === 3 && (role === 'User Manager' || role === 'Product Manager')) || (count === 4 && (role !== 'User Manager' && role !== 'Product Manager'))) {
-            await fetch('https://localhost:7061/api/Users/updateUser', {
+            await fetch(`${API_BASE_URL}/api/Users/updateUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

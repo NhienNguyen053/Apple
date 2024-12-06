@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Otp = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
   const location = useLocation();  
@@ -24,7 +25,7 @@ const Otp = () => {
       setError('Please enter the full otp!');
     } else {
       const encodedPhoneNumber = encodeURIComponent(email);
-      const response = await fetch(`https://localhost:7061/api/Users/confirmotp?otp=${otp2}&emailorphone=${encodedPhoneNumber}&type=${type}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Users/confirmotp?otp=${otp2}&emailorphone=${encodedPhoneNumber}&type=${type}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ const Otp = () => {
 
   const resend = async () => {
     if(type === 1){
-      await fetch(`https://localhost:7061/api/users/sendemailotp?receiveEmail=${email}`, {
+      await fetch(`${API_BASE_URL}/api/users/sendemailotp?receiveEmail=${email}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ const Otp = () => {
     }
     else if(type === 2){
       const encodedPhoneNumber = encodeURIComponent(email);
-      await fetch(`https://localhost:7061/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
+      await fetch(`${API_BASE_URL}/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

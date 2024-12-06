@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import jwt_decode from 'jwt-decode';
 
 const Result = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     let navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const orderId = searchParams.get('orderId');
@@ -22,21 +23,20 @@ const Result = () => {
         let path = `/`;
         navigate(path);
     }
-    // remove this when momo ipn work
+    // have to simulate calling momo ipn through front end cause you need to be a partner to use momo ipn
     const hasCalledApi = useRef(false);
     useEffect(() => {
         const sendMomoIPN = async () => {
             if (hasCalledApi.current) return;
             hasCalledApi.current = true;
-
             const momoIPN = {
-                OrderId: orderId,
-                UserId: decodedToken ? decodedToken["Id"] : null,
-                ResultCode: resultCode,
-                RequestId: requestId,
-                TransId: transId
+                orderId: orderId,
+                extraData: decodedToken ? decodedToken["Id"] : "",
+                resultCode: resultCode,
+                requestId: requestId,
+                transId: transId
             };
-            const response = await fetch('https://localhost:7061/api/Momo/redirectMomo', {
+            const response = await fetch(`${API_BASE_URL}/api/Momo/redirectMomo`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

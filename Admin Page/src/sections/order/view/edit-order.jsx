@@ -15,6 +15,7 @@ import jwt_decode from 'jwt-decode';
 import { fVietNamTime } from '../../../utils/format-time';
 
 export default function EditOrder() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const location = useLocation();
     const id = location.state?.id;
     const [loading, setLoading] = useState(false);
@@ -62,7 +63,7 @@ export default function EditOrder() {
     }, [order]);
 
     const getOrder = async () => {
-        const response = await fetch(`https://localhost:7061/api/Order/getOrderDetails?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Order/getOrderDetails?id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ export default function EditOrder() {
         }));
         if (text === 'Refunded') {
             setModalVisible(!isModalVisible);
-            await fetch('https://localhost:7061/api/Momo/cancelPayment', {
+            await fetch(`${API_BASE_URL}/api/Momo/cancelPayment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,7 +119,7 @@ export default function EditOrder() {
             });
         } else {
             setModalVisible(!isModalVisible);
-            await fetch('https://localhost:7061/api/Order/updateOrder', {
+            await fetch(`${API_BASE_URL}/api/Order/updateOrder`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

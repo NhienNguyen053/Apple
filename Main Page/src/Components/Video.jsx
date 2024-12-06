@@ -21,7 +21,7 @@ const Video = ({ url }) => {
     };
 
     return (
-        <div style={{ height: '680px', width: '100%', margin: 'auto', position: 'relative' }}>
+        <div style={{ height: '100%', width: '100%', margin: 'auto', position: 'relative' }}>
             <video
                 ref={videoRef}
                 id="video"

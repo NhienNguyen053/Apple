@@ -7,8 +7,11 @@ import Footer from '../Components/Footer';
 import Captcha from '../Components/Captcha';
 import Button from '../Components/Button';
 import { Link, useNavigate } from "react-router-dom";
+import ViewportWidth from '../Components/ViewportWidth';
 
 const ResetPassword = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
+  const viewportWidth = ViewportWidth();
   const [captcha, setCaptcha] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setemailError] = useState('');
@@ -27,7 +30,7 @@ const ResetPassword = () => {
     const regex3 = /^\+\d+$/;
 
     if (regex.test(email)) {
-      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${email}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/getUser?emailOrPhone=${email}`, {
           method: 'POST',
           headers: {
               'Accept': '*/*',
@@ -45,7 +48,7 @@ const ResetPassword = () => {
       setemailError('Please enter phone number with your international dialing code');
     } else if(regex3.test(email)){
       const encodeNumber = encodeURIComponent(email);
-      const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${encodeNumber}`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/getUser?emailOrPhone=${encodeNumber}`, {
           method: 'POST',
           headers: {
               'Accept': '*/*',
@@ -64,7 +67,7 @@ const ResetPassword = () => {
     }
     if(count === 1 && captcha === true){
       setLoading(true);
-      await fetch(`https://localhost:7061/api/users/sendemailotp?receiveEmail=${email}`, {
+      await fetch(`${API_BASE_URL}/api/users/sendemailotp?receiveEmail=${email}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +79,7 @@ const ResetPassword = () => {
     else if(count === 2 && captcha === true){
       setLoading(true);
       const encodedPhoneNumber = encodeURIComponent(email);
-      await fetch(`https://localhost:7061/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
+      await fetch(`${API_BASE_URL}/api/Users/sendSMS?phone=${encodedPhoneNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,17 +96,17 @@ const ResetPassword = () => {
     <>
       <Navbar darkmode={false} />
       <div style={{width: '100%', borderBottom: '0.5px solid rgb(201, 201, 201)', marginTop: '50px'}}>
-          <div className='container6'>
+          <div className='container6' style={{width: viewportWidth > 1150 ? '67%' : '90%'}}>
                 <p className='p6'>Apple ID</p>
                 <Link to='/signin' className='a2'>Sign In</Link>
           </div>
       </div>
-      <div className='container display' style={{marginTop: '45px', flexWrap: 'nowrap'}}>
-        <div style={{width: '60%', borderRight: '0.5px solid rgb(201, 201, 201)', paddingRight: '50px'}}>
+      <div className='container display' style={{marginTop: '45px', flexWrap: viewportWidth > 850 ? 'nowrap' : 'wrap', width: viewportWidth > 1150 ? '67%' : '90%'}}>
+              <div style={{ width: viewportWidth > 850 ? '60%' : '100%', borderRight: viewportWidth > 850 ? '0.5px solid rgb(201, 201, 201)' : '', paddingRight: '50px'}}>
             <p style={{color: 'black', fontSize: '35px', fontFamily: 'SF-Pro-Display-Medium', margin: '25px 0'}}>Reset your password</p>
             <p style={{color: 'black', fontSize: '18px', fontFamily: 'SF-Pro-Display-Light', marginTop: '0'}}>Enter your email address or phone number that you use with your account to<br />continue.</p>
             <Input placeholder={'Email or phone number'} isVisible={true} margin={'0'} borderRadius={'5px'} width={'379px'} onInputChange={handleEmailChange} error={emailError}/>
-            <Captcha data={setCaptcha} data2={captcha} margin={'15px 0 0 0'}/>
+            <Captcha width={viewportWidth > 850 ? null : '379px'} data={setCaptcha} data2={captcha} margin={'15px 0 0 0'}/>
             {loading ? (
               <div className="lds-spinner" style={{margin: '0'}}>
                 <div></div><div></div><div></div><div></div>
@@ -114,8 +117,8 @@ const ResetPassword = () => {
               <Button text={'Continue'} onclick={handleReset} margin={'20px 0'}/>
             )}
         </div>
-        <div style={{width: '40%'}}>
-            <div style={{display: 'flex', margin: '50px auto', justifyContent: 'center'}}>
+        <div style={{width: viewportWidth > 850 ? '40%' : '90%'}}>
+            <div style={{display: 'flex', margin: '50px 20px', justifyContent: 'center'}}>
                 <i className="fa-solid fa-users" style={{color: 'gray', fontSize: '35px', margin: '25px 25px 0 0'}}></i>
                 <p style={{fontSize: '16px', fontFamily: 'SF-Pro-Display-Light'}}>You've come to the right place <br />to reset a forgotten password. <br />For your security, we'll ask you a <br />few questions to verify that <br />you're the owner of this <br />account.</p>
             </div>

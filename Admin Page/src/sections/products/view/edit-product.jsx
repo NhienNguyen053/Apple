@@ -32,6 +32,7 @@ import jwt_decode from 'jwt-decode';
 // ----------------------------------------------------------------------
 
 export default function EditProduct() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
@@ -212,7 +213,7 @@ export default function EditProduct() {
     }, [productId, personName])
 
     const getProduct = async () => {
-        const response = await fetch(`https://localhost:7061/api/Product/getProductById?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Product/getProductById?id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -244,7 +245,7 @@ export default function EditProduct() {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
+            const response = await fetch(`${API_BASE_URL}/api/Category/getAllCategories`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -266,7 +267,7 @@ export default function EditProduct() {
 
     const getProductImagesByColor = async (e) => {
         try {
-            const response = await fetch('https://localhost:7061/api/Product/getProductImagesByColor', {
+            const response = await fetch(`${API_BASE_URL}/api/Product/getProductImagesByColor`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -384,7 +385,7 @@ export default function EditProduct() {
             setProductPriceError(true)
         }
         if (count === 4) {
-            const result = await fetch('https://localhost:7061/api/Product/updateProduct', {
+            const result = await fetch(`${API_BASE_URL}/api/Product/updateProduct`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -543,7 +544,7 @@ export default function EditProduct() {
         }
 
         if (productImages.length > 0) {
-            await fetch('https://localhost:7061/api/Product/updateProductImages', {
+            await fetch(`${API_BASE_URL}/api/Product/updateProductImages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -584,7 +585,7 @@ export default function EditProduct() {
         const storage = getStorage();
         const desertRef = ref(storage, extractedPath);
         deleteObject(desertRef).then(async () => {
-            await fetch('https://localhost:7061/api/Product/deleteProductImage', {
+            await fetch(`${API_BASE_URL}/api/Product/deleteProductImage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -612,7 +613,7 @@ export default function EditProduct() {
 
     const deleteProduct = async () => {
         setLoading2(true);
-        const response = await fetch(`https://localhost:7061/api/Product/deleteProduct?id=${productId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Product/deleteProduct?id=${productId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

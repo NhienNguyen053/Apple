@@ -14,6 +14,7 @@ import Alert from '@mui/material/Alert';
 // ----------------------------------------------------------------------
 
 export default function CreateCategory() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const [categoryName, setCategoryName] = useState('');
     const [categoryError, setCategoryError] = useState('');
@@ -79,7 +80,7 @@ export default function CreateCategory() {
             count++;
         }
         if (count === 1) {
-            const response = await fetch('https://localhost:7061/api/Category/createCategory', {
+            const response = await fetch(`${API_BASE_URL}/api/Category/createCategory`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -119,7 +120,7 @@ export default function CreateCategory() {
                     return getDownloadURL(imageRef);
                 })
                 .then((downloadURL) => {
-                    fetch('https://localhost:7061/api/Category/updateCategory', {
+                    fetch(`${API_BASE_URL}/api/Category/updateCategory`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -309,10 +309,11 @@ namespace AppleApi.Controllers
         [NonAction]
         public IActionResult SendEmail(string token, string receiveEmail)
         {
+            string thisApiUrl = configuration["BaseURL:AdminPage"]!;
             string senderEmail = "nhiennguyen3999@gmail.com";
             string senderPassword = "gadj yvyj dhlg ixpj";
             string recipientEmail = receiveEmail;
-            var body2 = "https://localhost:7061/api/Users/verifyemail?token=";
+            var body2 = $"{thisApiUrl}api/Users/verifyemail?token=";
             var encodedlink = WebUtility.UrlEncode(token);
             var body = $@"<p>Click the link below to verify your email:</p><a href=""{body2 + encodedlink}"" target=""_blank"">Verify Email</a>";
             var email = new MimeMessage();

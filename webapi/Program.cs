@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
     policy  =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:7061")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:7061", "https://apple-12071.web.app", "https://apple-main.web.app")
         .AllowAnyHeader()
         .AllowAnyMethod();
     });

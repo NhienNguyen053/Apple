@@ -9,13 +9,14 @@ import Cookies from 'js-cookie';
 // ----------------------------------------------------------------------
 
 export function AppView() {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const [data, setData] = useState();
   const jwtToken = Cookies.get('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://localhost:7061/api/Users/getDashboardData', {
+        const response = await fetch(`${API_BASE_URL}/api/Users/getDashboardData`, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',

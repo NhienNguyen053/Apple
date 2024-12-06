@@ -24,6 +24,7 @@ import { Button as MuiButton } from '@mui/material';
 // ----------------------------------------------------------------------
 
 export default function OrdersView() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
@@ -50,7 +51,7 @@ export default function OrdersView() {
         const fetchData = async () => {
             try {
                 if (decodedToken && decodedToken['Role'] === 'Shipper') {
-                    const response = await fetch(`https://localhost:7061/api/Order/getShipperOrders?id=${decodedToken["Id"]}`, {
+                    const response = await fetch(`${API_BASE_URL}/api/Order/getShipperOrders?id=${decodedToken["Id"]}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export default function OrdersView() {
                     }));
                     setOrders(dashboardOrders);
                 } else {
-                    const response = await fetch(`https://localhost:7061/api/Order/getAllOrders?status=${statusText}`, {
+                    const response = await fetch(`${API_BASE_URL}/api/Order/getAllOrders?status=${statusText}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

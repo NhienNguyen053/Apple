@@ -24,6 +24,7 @@ import Modal from '../../../Components/Modal';
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
@@ -43,7 +44,7 @@ export default function UserPage() {
   useEffect(() => {
       const fetchData = async () => {
           try {
-              const response = await fetch('https://localhost:7061/api/Users/getAllUsers', {
+              const response = await fetch(`${API_BASE_URL}/api/Users/getAllUsers`, {
                   method: 'GET',
                   headers: {
                       'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export default function UserPage() {
   }
 
   const deleteUser = async () => {
-      const response = await fetch(`https://localhost:7061/api/Users/deleteUser?id=${deleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Users/deleteUser?id=${deleteId}`, {
           method: 'DELETE',
           headers: {
               'Content-Type': 'application/json',

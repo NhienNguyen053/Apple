@@ -6,8 +6,11 @@ import Footer from '../Components/Footer';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const SignIn = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
+  const viewportWidth = ViewportWidth();
   const location = useLocation();
   const [inputValue, setInputValue] = useState('');
   const [user, setUser] = useState(false);
@@ -63,7 +66,7 @@ const SignIn = () => {
 
   const handleVerificationLinkClick = async () => {
     try {
-        await fetch(`https://localhost:7061/api/Users/resendEmail?email=${encodeURIComponent(inputValue)}`, {
+        await fetch(`${API_BASE_URL}/api/Users/resendEmail?email=${encodeURIComponent(inputValue)}`, {
             method: 'POST',
             headers: {
                 'Accept': '*/*',
@@ -81,7 +84,7 @@ const SignIn = () => {
         setError('Please enter an email or phone number!');
       }
       else {
-          const response = await fetch(`https://localhost:7061/api/users/getUser?emailOrPhone=${inputValue}`, {
+          const response = await fetch(`${API_BASE_URL}/api/users/getUser?emailOrPhone=${inputValue}`, {
               method: 'POST',
               headers: {
                   'Accept': '*/*',
@@ -114,7 +117,7 @@ const SignIn = () => {
         setError2('Please enter a password!');
       }
       else {
-          const response = await fetch('https://localhost:7061/api/Users/login', {
+          const response = await fetch(`${API_BASE_URL}/api/Users/login`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -172,10 +175,10 @@ const SignIn = () => {
               Verification link has been sent. Please check your email!
           </Alert>
       </Collapse>
-      <div className='container display'>
-        <h1 className='h1'>Sign in for faster checkout</h1>
+      <div className='container display' style={{width: viewportWidth > 625 ? '67%' : '90%'}}>
+        <h1 className='h1' style={{fontSize: viewportWidth > 625 ? '38px' : '30px'}}>Sign in for faster checkout</h1>
         <p className='p1'>Sign in to Apple Store</p>
-        <div style={{width: '419px',height: '112px', margin: 'auto'}}>
+        <div style={{width: viewportWidth > 625 ? '419px' : '350px',height: '112px', margin: 'auto'}}>
           <Input
             placeholder={"Email or Phone Number"}
             inputValue={inputValue}
@@ -187,6 +190,7 @@ const SignIn = () => {
             buttonClick={handleEnterKeyPress}
             type={"text"}
             icon={true}
+            width={viewportWidth > 625 ? null : '350px'}
           />
           <p style={{display: verify ? 'block' : 'none', margin: '8px 0 0 3px'}}>Your account isn't verified. <a href='' onClick={handleVerificationLinkClick}>Click here</a> to send verification email!</p>
           <Input 
@@ -200,6 +204,7 @@ const SignIn = () => {
             error={error2}
             type={"password"}
             icon={true}
+            width={viewportWidth > 625 ? null : '350px'}
           />
         </div>
         <div className='container1'>

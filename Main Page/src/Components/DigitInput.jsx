@@ -37,7 +37,7 @@ const DigitInput = ({setInput}) => {
   };
 
   return (
-    <div>
+    <div style={{display: 'flex'}}>
       {digits.map((digit, index) => (
         <input
           key={index}

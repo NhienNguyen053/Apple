@@ -8,8 +8,11 @@ import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 import { fCurrency } from '../Components/utils/format-number';
 import Select from '../Components/Select';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const Checkout = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
+    const viewportWidth = ViewportWidth();
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -48,7 +51,7 @@ const Checkout = () => {
         const fetchUserShippingData = async () => {
             try {
                 if (decodedToken) {
-                    const response = await fetch(`https://localhost:7061/api/Users/getUserById?Id=${decodedToken['Id']}`, {
+                    const response = await fetch(`${API_BASE_URL}/api/Users/getUserById?Id=${decodedToken['Id']}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -283,7 +286,7 @@ const Checkout = () => {
                         PhoneNumber: region + number
                     }
                 };
-                const response = await fetch('https://localhost:7061/api/Momo/', {
+                const response = await fetch(`${API_BASE_URL}/api/Momo/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -313,7 +316,7 @@ const Checkout = () => {
     return (
         <>
             <Navbar darkmode={false} />
-            <div style={{ width: '62.5%', margin: 'auto' }}>
+            <div style={{ width: viewportWidth > 1000 ? '62.5%' : '90%', margin: 'auto' }}>
                 <div style={{ paddingBottom: '10px', marginTop: '75px', display: 'flex', justifyContent: 'space-between', borderBottom: '0.2px solid #c3c3c3' }}>
                     <span style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '26px' }}>Checkout</span>
                     <span style={{ color: 'black', fontFamily: 'SF-Pro-Display-Regular', fontSize: '16px' }}>Order Total: {fCurrency(total)}</span>
@@ -327,7 +330,7 @@ const Checkout = () => {
                         icon={false}
                         borderRadius={"10px"}
                         error={fnError}
-                        width={'50%'}
+                        width={viewportWidth > 768 ? '50%' : '90%'}
                         onInputChange={handleFnChange}
                         margin={'0'}
                         inputValue={fn}
@@ -338,7 +341,7 @@ const Checkout = () => {
                         icon={false}
                         borderRadius={"10px"}
                         error={lnError}
-                        width={'50%'}
+                        width={viewportWidth > 768 ? '50%' : '90%'}
                         onInputChange={handleLnChange}
                         margin={'15px 0 0 0'}
                         inputValue={ln}
@@ -349,7 +352,7 @@ const Checkout = () => {
                         icon={false}
                         borderRadius={"10px"}
                         error={addressError}
-                        width={'50%'}
+                        width={viewportWidth > 768 ? '50%' : '90%'}
                         onInputChange={handleAddressChange}
                         margin={'15px 0 0 0'}
                         inputValue={address}
@@ -359,7 +362,7 @@ const Checkout = () => {
                         isVisible={true}
                         icon={false}
                         borderRadius={"10px"}
-                        width={'50%'}
+                        width={viewportWidth > 768 ? '50%' : '90%'}
                         margin={'15px 0 0 0'}
                         inputValue={"Việt Nam"}
                         disabled={true}
@@ -368,7 +371,7 @@ const Checkout = () => {
                         isVisible={true}
                         icon={false}
                         borderRadius={"10px"}
-                        width={'50%'}
+                        width={viewportWidth > 768 ? '50%' : '90%'}
                         onInputChange={(e) => handleCityProvinceChange(e, null, null)}
                         margin={'15px 0 0 0'}
                         selectedValue={cityProvince}
@@ -376,7 +379,7 @@ const Checkout = () => {
                         warning={cityProvinceError}
                         json={cityJson}
                     />
-                    <div style={{ display: 'flex', width: '50%', gap: '15px' }}>
+                    <div style={{ display: 'flex', width: viewportWidth > 768 ? '50%' : '90%', gap: '15px' }}>
                         <Select
                             isVisible={true}
                             icon={false}
@@ -405,8 +408,8 @@ const Checkout = () => {
                         />
                     </div>
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '26px', margin: '15px 0' }}>What's your contact information?</p>
-                    <div style={{ display: 'flex', width: '100%', gap: '15px' }}>
-                        <div style={{ width: '50%' }}>
+                    <div style={{ display: 'flex', width: '100%', gap: '15px', flexWrap: viewportWidth > 1000 ? 'nowrap' : 'wrap' }}>
+                        <div style={{ width: viewportWidth > 768 ? '50%' : '90%' }}>
                             <Input
                                 placeholder={"Email Address"}
                                 isVisible={true}
@@ -419,10 +422,10 @@ const Checkout = () => {
                                 inputValue={email}
                             />
                         </div>
-                        <p style={{ margin: '22px 0 0 30px', height: 'fit-content', color: 'black' }}>We'll email you a receipt and send order updates to your<br />mobile phone via SMS.</p>
+                        <p style={{ margin: viewportWidth > 1000 ? '22px 0 0 30px' : '0', height: 'fit-content', color: 'black', width: viewportWidth > 1000 ? 'auto' : '100%' }}>We'll email you a receipt and send order updates to your<br />mobile phone via SMS.</p>
                     </div>
-                    <div style={{ display: 'flex', width: '100%' }}>
-                        <div style={{ width: '50%', display: 'flex', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', width: '100%', flexWrap: viewportWidth > 1000 ? 'nowrap' : 'wrap' }}>
+                        <div style={{ width: viewportWidth > 768 ? '50%' : '90%', display: 'flex', flexWrap: 'wrap' }}>
                             <Input
                                 placeholder={region}
                                 isVisible={true}
@@ -446,7 +449,7 @@ const Checkout = () => {
                                 type={"number"}
                             />
                         </div>
-                        <p style={{ margin: '22px 0 0 45px', height: 'fit-content', color: 'black' }}>The phone number can't be changed after you<br />place the order, so please make sure it's correct'.</p>
+                        <p style={{ margin: viewportWidth > 1000 ? '22px 0 0 30px' : '15px 0 0 0', height: 'fit-content', color: 'black', width: viewportWidth > 1000 ? 'auto' : '100%' }}>The phone number can't be changed after you<br />place the order, so please make sure it's correct'.</p>
                     </div>
                 </div>
                 {loading ? (

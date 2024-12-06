@@ -14,6 +14,7 @@ import jwt_decode from 'jwt-decode';
 // ----------------------------------------------------------------------
 
 export default function CategoryPage() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const jwtToken = Cookies.get('jwtToken');
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
@@ -28,7 +29,7 @@ export default function CategoryPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
+                const response = await fetch(`${API_BASE_URL}/api/Category/getAllCategories`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ export default function CategoryPage() {
 
     const removeCategory = async () => {
         try {
-            const response = await fetch(`https://localhost:7061/api/Category/deleteCategory?id=${deleteId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/Category/deleteCategory?id=${deleteId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

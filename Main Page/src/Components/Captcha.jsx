@@ -59,14 +59,14 @@ const Captcha = ({ data, width, margin }) => {
   };
 
   return (
-    <div style={{display: 'flex', margin: margin}}>
+    <div style={{display: 'flex', margin: margin, flexDirection: 'column'}}>
       <div style={{width: '100%', marginRight: '30px'}}>
           <Input placeholder={'Type the characters in the image'} isVisible={true} width={width ? width : '100%'} margin={margin} borderRadius={'5px'} onInputChange={handleInputChange}/>
           <button className='captcha' onClick={handleReset}>New Code</button>
           {error && <p style={{ color: isCaptchaValid ? 'lightgreen' : 'red', margin: '5px 0 0 5px' }}>{error}</p>}
       </div>
       <br />
-      <canvas ref={canvasRef} width={150} height={56} style={{ border: '1px solid #000', height: '56px', margin: margin }}></canvas>
+      <canvas ref={canvasRef} width={150} height={56} style={{ border: '1px solid #000', height: '56px', margin: margin, width: width }}></canvas>
     </div>
   );
 };

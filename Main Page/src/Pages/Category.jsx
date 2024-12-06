@@ -7,10 +7,12 @@ import Footer from '../Components/Footer';
 import { ColorPreview } from '../Components/color-utils';
 import Specification from '../Components/Specification';
 import { fCurrency } from '../Components/utils/format-number';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const Category = ({ categories }) => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const [products, setProducts] = useState([]);
-
+    const viewportWidth = ViewportWidth();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,7 +20,7 @@ const Category = ({ categories }) => {
             if (categories && categories.id) {
                 try {
                     setProducts([]);
-                    const response = await fetch(`https://localhost:7061/api/Product/getCategoryProducts?id=${categories.id}`);
+                    const response = await fetch(`${API_BASE_URL}/api/Product/getCategoryProducts?id=${categories.id}`);
                     if (response.status !== 204) {
                         const data = await response.json();
                         setProducts(data);
@@ -94,7 +96,7 @@ const Category = ({ categories }) => {
     };
 
     const settings = {
-        slidesToShow: 3,
+        slidesToShow: viewportWidth > 1000 ? 3 : (viewportWidth > 750 ? 2 : 1),
         slidesToScroll: 1,
         infinite: false,
         swipe: true,

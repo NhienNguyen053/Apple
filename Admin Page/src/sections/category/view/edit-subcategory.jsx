@@ -15,6 +15,7 @@ import Modal from '../../../Components/Modal';
 // ----------------------------------------------------------------------
 
 export default function EditSubcategory() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
@@ -53,7 +54,7 @@ export default function EditSubcategory() {
     }, []);
 
     const getCategory = async () => {
-        const response = await fetch(`https://localhost:7061/api/Category/getCategoryById?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Category/getCategoryById?id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -148,7 +149,7 @@ export default function EditSubcategory() {
                     return getDownloadURL(imageRef);
                 })
                     .then((downloadURL) => {
-                        fetch('https://localhost:7061/api/Category/updateCategory', {
+                        fetch(`${API_BASE_URL}/api/Category/updateCategory`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -171,7 +172,7 @@ export default function EditSubcategory() {
                     return getDownloadURL(imageRef2);
                 })
                     .then((downloadURL) => {
-                        fetch('https://localhost:7061/api/Category/updateCategory', {
+                        fetch(`${API_BASE_URL}/api/Category/updateCategory`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -204,7 +205,7 @@ export default function EditSubcategory() {
     };
 
     const deleteCategory = async () => {
-        const response = await fetch(`https://localhost:7061/api/Category/deleteCategory?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Category/deleteCategory?id=${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

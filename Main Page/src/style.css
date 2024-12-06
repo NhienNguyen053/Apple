@@ -74,13 +74,13 @@ span{
     display: none;
 }
 .main-page-image {
-    background-repeat: no-repeat;
     width: 3008px;
     background-position: 50%;
     margin: 0;
     display: flex;
     justify-content: center;
     position: relative;
+    background-size: cover;
 }
 .rainbow-text {
     background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
@@ -809,4 +809,9 @@ a:hover{
     #demo-multiple-chip-label {
         padding-left: 16px;
     }
+}
+@media (max-width: 575px) {
+     #footer {
+         width: 95% !important;
+     }
 }

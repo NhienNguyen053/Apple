@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import jwt_decode from 'jwt-decode';
 
-const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
+const Navbar = ({ darkmode, onCartChange, removeCart, delay }) => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const root = document.documentElement;
   if(darkmode == true){
     root.style.setProperty('--background-color', '#121212');
@@ -42,7 +43,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
               if (decodedToken == null) {
                   const existingCart = removeCart === true ? [] : JSON.parse(localStorage.getItem('cart')) || [];
                   if (existingCart.length > 0) {
-                      const response = await fetch('https://localhost:7061/api/ShoppingCart/get-cart-anonymous', {
+                      const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/get-cart-anonymous`, {
                           method: 'POST',
                           headers: {
                               'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
                       setCartItems([]);
                   }
               } else {
-                  const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
+                  const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
                       method: 'GET',
                       headers: {
                           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("https://localhost:7061/api/Category/getAllCategories");
+        const response = await fetch(`${API_BASE_URL}/api/Category/getAllCategories`);
         const data = await response.json();
         setCategories(data);
       } catch (error) {
@@ -142,7 +143,7 @@ const Navbar = ({ darkmode, onCartChange, removeCart, delay}) => {
 
   return (
     <>
-      <div className='header' onMouseLeave={handleMouseOut}>
+      <div className='header' onMouseLeave={handleMouseOut} style={{overflow: 'overlay'}}>
         <ul className='header2'>
           <li className='li1'>
             <Link to='/'><i className='fa-brands fa-apple'></i></Link>

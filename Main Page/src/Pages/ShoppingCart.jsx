@@ -9,8 +9,11 @@ import { useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import { fCurrency } from '../Components/utils/format-number';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const ShoppingCart = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
+    const viewportWidth = ViewportWidth();
     let navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -45,7 +48,7 @@ const ShoppingCart = () => {
                     Id: id,
                     Quantity: value
                 }
-                const response = await fetch('https://localhost:7061/api/ShoppingCart/change-cart', {
+                const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/change-cart`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -98,7 +101,7 @@ const ShoppingCart = () => {
                 Id: id,
                 Quantity: value
             }
-            const response = await fetch('https://localhost:7061/api/ShoppingCart/change-cart', {
+            const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/change-cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -185,7 +188,7 @@ const ShoppingCart = () => {
             setCartItems(newCart);
             setTotalPrice(total.toFixed(2));
         } else {
-            const response = await fetch(`https://localhost:7061/api/ShoppingCart/remove-from-cart?id=${id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/remove-from-cart?id=${id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`,
@@ -209,7 +212,7 @@ const ShoppingCart = () => {
         const updateCart = async () => {
             if (decodedToken == null) {
                 if (existingCart.length > 0) {
-                    const response = await fetch('https://localhost:7061/api/ShoppingCart/get-cart-anonymous', {
+                    const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/get-cart-anonymous`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -244,7 +247,7 @@ const ShoppingCart = () => {
                     setCartItems([]);
                 }
             } else {
-                const response = await fetch(`https://localhost:7061/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
+                const response = await fetch(`${API_BASE_URL}/api/ShoppingCart/get-cart?userId=${decodedToken['Id']}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -289,23 +292,23 @@ const ShoppingCart = () => {
                     Some product has been removed due to being unavailable!
                 </Alert>
             </Collapse>
-            <div style={{ display: 'flex', flexWrap: 'wrap', width: '86%', margin: cartItems.length > 0 ? '100px auto 100px auto' : '100px auto 300px auto', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', width: viewportWidth > 1300 ? '86%' : '100%', margin: cartItems.length > 0 ? '100px auto 100px auto' : '100px auto 300px auto', justifyContent: 'center' }}>
                 <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is ${fCurrency(totalPrice)}` : 'Your cart is empty'}</p>
                 <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} height={'34px'} />
                 {cartItems.map((item, index) => (
-                    <div key={item.id} style={{ display: 'flex', gap: '25px', width: '80%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
-                        {item.image ? <div style={{ width: '30%' }}>
+                    <div key={item.id} style={{ flexWrap: viewportWidth > 650 ? 'nowrap' : 'wrap', display: 'flex', gap: '25px', width: viewportWidth > 1020 ? '80%' : '90%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
+                        {item.image ? <div style={{ width: viewportWidth > 1020 ? '30%' : (viewportWidth > 650 ? '25%' : '45%') }}>
                             <img src={item.image} style={{ borderRadius: '10px', width: '100%', height: '100%', objectFit: 'cover', maxWidth: '100%', maxHeight: '100%' }} />
                         </div> : <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%', height: '175px', background: '#f6f5f8', borderRadius: '10px' }}>
                             <p style={{ textAlign: 'center' }}>No images available</p>
                         </div>}
-                        <div style={{ width: '40%' }}>
+                        <div style={{ width: viewportWidth > 1020 ? '40%' : (viewportWidth > 650 ? '30%' : '45%') }}>
                             <p style={{ fontFamily: 'SF-Pro-Display-Semibold', color: 'black', fontSize: '20px' }}>{item.name}</p>
                             {item.color ? <p className="shoppingCart" >Color: {item.color}</p> : null}
                             {item.memory ? <p className="shoppingCart" >Memory: {item.memory}</p> : null}
                             {item.storage ? <p className="shoppingCart" >Storage: {item.storage}</p> : null}
                         </div>
-                        <div style={{ width: '10%' }}>
+                        <div style={{ width: viewportWidth > 1020 ? '10%' : (viewportWidth > 650 ? '15%' : '45%') }}>
                             <Input
                                 placeholder={"Quantity:"}
                                 isVisible={true}
@@ -319,7 +322,7 @@ const ShoppingCart = () => {
                                 onBlur={(e) => handleBlur(item.id, item.color, item.memory, item.storage, e)}
                             />
                         </div>
-                        <div style={{ width: '20%' }}>
+                        <div style={{ width: viewportWidth > 1020 ? '20%' : (viewportWidth > 650 ? '30%' : '45%') }}>
                             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                                 <p style={{ textAlign: 'end', width: '100%', marginTop: 0, color: 'black', fontSize: '24px', fontFamily: 'SF-Pro-Display-Semibold' }}>{(fCurrency(item.total))}</p>
                                 <a href="#" onClick={() => removeItem(item.id, item.color, item.memory, item.storage)} style={{ fontSize: '18px', fontFamily: 'SF-Pro-Display-Light' }}>Remove</a>

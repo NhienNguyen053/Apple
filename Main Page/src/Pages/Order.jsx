@@ -6,8 +6,11 @@ import Button from '../Components/Button';
 import Cookies from 'js-cookie';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { fCurrency } from '../Components/utils/format-number';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const Order = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
+    const viewportWidth = ViewportWidth();
     const [searchParams] = useSearchParams();
     const [orderDetails, setOrderDetails] = useState(null);
     const [active, setActive] = useState('');
@@ -32,7 +35,7 @@ const Order = () => {
 
     useEffect(() => {
         const getOrderDetails = async () => {
-            const response = await fetch(`https://localhost:7061/api/Order/getOrderDetails?id=${orderId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/Order/getOrderDetails?id=${orderId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +82,7 @@ const Order = () => {
 
     const confirm = async (event) => {
         event.preventDefault();
-        await fetch('https://localhost:7061/api/Order/confirmOrder', {
+        await fetch(`${API_BASE_URL}/api/Order/confirmOrder`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +98,7 @@ const Order = () => {
         <>
             <Navbar darkmode={false} />
             {orderDetails ? (
-                <div style={{ width: '87.5%', margin: 'auto'}}>
+                <div style={{ width: viewportWidth > 750 ? '87.5%' : '100%', margin: 'auto' }}>
                     <div style={{ paddingBottom: '10px', marginTop: '75px', display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <img src="/apple-logo.png" style={{ width: '45px', height: '45px' }} alt="Apple Logo" />
@@ -110,7 +113,7 @@ const Order = () => {
                             <div style={{ color: active == 'Placed' ? 'white' : '', background: active == 'Placed' ? 'black' : '' }} className="progress-bar-text">Order</div>
                             <div style={{ borderLeftColor: active == 'Placed' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
-                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '13px' }}>
+                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '1%' }}>
                             <div>
                                 <div style={{ borderTopColor: active == 'Paid' ? 'black' : '' }} className="triangle-top-right"></div>
                                 <div style={{ borderBottomColor: active == 'Paid' ? 'black' : '' }}  className="triangle-bottom-right"></div>
@@ -118,7 +121,7 @@ const Order = () => {
                             <div style={{ color: active == 'Paid' ? 'white' : '', background: active == 'Paid' ? 'black' : '' }} className="progress-bar-text">Payment</div>
                             <div style={{ borderLeftColor: active == 'Paid' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
-                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '26px' }}>
+                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '2%' }}>
                             <div>
                                 <div style={{ borderTopColor: active == 'Processing' ? 'black' : '' }} className="triangle-top-right"></div>
                                 <div style={{ borderBottomColor: active == 'Processing' ? 'black' : '' }} className="triangle-bottom-right"></div>
@@ -126,7 +129,7 @@ const Order = () => {
                             <div style={{ color: active == 'Processing' ? 'white' : '', background: active == 'Processing' ? 'black': '' }} className="progress-bar-text">Processing</div>
                             <div style={{ borderLeftColor: active == 'Processing' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
-                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '39px' }}>
+                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '3%' }}>
                             <div>
                                 <div style={{ borderTopColor: active == 'Shipping' ? 'black' : '' }} className="triangle-top-right"></div>
                                 <div style={{ borderBottomColor: active == 'Shipping' ? 'black' : '' }} className="triangle-bottom-right"></div>
@@ -134,7 +137,7 @@ const Order = () => {
                             <div style={{ color: active == 'Shipping' ? 'white' : '', background: active == 'Shipping' ? 'black' : '' }} className="progress-bar-text">Shipping</div>
                             <div style={{ borderLeftColor: active == 'Shipping' ? 'black' : '' }} className="right-arrow"></div>
                         </div>
-                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '52px' }}>
+                        <div style={{ width: '20%', display: 'flex', position: 'relative', right: '4%' }}>
                             <div>
                                 <div style={{ borderTopColor: active == 'Delivered' ? 'black' : '' }} className="triangle-top-right"></div>
                                 <div style={{ borderBottomColor: active == 'Delivered' ? 'black' : '' }} className="triangle-bottom-right"></div>
@@ -164,7 +167,7 @@ const Order = () => {
                             ))}
                         </div>
                     </div>
-                    <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px' }}>
+                    <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px', overflowX: 'auto' }}>
                         <div style={{ marginBottom: '20px', width: '100%', alignItems: 'center', display: 'flex', paddingLeft: '20px', flexWrap: 'wrap' }}>
                             <p style={{ width: '100%', fontSize: '20px', fontFamily: 'SF-Pro-Display-Semibold', color: 'black' }}>Order Details<br /></p>
                             <div style={{ fontFamily: 'SF-Pro-Display-Light', fontSize: '14px' }}><span>Order number:</span> {orderDetails.orderId}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Order date:</span> {orderDetails.dateCreated}</div>

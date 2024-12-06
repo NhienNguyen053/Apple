@@ -30,6 +30,7 @@ import Modal from '../../../Components/Modal';
 
 // ----------------------------------------------------------------------
 export default function CreateProduct() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const [title, setTitle] = useState('New Product');
     const [productId, setProductId] = useState('');
@@ -119,7 +120,7 @@ export default function CreateProduct() {
     const handleColorChange = async (e) => {
         setSelectedColor(e.target.value);
         try {
-            const response = await fetch('https://localhost:7061/api/Product/getProductImagesByColor', {
+            const response = await fetch(`${API_BASE_URL}/api/Product/getProductImagesByColor`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -218,7 +219,7 @@ export default function CreateProduct() {
         setSelectedColor('empty');
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:7061/api/Category/getAllCategories', {
+                const response = await fetch(`${API_BASE_URL}/api/Category/getAllCategories`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -317,7 +318,7 @@ export default function CreateProduct() {
             setProductPriceError(true)
         }
         if (count === 4) {
-            const product = await fetch('https://localhost:7061/api/Product/createProduct', {
+            const product = await fetch(`${API_BASE_URL}/api/Product/createProduct`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -461,7 +462,7 @@ export default function CreateProduct() {
         }
 
         if (productImages.length > 0) {
-            await fetch('https://localhost:7061/api/Product/updateProductImages', {
+            await fetch(`${API_BASE_URL}/api/Product/updateProductImages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -500,7 +501,7 @@ export default function CreateProduct() {
         const storage = getStorage();
         const desertRef = ref(storage, extractedPath);
         deleteObject(desertRef).then(async () => {
-            await fetch('https://localhost:7061/api/Product/deleteProductImage', {
+            await fetch(`${API_BASE_URL}/api/Product/deleteProductImage`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

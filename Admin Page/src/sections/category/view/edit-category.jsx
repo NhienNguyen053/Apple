@@ -14,6 +14,7 @@ import Alert from '@mui/material/Alert';
 // ----------------------------------------------------------------------
 
 export default function EditCategory() {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state?.id;
@@ -46,7 +47,7 @@ export default function EditCategory() {
     }, []);
 
     const getCategory = async () => {
-        const response = await fetch(`https://localhost:7061/api/Category/getCategoryById?id=${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/Category/getCategoryById?id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export default function EditCategory() {
             const input = document.querySelector('#categoryimage');
             const file = input.files[0];
             if (file == null) {
-                const result = await fetch('https://localhost:7061/api/Category/updateCategory', {
+                const result = await fetch(`${API_BASE_URL}/api/Category/updateCategory`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -132,7 +133,7 @@ export default function EditCategory() {
                     return getDownloadURL(imageRef);
                 })
                 .then(async (downloadURL) => {
-                    const result = await fetch('https://localhost:7061/api/Category/updateCategory', {
+                    const result = await fetch(`${API_BASE_URL}/api/Category/updateCategory`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

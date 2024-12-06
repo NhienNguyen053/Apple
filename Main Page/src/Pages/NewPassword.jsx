@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const NewPassword = () => {
+  const API_BASE_URL = process.env.REACT_APP_API_HOST;
   const navigate = useNavigate();
   const location = useLocation();  
   const email = location.state?.email;
@@ -56,7 +57,7 @@ const NewPassword = () => {
       if (first === false || second === false || third === false) { }
       else {
           const encodeEmailorPhone = encodeURIComponent(email)
-          const response = await fetch(`https://localhost:7061/api/Users/updatePassword?emailorphone=${encodeEmailorPhone}&newPassword=${password}`, {
+          const response = await fetch(`${API_BASE_URL}/api/Users/updatePassword?emailorphone=${encodeEmailorPhone}&newPassword=${password}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',

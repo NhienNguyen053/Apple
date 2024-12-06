@@ -68,6 +68,7 @@ public class MomoController : ControllerBase
         string accessKey = "F8BBA842ECF85";
         string secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
         string thisReactUrl = _configuration["BaseURL:MainPage"]!;
+        string thisApiUrl = _configuration["BaseURL:AdminPage"]!;
         List<Product> products = new();
         List<RequestAnonymousShoppingCart> cartData = new List<RequestAnonymousShoppingCart>();
         decimal total = 0;
@@ -178,12 +179,12 @@ public class MomoController : ControllerBase
             orderInfo = "pay with MoMo",
             partnerCode = "MOMO",
             ipnUrl = "https://localhost:7061/api/Momo/redirectMomo",
-            redirectUrl = $"http://localhost:3000/result?orderId={myuuidAsString}",
+            redirectUrl = $"{thisReactUrl}result?orderId={myuuidAsString}",
             amount = (long)Math.Floor(total),
             orderId = myuuidAsString,
             requestId = myuuidAsString,
             requestType = "payWithMethod",
-            extraData = "",
+            extraData = checkoutRequest.UserId == null ? "" : checkoutRequest.UserId,
             partnerName = "MoMo Payment",
             storeId = "Test Store",
             orderGroupId = "",
@@ -207,17 +208,17 @@ public class MomoController : ControllerBase
         }
     }
 
-    // currently have to call from frontend cause ipn url can't be localhost
+    // currently have to call from frontend cause ipn url can't be localhost and you have to be a partner
     [HttpPost("redirectMomo")]
     public async Task<IActionResult> RedirectMomo([FromBody] MomoIPN momoIPN)
     {
-        if (int.Parse(momoIPN.ResultCode) == 0)
+        if (int.Parse(momoIPN.resultCode) == 0)
         {
-            if (momoIPN.UserId != null)
+            if (momoIPN.extraData != "")
             {
-                await shoppingCartService.DeleteByFieldAsync("UserId", momoIPN.UserId);
+                await shoppingCartService.DeleteByFieldAsync("UserId", momoIPN.extraData);
             }
-            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
+            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.orderId);
             if (order != null)
             {
                 // was planning to use google geolocation api to calculate the order distance to the nearest warehouse but couldn't get through google billing
@@ -230,9 +231,9 @@ public class MomoController : ControllerBase
                 }
                 SendEmail(order.CustomerDetails, order.OrderId, order.DateCreated, order.AmountTotal);
                 order.Status = "Paid";
-                order.TransId = momoIPN.TransId;
-                order.RequestId = momoIPN.RequestId;
-                order.PaymentStatus = int.Parse(momoIPN.ResultCode);
+                order.TransId = momoIPN.transId;
+                order.RequestId = momoIPN.requestId;
+                order.PaymentStatus = int.Parse(momoIPN.resultCode);
                 ShippingDetail shippingDetail = new()
                 {
                     Note = "Order Paid",
@@ -248,11 +249,11 @@ public class MomoController : ControllerBase
         }
         else
         {
-            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.OrderId);
+            Order order = await orderService.FindByFieldAsync("OrderId", momoIPN.orderId);
             if (order != null)
             {
                 order.Status = "Failed";
-                order.PaymentStatus = int.Parse(momoIPN.ResultCode);
+                order.PaymentStatus = int.Parse(momoIPN.resultCode);
                 ShippingDetail shippingDetail = new()
                 {
                     Note = "Order Failed",
@@ -353,7 +354,7 @@ public class MomoController : ControllerBase
         <strong>Total Amount:</strong> {amountFormatted} VND</p>
         <strong>Shipping Address:</strong> {customer.Address}</p>
         
-        <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:FrontEnd"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
+        <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:MainPage"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
         
         <p>Thank you for shopping with us!</p>";
         var email = new MimeMessage();
@@ -386,7 +387,7 @@ public class MomoController : ControllerBase
         <strong>Total Amount:</strong> {amountFormatted} VND</p>
         <strong>Amount Refunded:</strong> {amountFormatted} VND</p>
         
-        <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:FrontEnd"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
+        <p>Click the link below to view your order details:</p><a href=""{_configuration["BaseURL:MainPage"] + "order?id=" + orderId}"" target=""_blank"">View Order Details</a>
         
         <p>Thank you for shopping with us!</p>";
         var email = new MimeMessage();

@@ -4,8 +4,8 @@ import '../style.css';
 function Footer() {
   return (
       <>
-        <div style={{width: '100%', backgroundColor: '#f5f5f7', height: '120px'}}>
-            <div style={{width: '66%', margin: 'auto', padding: '5px 0 5px 0'}}>
+        <div style={{width: '100%', backgroundColor: '#f5f5f7'}}>
+            <div id={'footer'} style={{width: '66%', margin: 'auto', padding: '5px 0 5px 0'}}>
                 <div style={{borderBottom: '0.2px solid #c3c3c3', padding: '5px 0 5px 0'}}>
                   <p style={{fontSize: '13.7px'}}>The Apple Online Store uses industry-standard encryption to protect the confidentiality of the information you submit. Learn more about our <a href="" style={{color: '#80818f', textDecoration: 'underline'}}>Security Policy</a></p>
                 </div>

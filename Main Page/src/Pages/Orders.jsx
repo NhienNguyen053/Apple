@@ -13,8 +13,11 @@ import TablePagination from '@mui/material/TablePagination';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Button as MuiButton } from '@mui/material';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const Orders = () => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
+    const viewportWidth = ViewportWidth();
     let navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [order, setOrder] = useState('asc');
@@ -67,7 +70,7 @@ const Orders = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await fetch(`https://localhost:7061/api/Order/getUserOrders?userId=${decodedToken['Id']}&status=${statusText}`, {
+                const response = await fetch(`${API_BASE_URL}/api/Order/getUserOrders?userId=${decodedToken['Id']}&status=${statusText}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -130,13 +133,13 @@ const Orders = () => {
             <Navbar darkmode={false} />
             <div style={{ width: '100%', height: '100%', display: 'flex', flexWrap: 'wrap', margin: '48px 0 48px 0' }}>
                 <div style={{ width: '100%' }}>
-                    <div style={{ width: '66%', margin: 'auto auto 35px auto', display: 'flex', flexWrap: 'wrap' }}>
+                    <div style={{ width: viewportWidth > 1000 ? '66%' : '90%', margin: 'auto auto 35px auto', display: 'flex', flexWrap: 'wrap' }}>
                         {loading ? (
                             <p>Loading your orders...</p>
                         ) : orders && (orders.length > 0 || hasOrder) ? (
                             <>
                                 <p style={{ width: '100%', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>Products you've ordered.</p>
-                                <div style={{ minHeight: '70vh', minWidth: '1000px' }}>
+                                <div style={{ minHeight: '70vh' }}>
                                     <UserTableHead
                                         order={order}
                                         orderBy={orderBy}

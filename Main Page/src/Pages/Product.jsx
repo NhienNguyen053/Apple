@@ -11,8 +11,11 @@ import jwt_decode from 'jwt-decode';
 import { fCurrency } from '../Components/utils/format-number';
 import Collapse from '@mui/material/Collapse';
 import Alert from '@mui/material/Alert';
+import ViewportWidth from '../Components/ViewportWidth';
 
 const Product = ({ categories, products }) => {
+    const API_BASE_URL = process.env.REACT_APP_API_HOST;
+    const viewportWidth = ViewportWidth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [product, setProduct] = useState(products);
@@ -77,7 +80,7 @@ const Product = ({ categories, products }) => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const response = await fetch(`https://localhost:7061/api/Product/getRelatedProducts?subcategoryId=${product.subCategoryId}&id=${product.id}`);
+            const response = await fetch(`${API_BASE_URL}/api/Product/getRelatedProducts?subcategoryId=${product.subCategoryId}&id=${product.id}`);
             if (response.status !== 204) {
                 const data = await response.json();
                 setRelatedProducts(data);
@@ -101,22 +104,21 @@ const Product = ({ categories, products }) => {
     };
 
     const sliderContainerStyle = {
-        width: '70%',
+        width: '100%',
         borderRadius: '25px',
         overflow: 'hidden',
-        minHeight: '500px',
         maxHeight: '500px'
     };
 
     var settings = {
         slidesToShow: 1,
         slidesToScroll: 1,
-        infinite: true,
+        infinite: images.length > 1 ? true : false,
         swipe: true,
-        dots: true,
+        dots: images.length > 1 ? true : false,
         swipe: false,
-        nextArrow: <SampleNextArrow />,
-        prevArrow: <SamplePrevArrow />,
+        nextArrow: images.length > 1 ? < SampleNextArrow /> : null,
+        prevArrow: images.length > 1 ? <SamplePrevArrow /> : null,
     };
 
     function SampleNextArrow(props) {
@@ -150,7 +152,7 @@ const Product = ({ categories, products }) => {
     }
 
     const renderSpecs = (name, value) => {
-        return (<Specification spec={name} text={value} width={"25%"} />);
+        return (<Specification spec={name} text={value} width={viewportWidth > 1000 ? "25%" : "50%"} />);
     }
 
     const renderSpecs2 = (name, value) => {
@@ -158,7 +160,7 @@ const Product = ({ categories, products }) => {
     }
 
     const sliderSettings = {
-        slidesToShow: 3,
+        slidesToShow: viewportWidth > 1000 ? 3 : (viewportWidth > 750 ? 2 : 1),
         slidesToScroll: 1,
         infinite: false,
         swipe: true,
@@ -271,7 +273,7 @@ const Product = ({ categories, products }) => {
             }
             localStorage.setItem('cart', JSON.stringify(existingCart));
         } else {
-            await fetch('https://localhost:7061/api/ShoppingCart/add-to-cart', {
+            await fetch(`${API_BASE_URL}/api/ShoppingCart/add-to-cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -309,41 +311,43 @@ const Product = ({ categories, products }) => {
                     <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Medium', fontSize: '50px', margin: '0' }}>Buy {product.productName}</p>
                     <p style={{ color: 'black' }}>For {fCurrency(productPrice)}</p>
                 </div>
-                <div style={{ width: '100%', display: 'flex', marginBottom: nonEmptySpecsCount <= 4 ? '110px' :  '110px' }}>
-                    <div style={sliderContainerStyle}>
-                        {images.length > 0 ? (
-                            <Slider {...settings} className="productSlider">
-                                {images.map((image) => (
-                                    <div key={image} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '500px', overflow: 'hidden', width: '100%' }}>
-                                        <img
-                                            src={image}
-                                            alt={product.productName}
-                                            style={{
-                                                width: 'auto',
-                                                height: '100%',
-                                                objectFit: 'contain',
-                                                maxHeight: '500px',
-                                                maxWidth: '100%'
-                                            }}
-                                        />
-                                    </div>
-                                ))}
-                            </Slider>
-                        ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#f6f5f8' }}>
-                                <p>No images available</p>
-                            </div>
-                        )}
+                <div style={{ width: '100%', display: 'flex', marginBottom: '50px', flexDirection: viewportWidth > 1000 ? 'row' : 'column' }}>
+                    <div style={{ width: viewportWidth > 1000 ? '70%' : '100%' }}>
+                        <div style={sliderContainerStyle}>
+                            {images.length > 0 ? (
+                                <Slider {...settings} className="productSlider">
+                                    {images.map((image) => (
+                                        <div key={image} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '500px', overflow: 'hidden', width: '100%' }}>
+                                            <img
+                                                src={image}
+                                                alt={product.productName}
+                                                style={{
+                                                    width: 'auto',
+                                                    height: '100%',
+                                                    objectFit: 'contain',
+                                                    maxHeight: '500px',
+                                                    maxWidth: '100%'
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </Slider>
+                            ) : (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#f6f5f8' }}>
+                                    <p>No images available</p>
+                                </div>
+                            )}
+                        </div>
+                        <div style={{ margin: 'auto', position: 'relative', display: 'flex', justifyContent: 'center', width: '90%', flexWrap: 'wrap', marginTop: '50px' }}>
+                            {Object.entries(product.specifications).map(([specName, specValue]) => {
+                                if (specValue && specValue.trim() !== '') {
+                                    return renderSpecs(specName, specValue);
+                                }
+                                return null;
+                            })}
+                        </div>
                     </div>
-                    <div style={{ position: 'absolute', display: 'flex', bottom: nonEmptySpecsCount <= 4 ? '-180px' : '-220px', justifyContent: 'center', width: '60%', flexWrap: 'wrap', height: '140px' }}>
-                        {Object.entries(product.specifications).map(([specName, specValue]) => {
-                            if (specValue && specValue.trim() !== '') {
-                                return renderSpecs(specName, specValue);
-                            }
-                            return null;
-                        })}
-                    </div>
-                    <div style={{ width: '25%', minHeight: '780px', margin: '0 auto 0 auto' }}>
+                    <div style={{ width: viewportWidth > 1000 ? '25%' : '75%', minHeight: viewportWidth > 1000 ? '780px' : '500px', margin: viewportWidth > 1000 ? '0 auto 0 auto' : '50px auto 0 auto' }}>
                         {product.colors.length > 0 ? (
                             <div style={{ marginBottom: '40px' }}>
                                 <p style={{ color: 'black', fontFamily: 'SF-Pro-Display-Semibold', fontSize: '24px' }}>Finish. <span style={{ color: '#86868b' }}>Pick your favorite.</span></p>
@@ -412,7 +416,7 @@ const Product = ({ categories, products }) => {
                 </div>
             </div>
             <div style={{ height: '1px', width: '85%', background: '#86868b', margin: 'auto' }}></div>
-            <div style={{ width: '100%', background: 'white', paddingTop: '50px', minHeight: '500px', marginBottom: '50px' }}>
+            <div style={{ width: '100%', background: 'white', paddingTop: '50px', marginBottom: '50px' }}>
                 <p style={{ fontSize: '50px', color: 'black', fontFamily: 'SF-Pro-Display-Regular', width: '85%', margin: '0 auto 50px auto', textAlign: 'center' }}>You might also like</p>
                 <div style={{ width: '85%', margin: 'auto' }}>
                     {renderProductSlider()}
