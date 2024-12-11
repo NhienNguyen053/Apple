@@ -96,6 +96,16 @@ const Order = () => {
 
     const refund = async (event) => {
         event.preventDefault();
+        const updatedOrderDetails = { ...orderDetails, status: "Refunded", shippingDetails: shippingDetails.push({ note: 'Order Refunded', dateCreated: new Date().toISOString(), createdBy: null})};
+        await fetch(`${API_BASE_URL}/api/Momo/cancelPayment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedOrderDetails)
+        });
+        setOrderDetails(updatedOrderDetails);
+        setActive("Refunded");
     }
 
     return (
@@ -193,9 +203,9 @@ const Order = () => {
                                     <td><img src={detail.productImage} style={{ width: '75px', height: '75px' }} /></td>
                                     <td>
                                         <div>
-                                            <p>Color: {detail.color}</p>
-                                            <p>Storage: {detail.storage}</p>
-                                            <p>Memory: {detail.memory}</p>
+                                            <p style={{ display: detail.color ? '' : 'none' }}>Color: {detail.color}</p>
+                                            <p style={{ display: detail.storage ? '' : 'none' }}>Storage: {detail.storage}</p>
+                                            <p style={{ display: detail.memory ? '' : 'none' }}>Memory: {detail.memory}</p>
                                         </div>
                                     </td>
                                     <td>{detail.quantity}</td>
