@@ -21,6 +21,7 @@ const ShoppingCart = () => {
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
     const [open, setOpen] = useState(false);
+    const [temp, setTemp] = useState([]);
     const memoryPrices = {
         '4GB': 1242250,
         '8GB': 2484500,
@@ -38,7 +39,7 @@ const ShoppingCart = () => {
         '2TB': 7453500
     };
 
-    const handleKeyDown = async (id, color, memory, storage, e) => {
+    const handleKeyDown = async (id, color, memory, storage, index, e) => {
         if (e.key === 'Enter') {
             const value = e.target.value;
             if (!isPositiveNumber(value)) {
@@ -88,11 +89,12 @@ const ShoppingCart = () => {
                     item.total = (parseFloat(item.price) * item.quantity).toFixed(2);
                 });
                 setTotalPrice(total.toFixed(2));
+                temp[index] = value;
             }
         }
     }
 
-    const handleBlur = async (id, color, memory, storage, e) => {
+    const handleBlur = async (id, color, memory, storage, index, e) => {
         const value = e.target.value;
         if (!isPositiveNumber(value)) {
             handleInvalidInput(id);
@@ -143,13 +145,14 @@ const ShoppingCart = () => {
                 item.total = (parseFloat(item.price) * item.quantity).toFixed(2);
             });
             setTotalPrice(total.toFixed(2));
+            temp[index] = value;
         }
     }
 
     const handleInvalidInput = (id) => {
         setCartItems((prevItems) =>
-            prevItems.map(item =>
-                item.id === id ? { ...item, quantity: 1 } : item
+            prevItems.map((item, index) =>
+                item.id === id ? { ...item, quantity: temp[index] } : item
             )
         );
     };
@@ -234,6 +237,7 @@ const ShoppingCart = () => {
                             const memoryPrice = memoryPrices[item.memory] || 0;
                             const storagePrice = storagePrices[item.storage] || 0;
                             cart.push(cartItem);
+                            temp.push(item.quantity);
                             total = total + parseFloat(Number(item.price) + memoryPrice + storagePrice) * item.quantity;
                             item.total = (parseFloat(Number(item.price) + memoryPrice + storagePrice) * item.quantity).toFixed(2);
                         });
@@ -263,6 +267,7 @@ const ShoppingCart = () => {
                         item.price = Number(item.price) + memoryPrice + storagePrice;
                         total = total + item.price * item.quantity;
                         item.total = (item.price * item.quantity).toFixed(2);
+                        temp.push(item.quantity);
                     });
                     setTotalPrice(total.toFixed(2));
                     setCartItems(data);
@@ -294,7 +299,9 @@ const ShoppingCart = () => {
             </Collapse>
             <div style={{ display: 'flex', flexWrap: 'wrap', width: viewportWidth > 1300 ? '86%' : '100%', margin: cartItems.length > 0 ? '100px auto 100px auto' : '100px auto 300px auto', justifyContent: 'center' }}>
                 <p style={{ width: '100%', textAlign: 'center', color: 'black', fontSize: '40px', fontFamily: 'SF-Pro-Display-Semibold' }}>{cartItems.length != 0 ? `Your cart total is ${fCurrency(totalPrice)}` : 'Your cart is empty'}</p>
-                <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} height={'34px'} />
+                <div style={{width: '100%'}}>
+                    <Button background={'#0071e3'} onclick={cartItems.length != 0 ? routeChange2 : routeChange} text={cartItems.length != 0 ? "Checkout" : "Back to shopping"} radius={'10px'} fontSize={'16px'} margin={'0 auto 100px auto'} width={'300px'} height={'34px'} />
+                </div>
                 {cartItems.map((item, index) => (
                     <div key={item.id} style={{ flexWrap: viewportWidth > 650 ? 'nowrap' : 'wrap', display: 'flex', gap: '25px', width: viewportWidth > 1020 ? '80%' : '90%', justifyContent: 'center', margin: '0', borderTop: index === 0 ? '1px solid #d6d6db' : 'none', borderBottom: '1px solid #d6d6db', padding: '50px 0 50px 0' }}>
                         {item.image ? <div style={{ width: viewportWidth > 1020 ? '30%' : (viewportWidth > 650 ? '25%' : '45%') }}>
@@ -318,8 +325,8 @@ const ShoppingCart = () => {
                                 margin={'0 auto 0 auto'}
                                 inputValue={item.quantity}
                                 onInputChange={(e) => handleChange(item.id, item.color, item.memory, item.storage, e.target.value)}
-                                onKeyPress={(e) => handleKeyDown(item.id, item.color, item.memory, item.storage, e)}
-                                onBlur={(e) => handleBlur(item.id, item.color, item.memory, item.storage, e)}
+                                onKeyPress={(e) => handleKeyDown(item.id, item.color, item.memory, item.storage, index, e)}
+                                onBlur={(e) => handleBlur(item.id, item.color, item.memory, item.storage, index, e)}
                             />
                         </div>
                         <div style={{ width: viewportWidth > 1020 ? '20%' : (viewportWidth > 650 ? '30%' : '45%') }}>

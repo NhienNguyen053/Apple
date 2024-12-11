@@ -94,6 +94,10 @@ const Order = () => {
         setActive("Confirmed");
     }
 
+    const refund = async (event) => {
+        event.preventDefault();
+    }
+
     return (
         <>
             <Navbar darkmode={false} />
@@ -152,7 +156,7 @@ const Order = () => {
                     <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px' }}>
                         <div style={{ marginBottom: '20px', fontFamily: 'SF-Pro-Display-Light', width: '100%', background: '#f2f3f7', height: '35px', alignItems: 'center', display: 'flex', padding: '0 20px', justifyContent: 'space-between' }}>
                             <p style={{ color: 'black' }}>Shipping Details</p>
-                            <a onClick={confirm} style={{ display: orderDetails.status === 'Delivered' ? 'block' : 'none' }}>Confirm Delivery</a>
+                            <a onClick={orderDetails.status === 'Paid' ? refund : confirm} style={{ display: orderDetails.status === 'Delivered' || orderDetails.status === "Paid" ? 'block' : 'none' }}>{orderDetails.status === "Delivered" ? 'Confirm Delivery' : 'Refund Order'}</a>
                         </div>
                         <div className="timeline">
                             {orderDetails.shippingDetails.map((detail, index) => (
