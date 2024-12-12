@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using AppleApi.Interfaces;
 using AppleApi.Models.Order;
 using AppleApi.Models.Product;
-using webapi.Models.Product;
 using AppleApi.Models.User;
 using MongoDB.Driver;
 
@@ -171,26 +170,10 @@ public class OrderController : ControllerBase
                 AmountTotal = order.AmountTotal,
                 DateCreated = order.DateCreated,
                 CustomerDetails = order.CustomerDetails,
-                ProductDetails = new List<OrderProduct>(),
+                ProductDetails = order.ProductDetails,
                 ShippingDetails = order.ShippingDetails,
                 Status = order.Status,
             };
-            foreach (var item in order.ProductDetails)
-            {
-                Product product = await productService.FindByIdAsync(item.productId);
-                OrderProduct orderProduct = new()
-                {
-                    productId = item.productId,
-                    color = item.color,
-                    storage = item.storage,
-                    memory = item.memory,
-                    quantity = item.quantity,
-                    productName = product.ProductName,
-                    productPrice = product.ProductPrice,
-                    productImage = product.Colors.Count == 0 ? product.ProductImages.FirstOrDefault()?.ImageURLs?.FirstOrDefault() : product.ProductImages.FirstOrDefault(x => x.Color == item.color)?.ImageURLs?.FirstOrDefault()
-                };
-                details.ProductDetails.Add(orderProduct);
-            }
             return Ok(details);
         }
         return BadRequest();

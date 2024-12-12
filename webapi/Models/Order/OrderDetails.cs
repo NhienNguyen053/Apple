@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Stripe.Checkout;
 using AppleApi.Models.ShoppingCart;
-using webapi.Models.Product;
+using AppleApi.Models.Product;
 
 namespace AppleApi.Models.Order;
 

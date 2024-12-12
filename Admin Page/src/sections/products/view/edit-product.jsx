@@ -620,21 +620,32 @@ export default function EditProduct() {
                 'Authorization': `Bearer ${jwtToken}`
             }
         });
-        const data = await response.json();
-        data.forEach(item => {
-            const decodedUrl = decodeURIComponent(item);
-            const urlObject = new URL(decodedUrl);
-            const path = urlObject.pathname;
-            const pathSegments = path.split('/');
-            const extractedPath = pathSegments.slice(5).join('/');
-            const storage = getStorage();
-            const desertRef = ref(storage, extractedPath);
-            deleteObject(desertRef);
-        });
-        setTimeout(() => {
-            navigate('/dashboard/products/');
-            setLoading2(false);
-        }, 3000);
+        if (response.status === 400) {
+            setOpenText("Product has order! Can't delete!");
+            setOpen(true);
+            setOpenColor('warning');
+            toggleModal2();
+            setTimeout(() => {
+                setOpen(false);
+                setLoading2(false);
+            }, 5000);
+        } else {
+            const data = await response.json();
+            data.forEach(item => {
+                const decodedUrl = decodeURIComponent(item);
+                const urlObject = new URL(decodedUrl);
+                const path = urlObject.pathname;
+                const pathSegments = path.split('/');
+                const extractedPath = pathSegments.slice(5).join('/');
+                const storage = getStorage();
+                const desertRef = ref(storage, extractedPath);
+                deleteObject(desertRef);
+            });
+            setTimeout(() => {
+                navigate('/dashboard/products/');
+                setLoading2(false);
+            }, 3000);
+        }
     }
 
     const toggleModal = (e) => {

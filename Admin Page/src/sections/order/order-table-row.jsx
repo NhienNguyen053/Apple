@@ -68,7 +68,7 @@ export default function OrderTableRow({
                         <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: index !== items.length - 1 ? '10px' : '0' }}>
                             <p style={{ color: 'black', width: '70%' }}>{item.productName}</p>
                             <div style={{ width: '25%', display: 'flex', justifyContent: 'center' }}>
-                                <img src={item.image} style={{ width: '50px', height: '50px' }} alt={item.productName} />
+                                <img src={item.productImage} style={{ width: '50px', height: '50px' }} alt={item.productName} />
                             </div>
                             <p style={{ color: 'black', width: '5%' }}>({item.quantity})</p>
                         </div>

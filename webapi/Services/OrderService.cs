@@ -13,6 +13,7 @@ using AppleApi.Interfaces;
 using AppleApi.Models.Category;
 using Microsoft.EntityFrameworkCore;
 using AppleApi.Models.User;
+using AppleApi.Models.Product;
 
 namespace AppleApi.Services
 {
@@ -21,6 +22,16 @@ namespace AppleApi.Services
         public OrderService(IOptions<AppleDatabaseSettings> settings)
         : base(settings, "Order")
         {
+        }
+
+        public async Task<Order> DoProductHasOrder(string id)
+        {
+            FilterDefinition<Order> filter = Builders<Order>.Filter.ElemMatch(
+                order => order.ProductDetails,
+                product => product.productId == id
+            );
+            Order order = await FindAsync(filter);
+            return order;
         }
 
         public async Task ScanAndCancelOrders()

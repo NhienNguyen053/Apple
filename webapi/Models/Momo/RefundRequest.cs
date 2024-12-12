@@ -1,4 +1,4 @@
-﻿namespace webapi.Models.Momo
+﻿namespace AppleApi.Models.Momo
 {
     public class RefundRequest
     {

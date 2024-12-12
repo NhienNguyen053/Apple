@@ -18,6 +18,19 @@ export function fTimestamp(date) {
   return date ? getTime(new Date(date)) : '';
 }
 
+export function fVietNamTime(date) {
+    const vietnamTime = date.toLocaleString("en-GB", {
+        timeZone: "Asia/Ho_Chi_Minh",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+    return vietnamTime;
+}
+
 export function fToNow(date) {
   return date
     ? formatDistanceToNow(new Date(date), {

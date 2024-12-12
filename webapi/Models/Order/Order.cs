@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Stripe.Checkout;
 using AppleApi.Models.ShoppingCart;
+using AppleApi.Models.Product;
 
 namespace AppleApi.Models.Order
 {
@@ -28,7 +29,7 @@ namespace AppleApi.Models.Order
 
         public CustomerDetails CustomerDetails { get; set; } = null!;
 
-        public List<RequestAnonymousShoppingCart> ProductDetails { get; set; } = null!;
+        public List<OrderProduct> ProductDetails { get; set; } = null!;
 
         public List<ShippingDetail> ShippingDetails { get; set; } = null!;
 

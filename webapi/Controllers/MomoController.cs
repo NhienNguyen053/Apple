@@ -16,7 +16,7 @@ using MimeKit.Text;
 using MimeKit;
 using MailKit.Net.Smtp;
 using Stripe.Checkout;
-using webapi.Models.Momo;
+using AppleApi.Models.Momo;
 using AppleApi.Models.Warehouse;
 using AppleApi.Models.User;
 
@@ -70,7 +70,7 @@ public class MomoController : ControllerBase
         string thisReactUrl = _configuration["BaseURL:MainPage"]!;
         string thisApiUrl = _configuration["BaseURL:AdminPage"]!;
         List<Product> products = new();
-        List<RequestAnonymousShoppingCart> cartData = new List<RequestAnonymousShoppingCart>();
+        List<OrderProduct> cartData = new List<OrderProduct>();
         decimal total = 0;
 
         if (!string.IsNullOrEmpty(checkoutRequest.UserId))
@@ -142,22 +142,23 @@ public class MomoController : ControllerBase
         {
             decimal unitPrice = decimal.Parse(product.ProductPrice) * int.Parse(product.ProductStatus);
             total = total + unitPrice;
-            RequestAnonymousShoppingCart data = new()
+            OrderProduct data = new()
             {
                 productId = product.Id,
                 color = !product.Colors.Any() ? "" : product.Colors[0],
                 memory = !product.Options.Memory.Any() ? "" : product.Options.Memory[0],
                 storage = !product.Options.Storage.Any() ? "" : product.Options.Storage[0],
                 quantity = int.Parse(product.ProductStatus),
-                image = product.ProductDescription,
+                productImage = product.ProductDescription,
                 productName = product.ProductName,
+                productPrice = product.ProductPrice
             };
             cartData.Add(data);
         }
 
         ShippingDetail shippingDetail = new()
         {
-            Note = "Order Placed",
+            note = "Order Placed",
             dateCreated = DateTime.Now
         };
         Order newOrder = new()
@@ -236,7 +237,7 @@ public class MomoController : ControllerBase
                 order.PaymentStatus = int.Parse(momoIPN.resultCode);
                 ShippingDetail shippingDetail = new()
                 {
-                    Note = "Order Paid",
+                    note = "Order Paid",
                     dateCreated = DateTime.Now,
                     assignedTo = user?.Id
                 };
@@ -256,7 +257,7 @@ public class MomoController : ControllerBase
                 order.PaymentStatus = int.Parse(momoIPN.resultCode);
                 ShippingDetail shippingDetail = new()
                 {
-                    Note = "Order Failed",
+                    note = "Order Failed",
                     dateCreated = DateTime.Now
                 };
                 order.ShippingDetails.Add(shippingDetail);
@@ -267,7 +268,6 @@ public class MomoController : ControllerBase
         }
     }
 
-    [Authorize(Roles = "Order Processor")]
     [HttpPost("cancelPayment")]
     public async Task<IActionResult> CancelPayment([FromBody] Order newOrder)
     {
@@ -278,7 +278,7 @@ public class MomoController : ControllerBase
             string accessKey = "F8BBA842ECF85";
             string secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
             Order order = await orderService.FindByFieldAsync("OrderId", newOrder.OrderId);
-            if (order != null)
+            if (order != null && order.Status == "Paid")
             {
                 RefundRequest request = new()
                 {

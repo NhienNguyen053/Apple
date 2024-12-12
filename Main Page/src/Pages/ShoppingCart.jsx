@@ -21,6 +21,7 @@ const ShoppingCart = () => {
     const decodedToken = jwtToken ? jwt_decode(jwtToken) : null;
     const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
     const [open, setOpen] = useState(false);
+    const [updateCart, setUpdateCart] = useState(false);
     const [temp, setTemp] = useState([]);
     const memoryPrices = {
         '4GB': 1242250,
@@ -91,6 +92,7 @@ const ShoppingCart = () => {
                 setTotalPrice(total.toFixed(2));
                 temp[index] = value;
             }
+            setUpdateCart(!updateCart);
         }
     }
 
@@ -147,6 +149,7 @@ const ShoppingCart = () => {
             setTotalPrice(total.toFixed(2));
             temp[index] = value;
         }
+        setUpdateCart(!updateCart);
     }
 
     const handleInvalidInput = (id) => {
@@ -209,6 +212,7 @@ const ShoppingCart = () => {
             }
             else { }
         }
+        setUpdateCart(!updateCart);
     }
 
     useEffect(() => {
@@ -291,7 +295,7 @@ const ShoppingCart = () => {
 
     return (
         <>
-            <Navbar darkmode={false} />
+            <Navbar darkmode={false} onCartChange={updateCart} />
             <Collapse in={open} sx={{ right: '10px', top: '10px', zIndex: 1000, position: 'absolute' }}>
                 <Alert sx={{ mb: 2 }} severity="error">
                     Some product has been removed due to being unavailable!

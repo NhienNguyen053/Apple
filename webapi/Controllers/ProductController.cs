@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using AppleApi.Models.Product;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Drawing;
+using AppleApi.Models.Order;
 
 namespace AppleApi.Controllers
 {
@@ -14,11 +13,13 @@ namespace AppleApi.Controllers
     {
         private readonly IProductService productService;
         private readonly IShoppingCartService shoppingCartService;
+        private readonly IOrderService orderService;
 
-        public ProductController(IProductService productService, IShoppingCartService shoppingCartService)
+        public ProductController(IProductService productService, IShoppingCartService shoppingCartService, IOrderService orderService)
         {
             this.productService = productService;
             this.shoppingCartService = shoppingCartService;
+            this.orderService = orderService;
         }
 
         [HttpGet("getAllProducts")]
@@ -230,6 +231,11 @@ namespace AppleApi.Controllers
         {
             List<string> allImageURLs = new();
             Product product = await productService.FindByIdAsync(id);
+            Order order = await orderService.DoProductHasOrder(product.Id);
+            if (order != null)
+            {
+                return BadRequest();
+            }
             foreach(var productImages in product.ProductImages)
             {
                 allImageURLs.AddRange(productImages.ImageURLs);

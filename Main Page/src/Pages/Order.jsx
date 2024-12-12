@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import Cookies from 'js-cookie';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { fCurrency } from '../Components/utils/format-number';
+import { fVietNamTime } from '../Components/utils/format-time';
 import ViewportWidth from '../Components/ViewportWidth';
 
 const Order = () => {
@@ -50,18 +51,6 @@ const Order = () => {
                     const storagePrice = storagePrices[detail.storage] || 0;
                     detail.productPrice = Number(detail.productPrice) + memoryPrice + storagePrice;
                 });
-                data.shippingDetails = data.shippingDetails.map(detail => ({
-                    ...detail,
-                    dateCreated: new Date(detail.dateCreated).toLocaleString("en-GB", {
-                        timeZone: "Asia/Ho_Chi_Minh",
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                    })
-                }));
                 const date = new Date(data.dateCreated);
                 const vietnamTime = date.toLocaleString("en-GB", {
                     timeZone: "Asia/Ho_Chi_Minh",
@@ -96,7 +85,21 @@ const Order = () => {
 
     const refund = async (event) => {
         event.preventDefault();
-        const updatedOrderDetails = { ...orderDetails, status: "Refunded", shippingDetails: shippingDetails.push({ note: 'Order Refunded', dateCreated: new Date().toISOString(), createdBy: null})};
+
+        const updatedOrderDetails = {
+            Status: "Refunded",
+            ShippingDetails: [
+                ...orderDetails.shippingDetails,
+                {
+                    note: 'Order Refunded',
+                    dateCreated: new Date().toISOString(),
+                    createdBy: null,
+                    assignedTo: null
+                }
+            ],
+            OrderId: orderDetails.orderId
+        };
+
         await fetch(`${API_BASE_URL}/api/Momo/cancelPayment`, {
             method: 'POST',
             headers: {
@@ -104,9 +107,27 @@ const Order = () => {
             },
             body: JSON.stringify(updatedOrderDetails)
         });
-        setOrderDetails(updatedOrderDetails);
+
+        const formattedOrderDetails = {
+            ...orderDetails,
+            ShippingDetails: updatedOrderDetails.ShippingDetails.map(detail => ({
+                ...detail,
+                dateCreated: new Date(detail.dateCreated).toLocaleString("en-GB", {
+                    timeZone: "Asia/Ho_Chi_Minh",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                })
+            })),
+            status: 'Refunded'
+        };
+        console.log(formattedOrderDetails)
+        setOrderDetails(formattedOrderDetails);
         setActive("Refunded");
-    }
+    };
 
     return (
         <>
@@ -169,13 +190,13 @@ const Order = () => {
                             <a onClick={orderDetails.status === 'Paid' ? refund : confirm} style={{ display: orderDetails.status === 'Delivered' || orderDetails.status === "Paid" ? 'block' : 'none' }}>{orderDetails.status === "Delivered" ? 'Confirm Delivery' : 'Refund Order'}</a>
                         </div>
                         <div className="timeline">
-                            {orderDetails.shippingDetails.map((detail, index) => (
+                            {orderDetails.shippingDetails && orderDetails.shippingDetails.map((detail, index) => (
                                 <div className="timeline-item" key={index}>
                                     <div className="dot"></div>
                                     {index !== orderDetails.shippingDetails.length - 1 && <div className="line"></div>}
                                     <div className="content">
                                         <p>{detail.note}</p>
-                                        <span className="time">{detail.dateCreated}</span>
+                                        <span className="time">{fVietNamTime(new Date(detail.dateCreated))}</span>
                                     </div>
                                 </div>
                             ))}
@@ -184,7 +205,7 @@ const Order = () => {
                     <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap', border: '1px solid #eeeff2', marginBottom: '20px', overflowX: 'auto' }}>
                         <div style={{ marginBottom: '20px', width: '100%', alignItems: 'center', display: 'flex', paddingLeft: '20px', flexWrap: 'wrap' }}>
                             <p style={{ width: '100%', fontSize: '20px', fontFamily: 'SF-Pro-Display-Semibold', color: 'black' }}>Order Details<br /></p>
-                            <div style={{ fontFamily: 'SF-Pro-Display-Light', fontSize: '14px' }}><span>Order number:</span> {orderDetails.orderId}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Order date:</span> {orderDetails.dateCreated}</div>
+                            <div style={{ fontFamily: 'SF-Pro-Display-Light', fontSize: '14px' }}><span>Order number:</span> {orderDetails.orderId}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Order date:</span> {orderDetails.dateCreated}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Status:</span> {orderDetails.status}</div>
                         </div>
                         <table className="productsTable">
                             <tr>
